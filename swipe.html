@@ -9,36 +9,25 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Nunito', sans-serif; background: #F7F3EE; color: #1A1A2E; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
     :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E; --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff; }
-
-    /* NAV */
     .top-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .nav-logo { font-size: 20px; font-weight: 900; color: var(--cherry); text-decoration: none; }
-    .nav-fruit-badge { display: flex; align-items: center; gap: 6px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 50px; cursor: pointer; }
-    .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: background .2s; }
-    .nav-icon-btn:hover { background: var(--border); }
-
-    /* MAIN */
+    .nav-fruit-badge { display: flex; align-items: center; gap: 6px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 50px; }
+    .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
     .main { flex: 1; display: flex; overflow: hidden; }
-
-    /* SWIPE ZONE */
-    .swipe-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; position: relative; }
+    .swipe-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
     .profiles-count { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 14px; }
-
-    /* CARD STACK */
     .card-stack { position: relative; width: 320px; height: 460px; }
     .swipe-card { position: absolute; inset: 0; background: var(--white); border-radius: 24px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,.1); cursor: grab; user-select: none; }
     .swipe-card:active { cursor: grabbing; }
     .card-1 { z-index: 3; }
     .card-2 { z-index: 2; transform: scale(0.96) translateY(12px); }
     .card-3 { z-index: 1; transform: scale(0.92) translateY(22px); }
-
-    /* CARD CONTENT */
     .card-photo { width: 100%; height: 280px; display: flex; align-items: center; justify-content: center; font-size: 90px; position: relative; flex-shrink: 0; background: #FEECED; overflow: hidden; }
-    .card-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .card-photo img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
     .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(0,0,0,.5), transparent); }
-    .card-fruit-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; color: var(--dark); z-index: 1; }
-    .card-verified { position: absolute; top: 12px; left: 12px; background: rgba(39,174,96,.9); padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: #fff; z-index: 1; }
-    .card-name-overlay { position: absolute; bottom: 12px; left: 16px; z-index: 1; color: #fff; }
+    .card-fruit-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; color: var(--dark); z-index: 2; }
+    .card-verified { position: absolute; top: 12px; left: 12px; background: rgba(39,174,96,.9); padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: #fff; z-index: 2; display: none; }
+    .card-name-overlay { position: absolute; bottom: 12px; left: 16px; z-index: 2; color: #fff; }
     .cn-name { font-size: 22px; font-weight: 900; }
     .cn-age { font-size: 16px; font-weight: 600; opacity: .9; }
     .card-body { padding: 12px 16px; }
@@ -46,36 +35,24 @@
     .card-bio { font-size: 13px; color: #555; line-height: 1.5; margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     .card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
     .card-tag { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 50px; background: var(--sand); color: var(--dark); }
-
-    /* LIKE/NOPE LABELS */
     .like-label, .nope-label { position: absolute; top: 40px; padding: 8px 20px; border-radius: 10px; font-size: 28px; font-weight: 900; opacity: 0; z-index: 10; pointer-events: none; letter-spacing: 2px; }
     .like-label { left: 20px; border: 4px solid var(--green); color: var(--green); transform: rotate(-15deg); }
     .nope-label { right: 20px; border: 4px solid var(--cherry); color: var(--cherry); transform: rotate(15deg); }
-
-    /* ACTION BUTTONS */
     .action-buttons { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 20px; }
-    .action-btn { border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: transform .15s, box-shadow .15s; }
+    .action-btn { border: none; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; transition: transform .15s; }
     .action-btn:hover { transform: scale(1.1); }
-    .action-btn:active { transform: scale(.95); }
     .btn-rewind  { width: 48px; height: 48px; background: var(--white); box-shadow: 0 2px 16px rgba(0,0,0,.1); color: var(--orange); font-size: 18px; }
     .btn-dislike { width: 58px; height: 58px; background: var(--white); box-shadow: 0 4px 20px rgba(232,57,74,.2); color: var(--cherry); }
     .btn-super   { width: 48px; height: 48px; background: var(--white); box-shadow: 0 2px 16px rgba(123,94,167,.2); color: var(--grape); font-size: 18px; }
     .btn-like    { width: 58px; height: 58px; background: var(--cherry); box-shadow: 0 4px 20px rgba(232,57,74,.35); color: #fff; }
-
-    /* EMPTY STATE */
+    .loading-state { text-align: center; padding: 40px; }
+    .loader { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--cherry); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     .empty-state { display: none; text-align: center; padding: 40px 20px; }
     .empty-icon { font-size: 64px; margin-bottom: 16px; }
     .empty-title { font-size: 22px; font-weight: 900; color: var(--dark); margin-bottom: 10px; }
     .empty-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
     .btn-reload { background: var(--cherry); color: #fff; border: none; padding: 13px 28px; border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; }
-
-    /* LOADING */
-    .loading-state { display: none; text-align: center; padding: 40px; }
-    .loading-state.show { display: block; }
-    .loader { width: 48px; height: 48px; border: 4px solid var(--border); border-top-color: var(--cherry); border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto 16px; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* MATCH POPUP */
     .match-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .match-overlay.show { display: flex; }
     .match-popup { background: linear-gradient(160deg, var(--cherry), var(--orange)); border-radius: 28px; padding: 44px 36px; text-align: center; max-width: 340px; width: 90%; animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
@@ -86,17 +63,13 @@
     .match-av { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,.2); border: 4px solid #fff; font-size: 40px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
     .match-av img { width: 100%; height: 100%; object-fit: cover; }
     .match-sub { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 24px; }
-    .btn-match-msg { display: block; width: 100%; background: #fff; color: var(--cherry); border: none; padding: 13px; border-radius: 50px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-bottom: 10px; text-decoration: none; transition: opacity .2s; }
-    .btn-match-msg:hover { opacity: .9; }
+    .btn-match-msg { display: block; width: 100%; background: #fff; color: var(--cherry); border: none; padding: 13px; border-radius: 50px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-bottom: 10px; text-decoration: none; }
     .btn-match-skip { display: block; width: 100%; background: transparent; color: rgba(255,255,255,.8); border: 2px solid rgba(255,255,255,.4); padding: 11px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
-
-    /* BOTTOM NAV */
     .bottom-nav { display: none; background: var(--white); border-top: 1px solid var(--border); padding: 10px 0 16px; justify-content: space-around; flex-shrink: 0; }
-    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: .4; text-decoration: none; transition: opacity .2s; }
+    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: .4; text-decoration: none; }
     .bnav-item.active { opacity: 1; }
     .bnav-icon { font-size: 22px; }
     .bnav-label { font-size: 9px; font-weight: 800; color: var(--dark); }
-
     @media (max-width: 600px) { .card-stack { width: 290px; height: 420px; } .bottom-nav { display: flex; } }
   </style>
 </head>
@@ -113,60 +86,50 @@
 
 <div class="main">
   <div class="swipe-zone">
-
-    <!-- LOADING -->
-    <div class="loading-state show" id="loadingState">
+    <div class="loading-state" id="loadingState">
       <div class="loader"></div>
       <div style="font-size:14px;color:var(--muted);font-weight:700">Chargement des profils...</div>
     </div>
-
-    <!-- PROFILES COUNT -->
     <div class="profiles-count" id="profilesCount" style="display:none"></div>
-
-    <!-- CARD STACK -->
     <div class="card-stack" id="cardStack" style="display:none">
       <div class="swipe-card card-3" id="card3">
-        <div class="card-photo"><div class="card-fruit-badge">🍒</div></div>
-        <div class="card-body"><div class="card-city">...</div></div>
+        <div class="card-photo" id="c3photo" style="background:#E8F8EF"><div class="card-fruit-badge" id="c3fruit">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c3name"></span></div></div>
+        <div class="card-body"><div class="card-city" id="c3city"></div></div>
       </div>
       <div class="swipe-card card-2" id="card2">
-        <div class="card-photo"><div class="card-fruit-badge">🍒</div></div>
-        <div class="card-body"><div class="card-city">...</div></div>
+        <div class="card-photo" id="c2photo" style="background:#F0EBF8"><div class="card-fruit-badge" id="c2fruit">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c2name"></span></div></div>
+        <div class="card-body"><div class="card-city" id="c2city"></div></div>
       </div>
       <div class="swipe-card card-1" id="card1">
         <div class="like-label" id="likeLabel">LIKE 💚</div>
         <div class="nope-label" id="nopeLabel">NOPE ✕</div>
-        <div class="card-photo" id="c1photo">
+        <div class="card-photo" id="c1photo" style="background:#FEECED">
           <div class="card-fruit-badge" id="c1fruit"></div>
-          <div class="card-verified" id="c1verified" style="display:none">✓ Vérifié</div>
+          <div class="card-verified" id="c1verified">✓ Vérifié</div>
+          <div class="card-gradient"></div>
           <div class="card-name-overlay">
             <span class="cn-name" id="c1name"></span>
-            <span class="cn-age" id="c1age"></span>
+            <span class="cn-age"  id="c1age"></span>
           </div>
-          <div class="card-gradient"></div>
         </div>
         <div class="card-body">
           <div class="card-city" id="c1city"></div>
-          <div class="card-bio" id="c1bio"></div>
+          <div class="card-bio"  id="c1bio"></div>
           <div class="card-tags" id="c1tags"></div>
         </div>
       </div>
     </div>
-
-    <!-- EMPTY STATE -->
     <div class="empty-state" id="emptyState">
       <div class="empty-icon">🍒</div>
       <div class="empty-title">Tu as tout vu !</div>
-      <p class="empty-sub">Tu as parcouru tous les profils disponibles.<br>Reviens demain ou invite des amis à s'inscrire !</p>
-      <button class="btn-reload" onclick="reloadProfiles()">Recharger 🔄</button>
+      <p class="empty-sub">Aucun profil disponible pour l'instant.<br>Invite des amis à s'inscrire sur Mbote !</p>
+      <button class="btn-reload" id="reloadBtn">Recharger 🔄</button>
     </div>
-
-    <!-- ACTION BUTTONS -->
     <div class="action-buttons" id="actionButtons" style="display:none">
-      <button class="action-btn btn-rewind"  onclick="rewindCard()"   title="Revenir">↩️</button>
-      <button class="action-btn btn-dislike" onclick="swipe('left')"  title="Passer">✕</button>
-      <button class="action-btn btn-super"   onclick="superLike()"    title="Super Like">⭐</button>
-      <button class="action-btn btn-like"    onclick="swipe('right')" title="J'aime">❤️</button>
+      <button class="action-btn btn-rewind"  id="rewindBtn"  title="Revenir">↩️</button>
+      <button class="action-btn btn-dislike" id="dislikeBtn" title="Passer">✕</button>
+      <button class="action-btn btn-super"   id="superBtn"   title="Super Like">⭐</button>
+      <button class="action-btn btn-like"    id="likeBtn"    title="J'aime">❤️</button>
     </div>
   </div>
 </div>
@@ -177,7 +140,6 @@
   <a href="profil.html"      class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profil</div></a>
 </div>
 
-<!-- MATCH POPUP -->
 <div class="match-overlay" id="matchOverlay">
   <div class="match-popup">
     <div class="match-label">C'est un match ! 🎉</div>
@@ -189,312 +151,339 @@
     </div>
     <p class="match-sub" id="matchSub">Vous cherchez tous les deux la même chose.</p>
     <a href="messages_v2.html" class="btn-match-msg">Envoyer un message 💬</a>
-    <button class="btn-match-skip" onclick="closeMatch()">Continuer à swiper</button>
+    <button class="btn-match-skip" id="skipMatchBtn">Continuer à swiper</button>
   </div>
 </div>
 
 <script type="module">
-  import { auth, db, onAuthStateChanged, protegerPage, enregistrerLike } from "./firebase.js";
+  import { auth, db, onAuthStateChanged, enregistrerLike } from "./firebase.js";
   import {
-    collection, query, where, getDocs, doc, getDoc, setDoc, serverTimestamp
+    collection, query, where, getDocs, doc, getDoc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
+  const BG_COLORS = ['#FEECED','#F0EBF8','#E8F8EF','#FFF0E8'];
+  const EMOJIS    = ['👩🏾','👨🏿','👩🏿','👨🏾','👩🏽','👨🏽'];
+
   let currentUser  = null;
+  let myData       = {};
   let profiles     = [];
   let currentIndex = 0;
-  let history      = [];
+  let swipeHistory = [];
+  let isDragging   = false;
+  let startX       = 0;
+  let currentDX    = 0;
 
-  // ── INIT ─────────────────────────────────────────────
-  const user = await protegerPage(true);
-  if (!user) return;
-  currentUser = user;
+  // ── ATTENDRE LA CONNEXION FIREBASE ──────────────────
+  onAuthStateChanged(auth, async function(user) {
+    if (!user) {
+      window.location.href = "connexion.html";
+      return;
+    }
+    currentUser = user;
 
-  // Charger le profil de l'utilisateur connecté
-  const mySnap = await getDoc(doc(db, "users", currentUser.uid));
-  const myData = mySnap.exists() ? mySnap.data() : {};
+    // Charger mon profil
+    try {
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
+      if (snap.exists()) {
+        myData = snap.data();
+        if (myData.fruit) {
+          document.getElementById('fruitBadge').textContent = myData.fruit;
+        }
+      }
+    } catch(e) {
+      console.error("Erreur chargement profil:", e);
+    }
 
-  // Afficher son fruit dans la nav
-  if (myData.fruit) {
-    document.getElementById('fruitBadge').textContent = myData.fruit;
-  }
+    // Charger les profils à swiper
+    await loadProfiles();
 
-  // Charger les profils
-  await loadProfiles();
+    // Boutons
+    document.getElementById('likeBtn').addEventListener('click',    function() { doSwipe('right'); });
+    document.getElementById('dislikeBtn').addEventListener('click', function() { doSwipe('left');  });
+    document.getElementById('superBtn').addEventListener('click',   doSuperLike);
+    document.getElementById('rewindBtn').addEventListener('click',  doRewind);
+    document.getElementById('reloadBtn').addEventListener('click',  function() { loadProfiles(); });
+    document.getElementById('skipMatchBtn').addEventListener('click', function() {
+      document.getElementById('matchOverlay').classList.remove('show');
+    });
 
-  // ── CHARGER PROFILS FIREBASE ──────────────────────────
+    // Drag
+    var card1 = document.getElementById('card1');
+    card1.addEventListener('mousedown',  onDragStart);
+    card1.addEventListener('touchstart', onDragStart, { passive: true });
+    document.addEventListener('mousemove',  onDragMove);
+    document.addEventListener('touchmove',  onDragMove, { passive: true });
+    document.addEventListener('mouseup',    onDragEnd);
+    document.addEventListener('touchend',   onDragEnd);
+
+    // Clavier
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft')  doSwipe('left');
+      if (e.key === 'ArrowRight') doSwipe('right');
+      if (e.key === 'ArrowUp')    doSuperLike();
+      if (e.key === 'Backspace')  doRewind();
+    });
+  });
+
+  // ── CHARGER PROFILS ──────────────────────────────────
   async function loadProfiles() {
-    document.getElementById('loadingState').classList.add('show');
+    document.getElementById('loadingState').style.display  = 'block';
+    document.getElementById('cardStack').style.display     = 'none';
+    document.getElementById('actionButtons').style.display = 'none';
+    document.getElementById('emptyState').style.display    = 'none';
+    document.getElementById('profilesCount').style.display = 'none';
+
+    profiles     = [];
+    currentIndex = 0;
+    swipeHistory = [];
+
     try {
       // Profils déjà vus
-      const vusSnap = await getDocs(collection(db, "users", currentUser.uid, "vus"));
-      const vusIds  = vusSnap.docs.map(d => d.id);
-      vusIds.push(currentUser.uid); // exclure soi-même
+      var vusSnap = await getDocs(collection(db, "users", currentUser.uid, "vus"));
+      var vusIds  = [currentUser.uid];
+      vusSnap.forEach(function(d) { vusIds.push(d.id); });
 
-      // Tous les utilisateurs du genre recherché
-      const genre = myData.recherche || (myData.genre === 'homme' ? 'femme' : 'homme');
-      const q = query(collection(db, "users"), where("genre", "==", genre));
-      const snap = await getDocs(q);
+      // Genre recherché
+      var genreRecherche = myData.recherche || (myData.genre === 'homme' ? 'femme' : 'homme');
 
-      profiles = [];
-      snap.forEach(docSnap => {
-        if (vusIds.includes(docSnap.id)) return;
-        profiles.push({ uid: docSnap.id, ...docSnap.data() });
+      // Tous les utilisateurs
+      var snap = await getDocs(collection(db, "users"));
+      snap.forEach(function(docSnap) {
+        var data = docSnap.data();
+        if (vusIds.indexOf(docSnap.id) !== -1) return;
+        if (data.genre !== genreRecherche) return;
+        profiles.push({ uid: docSnap.id, ...data });
       });
 
-      // Mélanger les profils
-      profiles = profiles.sort(() => Math.random() - 0.5);
+      // Mélanger
+      profiles.sort(function() { return Math.random() - 0.5; });
 
-    } catch (e) {
-      console.error("Erreur chargement profils:", e);
-      profiles = [];
+    } catch(e) {
+      console.error("Erreur:", e);
     }
 
-    document.getElementById('loadingState').classList.remove('show');
+    document.getElementById('loadingState').style.display = 'none';
 
     if (profiles.length === 0) {
-      showEmptyState();
+      document.getElementById('emptyState').style.display = 'block';
     } else {
-      showCards();
+      document.getElementById('cardStack').style.display     = 'block';
+      document.getElementById('actionButtons').style.display = 'flex';
+      document.getElementById('profilesCount').style.display = 'block';
       renderAllCards();
+      updateCount();
     }
   }
 
-  // ── AFFICHER LES CARTES ───────────────────────────────
-  function showCards() {
-    document.getElementById('cardStack').style.display    = 'block';
-    document.getElementById('actionButtons').style.display = 'flex';
-    document.getElementById('profilesCount').style.display = 'block';
-    document.getElementById('emptyState').style.display   = 'none';
-    updateCount();
+  // ── RENDER CARDS ─────────────────────────────────────
+  function renderAllCards() {
+    renderCard('c1', profiles[currentIndex]);
+    renderCard('c2', profiles[currentIndex + 1]);
+    renderCard('c3', profiles[currentIndex + 2]);
   }
 
-  function showEmptyState() {
-    document.getElementById('cardStack').style.display    = 'none';
-    document.getElementById('actionButtons').style.display = 'none';
-    document.getElementById('profilesCount').style.display = 'none';
-    document.getElementById('emptyState').style.display   = 'block';
+  function renderCard(prefix, profile) {
+    if (!profile) return;
+
+    var photoEl  = document.getElementById(prefix + 'photo');
+    var fruitEl  = document.getElementById(prefix + 'fruit');
+    var nameEl   = document.getElementById(prefix + 'name');
+    var cityEl   = document.getElementById(prefix + 'city');
+
+    // Couleur de fond
+    var bg = BG_COLORS[Math.floor(Math.random() * BG_COLORS.length)];
+    photoEl.style.background = bg;
+
+    // Supprimer ancienne image/emoji
+    var oldImg   = photoEl.querySelector('img.card-img');
+    var oldEmoji = photoEl.querySelector('.card-emoji');
+    if (oldImg)   oldImg.remove();
+    if (oldEmoji) oldEmoji.remove();
+
+    // Photo ou emoji
+    if (profile.photoURL) {
+      var img = document.createElement('img');
+      img.src       = profile.photoURL;
+      img.className = 'card-img';
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1';
+      photoEl.appendChild(img);
+    } else {
+      var em = document.createElement('div');
+      em.className  = 'card-emoji';
+      em.style.cssText = 'font-size:80px;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);z-index:1';
+      em.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+      photoEl.appendChild(em);
+    }
+
+    // Fruit
+    if (fruitEl) fruitEl.textContent = profile.fruit || '🍒';
+
+    // Nom
+    if (nameEl) nameEl.textContent = profile.prenom || 'Utilisateur';
+
+    // Âge (uniquement carte 1)
+    var ageEl = document.getElementById(prefix + 'age');
+    if (ageEl && profile.dob) {
+      var age = new Date().getFullYear() - new Date(profile.dob).getFullYear();
+      ageEl.textContent = ', ' + age;
+    }
+
+    // Vérifié (uniquement carte 1)
+    var verifEl = document.getElementById(prefix + 'verified');
+    if (verifEl) verifEl.style.display = profile.verified ? 'block' : 'none';
+
+    // Ville
+    if (cityEl) cityEl.textContent = '📍 ' + (profile.ville || 'Congo');
+
+    // Bio (uniquement carte 1)
+    var bioEl = document.getElementById(prefix + 'bio');
+    if (bioEl) bioEl.textContent = profile.bio || '';
+
+    // Tags (uniquement carte 1)
+    var tagsEl = document.getElementById(prefix + 'tags');
+    if (tagsEl && profile.interests && profile.interests.length > 0) {
+      tagsEl.innerHTML = profile.interests.slice(0, 3)
+        .map(function(t) { return '<span class="card-tag">' + t + '</span>'; }).join('');
+    }
   }
 
   function updateCount() {
-    const rem = profiles.length - currentIndex;
+    var rem = profiles.length - currentIndex;
     document.getElementById('profilesCount').textContent =
       rem + ' profil' + (rem > 1 ? 's' : '') + ' disponible' + (rem > 1 ? 's' : '');
   }
 
-  function renderAllCards() {
-    renderCard('card1', profiles[currentIndex]);
-    renderCard('card2', profiles[currentIndex + 1]);
-    renderCard('card3', profiles[currentIndex + 2]);
-  }
-
-  function renderCard(cardId, profile) {
-    if (!profile) return;
-    const card = document.getElementById(cardId);
-    if (!card) return;
-
-    const photo   = card.querySelector('.card-photo');
-    const fruit   = card.querySelector('.card-fruit-badge');
-    const verif   = card.querySelector('.card-verified');
-    const nameEl  = card.querySelector('.cn-name');
-    const ageEl   = card.querySelector('.cn-age');
-    const cityEl  = card.querySelector('.card-city');
-    const bioEl   = card.querySelector('.card-bio');
-    const tagsEl  = card.querySelector('.card-tags');
-
-    // Photo ou emoji
-    const bgColors = ['#FEECED','#F0EBF8','#E8F8EF','#FFF0E8'];
-    const emojis   = ['👩🏾','👨🏿','👩🏿','👨🏾','👩🏽','👨🏽'];
-    const bg = bgColors[Math.floor(Math.random() * bgColors.length)];
-    photo.style.background = bg;
-
-    // Supprimer l'ancienne image si elle existe
-    const oldImg = photo.querySelector('img');
-    if (oldImg) oldImg.remove();
-    const oldEmoji = photo.querySelector('.card-emoji');
-    if (oldEmoji) oldEmoji.remove();
-
-    if (profile.photoURL) {
-      const img = document.createElement('img');
-      img.src = profile.photoURL;
-      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
-      photo.appendChild(img);
-    } else {
-      const em = document.createElement('div');
-      em.className = 'card-emoji';
-      em.style.cssText = 'font-size:90px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)';
-      em.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      photo.appendChild(em);
-    }
-
-    if (fruit)  fruit.textContent = profile.fruit || '🍒';
-    if (verif)  verif.style.display = profile.verified ? 'block' : 'none';
-    if (nameEl) nameEl.textContent  = profile.prenom || 'Utilisateur';
-
-    // Calculer l'âge depuis la date de naissance
-    let age = '';
-    if (profile.dob) {
-      const birth = new Date(profile.dob);
-      const today = new Date();
-      age = today.getFullYear() - birth.getFullYear();
-    }
-    if (ageEl) ageEl.textContent = age ? ', ' + age : '';
-    if (cityEl) cityEl.textContent = '📍 ' + (profile.ville || 'Congo');
-    if (bioEl)  bioEl.textContent  = profile.bio || '';
-    if (tagsEl && profile.interests) {
-      tagsEl.innerHTML = profile.interests.slice(0, 3)
-        .map(t => `<span class="card-tag">${t}</span>`).join('');
-    }
-  }
-
-  // ── DRAG TO SWIPE ─────────────────────────────────────
-  const card1 = document.getElementById('card1');
-  let startX = 0, isDragging = false, currentX = 0;
-
-  card1.addEventListener('mousedown',  e => { isDragging = true; startX = e.clientX; card1.style.transition = 'none'; });
-  card1.addEventListener('touchstart', e => { isDragging = true; startX = e.touches[0].clientX; card1.style.transition = 'none'; }, { passive: true });
-
-  document.addEventListener('mousemove', e => {
-    if (!isDragging) return;
-    currentX = e.clientX - startX;
-    moveCard(currentX);
-  });
-  document.addEventListener('touchmove', e => {
-    if (!isDragging) return;
-    currentX = e.touches[0].clientX - startX;
-    moveCard(currentX);
-  }, { passive: true });
-
-  document.addEventListener('mouseup',  onRelease);
-  document.addEventListener('touchend', onRelease);
-
-  function moveCard(dx) {
-    const rot = dx * 0.08;
-    card1.style.transform = `translateX(${dx}px) rotate(${rot}deg)`;
-    const likeEl = document.getElementById('likeLabel');
-    const nopeEl = document.getElementById('nopeLabel');
-    if (dx > 40)  { likeEl.style.opacity = Math.min((dx-40)/80,1);  nopeEl.style.opacity = 0; }
-    else if (dx < -40) { nopeEl.style.opacity = Math.min((-dx-40)/80,1); likeEl.style.opacity = 0; }
-    else { likeEl.style.opacity = 0; nopeEl.style.opacity = 0; }
-  }
-
-  function onRelease() {
-    if (!isDragging) return;
-    isDragging = false;
-    document.getElementById('likeLabel').style.opacity = 0;
-    document.getElementById('nopeLabel').style.opacity = 0;
-    card1.style.transition = '';
-    if      (currentX >  80) swipe('right');
-    else if (currentX < -80) swipe('left');
-    else { card1.style.transform = ''; }
-    currentX = 0;
-  }
-
   // ── SWIPE ─────────────────────────────────────────────
-  window.swipe = async function(direction) {
+  function doSwipe(direction) {
     if (currentIndex >= profiles.length) return;
-    const profile = profiles[currentIndex];
-    history.push({ profile, direction });
+    var profile = profiles[currentIndex];
+    swipeHistory.push({ profile: profile, direction: direction });
 
-    // Animation
+    var card1 = document.getElementById('card1');
     card1.style.transition = 'transform .4s ease, opacity .4s ease';
-    card1.style.transform  = direction === 'right' ? 'translateX(150%) rotate(20deg)' : 'translateX(-150%) rotate(-20deg)';
-    card1.style.opacity    = '0';
+    card1.style.transform  = direction === 'right'
+      ? 'translateX(150%) rotate(20deg)'
+      : 'translateX(-150%) rotate(-20deg)';
+    card1.style.opacity = '0';
 
-    // Enregistrer dans Firebase
-    const action = direction === 'right' ? 'like' : 'dislike';
-    const result = await enregistrerLike(currentUser.uid, profile.uid, action);
+    // Firebase
+    var action = direction === 'right' ? 'like' : 'dislike';
+    enregistrerLike(currentUser.uid, profile.uid, action).then(function(result) {
+      if (result && result.match) {
+        setTimeout(function() { showMatch(profile); }, 500);
+      }
+    });
 
-    // Match ?
-    if (result.match) {
-      setTimeout(() => showMatch(profile), 500);
-    }
-
-    setTimeout(() => {
+    setTimeout(function() {
       card1.style.transition = 'none';
       card1.style.transform  = '';
       card1.style.opacity    = '1';
       currentIndex++;
       if (currentIndex >= profiles.length) {
-        showEmptyState();
+        document.getElementById('cardStack').style.display     = 'none';
+        document.getElementById('actionButtons').style.display = 'none';
+        document.getElementById('profilesCount').style.display = 'none';
+        document.getElementById('emptyState').style.display    = 'block';
       } else {
         renderAllCards();
         updateCount();
       }
     }, 400);
-  };
+  }
 
-  window.superLike = async function() {
+  function doSuperLike() {
     if (currentIndex >= profiles.length) return;
-    const profile = profiles[currentIndex];
-    history.push({ profile, direction: 'super' });
+    var profile = profiles[currentIndex];
+    swipeHistory.push({ profile: profile, direction: 'super' });
+    var card1 = document.getElementById('card1');
     card1.style.transition = 'transform .4s ease, opacity .4s ease';
     card1.style.transform  = 'translateY(-150%) scale(.8)';
     card1.style.opacity    = '0';
-    await enregistrerLike(currentUser.uid, profile.uid, 'superlike');
-    setTimeout(() => {
+    enregistrerLike(currentUser.uid, profile.uid, 'superlike');
+    setTimeout(function() {
       card1.style.transition = 'none';
       card1.style.transform  = '';
       card1.style.opacity    = '1';
       currentIndex++;
-      if (currentIndex >= profiles.length) showEmptyState();
-      else { renderAllCards(); updateCount(); }
+      if (currentIndex >= profiles.length) {
+        document.getElementById('cardStack').style.display     = 'none';
+        document.getElementById('actionButtons').style.display = 'none';
+        document.getElementById('emptyState').style.display    = 'block';
+      } else {
+        renderAllCards();
+        updateCount();
+      }
     }, 400);
     showToast('⭐ Super Like envoyé à ' + profile.prenom + ' !');
-  };
+  }
 
-  window.rewindCard = function() {
-    if (history.length === 0) { showToast('Rien à annuler !'); return; }
+  function doRewind() {
+    if (swipeHistory.length === 0) { showToast('Rien à annuler !'); return; }
     currentIndex--;
-    history.pop();
+    swipeHistory.pop();
+    document.getElementById('cardStack').style.display     = 'block';
+    document.getElementById('actionButtons').style.display = 'flex';
+    document.getElementById('emptyState').style.display    = 'none';
     renderAllCards();
     updateCount();
-  };
+  }
 
-  window.reloadProfiles = function() {
-    currentIndex = 0;
-    history      = [];
-    loadProfiles();
-  };
+  // ── DRAG ──────────────────────────────────────────────
+  function onDragStart(e) {
+    isDragging = true;
+    startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    document.getElementById('card1').style.transition = 'none';
+  }
+  function onDragMove(e) {
+    if (!isDragging) return;
+    var x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    currentDX = x - startX;
+    var card1 = document.getElementById('card1');
+    card1.style.transform = 'translateX(' + currentDX + 'px) rotate(' + (currentDX * 0.08) + 'deg)';
+    var likeEl = document.getElementById('likeLabel');
+    var nopeEl = document.getElementById('nopeLabel');
+    if (currentDX > 40)       { likeEl.style.opacity = Math.min((currentDX - 40) / 80, 1); nopeEl.style.opacity = 0; }
+    else if (currentDX < -40) { nopeEl.style.opacity = Math.min((-currentDX - 40) / 80, 1); likeEl.style.opacity = 0; }
+    else                       { likeEl.style.opacity = 0; nopeEl.style.opacity = 0; }
+  }
+  function onDragEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    document.getElementById('likeLabel').style.opacity = 0;
+    document.getElementById('nopeLabel').style.opacity = 0;
+    var card1 = document.getElementById('card1');
+    card1.style.transition = '';
+    if      (currentDX >  80) doSwipe('right');
+    else if (currentDX < -80) doSwipe('left');
+    else                       card1.style.transform = '';
+    currentDX = 0;
+  }
 
-  // ── MATCH POPUP ───────────────────────────────────────
+  // ── MATCH ─────────────────────────────────────────────
   function showMatch(profile) {
-    const myAv    = document.getElementById('myMatchAv');
-    const theirAv = document.getElementById('theirMatchAv');
-
+    var myAv    = document.getElementById('myMatchAv');
+    var theirAv = document.getElementById('theirMatchAv');
+    myAv.textContent    = myData.photoURL    ? '' : '👤';
+    theirAv.textContent = profile.photoURL   ? '' : '👤';
     if (myData.photoURL) {
-      myAv.innerHTML = `<img src="${myData.photoURL}" style="width:100%;height:100%;object-fit:cover">`;
-    } else { myAv.textContent = '👤'; }
-
+      myAv.innerHTML = '<img src="' + myData.photoURL + '" style="width:100%;height:100%;object-fit:cover">';
+    }
     if (profile.photoURL) {
-      theirAv.innerHTML = `<img src="${profile.photoURL}" style="width:100%;height:100%;object-fit:cover">`;
-    } else { theirAv.textContent = '👤'; }
-
+      theirAv.innerHTML = '<img src="' + profile.photoURL + '" style="width:100%;height:100%;object-fit:cover">';
+    }
     document.getElementById('matchSub').innerHTML =
-      `Toi et <strong>${profile.prenom}</strong> avez tous les deux swipé à droite.<br>Vous cherchez tous les deux ${profile.fruit || '🍒'}.`;
+      'Toi et <strong>' + profile.prenom + '</strong> avez tous les deux swipé à droite !';
     document.getElementById('matchOverlay').classList.add('show');
   }
 
-  window.closeMatch = function() {
-    document.getElementById('matchOverlay').classList.remove('show');
-  };
-
   // ── TOAST ─────────────────────────────────────────────
   function showToast(msg) {
-    const t = document.createElement('div');
-    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:var(--dark), color:'#fff', padding:'10px 22px', borderRadius:'50px', fontSize:'13px', fontWeight:'700', zIndex:'400', whiteSpace:'nowrap', fontFamily:'Nunito,sans-serif' });
-    t.style.background = '#1A1A2E';
+    var t = document.createElement('div');
+    t.style.cssText = 'position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#1A1A2E;color:#fff;padding:10px 22px;border-radius:50px;font-size:13px;font-weight:700;z-index:400;white-space:nowrap;font-family:Nunito,sans-serif';
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 2500);
+    setTimeout(function() { t.remove(); }, 2500);
   }
-
-  // ── CLAVIER ───────────────────────────────────────────
-  document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowLeft')  swipe('left');
-    if (e.key === 'ArrowRight') swipe('right');
-    if (e.key === 'ArrowUp')    superLike();
-    if (e.key === 'Backspace')  rewindCard();
-  });
 </script>
 </body>
 </html>
