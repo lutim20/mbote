@@ -4,146 +4,228 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connexion — Mbote</title>
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Nunito', sans-serif; background: #FDF9F5; color: #1A1A2E; min-height: 100vh; display: flex; flex-direction: column; }
+    body { font-family: 'Nunito', sans-serif; background: #FDF9F5; color: #1A1A2E; min-height: 100vh; }
     :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; --dark: #1A1A2E; --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff; }
+
     nav { position: fixed; top: 0; left: 0; right: 0; z-index: 10; background: rgba(255,255,255,.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 5%; height: 64px; display: flex; align-items: center; justify-content: space-between; }
     .nav-logo { font-size: 22px; font-weight: 900; color: var(--cherry); text-decoration: none; }
-    .nav-link { font-size: 14px; font-weight: 700; color: var(--muted); text-decoration: none; }
+    .nav-link { font-size: 14px; font-weight: 700; color: var(--muted); text-decoration: none; transition: color .2s; }
+    .nav-link:hover { color: var(--dark); }
+
     .page-wrap { display: grid; grid-template-columns: 1fr 1fr; min-height: 100vh; }
+
     .left-panel { background: linear-gradient(160deg, var(--cherry) 0%, var(--orange) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 48px 60px; position: sticky; top: 0; height: 100vh; text-align: center; }
     .left-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; }
-    .left-fruits { font-size: 42px; letter-spacing: 8px; margin: 24px 0; }
+    .left-sub { font-size: 14px; color: rgba(255,255,255,.8); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 32px; }
+    .left-fruits { font-size: 42px; letter-spacing: 8px; margin-bottom: 32px; }
     .left-tagline { font-size: 22px; font-weight: 900; color: #fff; line-height: 1.35; margin-bottom: 12px; }
     .left-desc { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.7; max-width: 300px; }
+
     .right-panel { padding: 100px 48px 60px; display: flex; flex-direction: column; justify-content: center; max-width: 480px; margin: 0 auto; width: 100%; }
+
     .form-title { font-size: 26px; font-weight: 900; color: var(--dark); margin-bottom: 6px; }
-    .form-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; }
+    .form-sub { font-size: 14px; color: var(--muted); margin-bottom: 32px; line-height: 1.6; }
+
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 7px; }
     .form-group input { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 13px 16px; font-size: 14px; font-family: 'Nunito', sans-serif; color: var(--dark); background: var(--white); outline: none; transition: border-color .2s, box-shadow .2s; }
     .form-group input:focus { border-color: var(--cherry); box-shadow: 0 0 0 3px rgba(232,57,74,.1); }
     .form-group input::placeholder { color: #bbb; }
-    .btn-submit { width: 100%; background: var(--cherry); color: #fff; border: none; padding: 15px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s, transform .15s; margin-top: 8px; }
-    .btn-submit:hover { background: var(--cherry-dark); transform: translateY(-1px); }
-    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
-    .forgot-link { text-align: right; margin-bottom: 8px; }
+
+    .forgot-link { text-align: right; margin-bottom: 20px; }
     .forgot-link a { font-size: 12px; font-weight: 700; color: var(--cherry); text-decoration: none; }
-    .signup-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
-    .signup-link a { color: var(--cherry); font-weight: 700; text-decoration: none; }
+    .forgot-link a:hover { text-decoration: underline; }
+
     .error-banner { background: #FEECED; color: var(--cherry); border: 1px solid #FCCDD1; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 700; margin-bottom: 16px; display: none; }
     .error-banner.show { display: block; }
-    .divider { display: flex; align-items: center; gap: 12px; margin: 20px 0; }
+    .success-banner { background: #E8F8EF; color: #1A6E42; border: 1px solid #C3EDD7; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 700; margin-bottom: 16px; display: none; }
+    .success-banner.show { display: block; }
+
+    .btn-submit { width: 100%; background: var(--cherry); color: #fff; border: none; padding: 15px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s, transform .15s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-submit:hover:not(:disabled) { background: var(--cherry-dark); transform: translateY(-1px); }
+    .btn-submit:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .spinner { width: 18px; height: 18px; border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .signup-link { text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted); }
+    .signup-link a { color: var(--cherry); font-weight: 700; text-decoration: none; }
+    .signup-link a:hover { text-decoration: underline; }
+
+    .divider { display: flex; align-items: center; gap: 12px; margin: 24px 0; }
     .divider-line { flex: 1; height: 1px; background: var(--border); }
     .divider-text { font-size: 12px; color: var(--muted); font-weight: 700; }
-    .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-    @media (max-width: 768px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } .right-panel { padding: 90px 24px 48px; max-width: 100%; } }
+
+    .password-toggle { position: relative; }
+    .password-toggle input { padding-right: 48px; }
+    .toggle-eye { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; color: var(--muted); background: none; border: none; padding: 4px; }
+
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; }
+      .left-panel { display: none; }
+      .right-panel { padding: 90px 24px 48px; max-width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <nav>
-    <a href="index.html" class="nav-logo">🍒 Mbote</a>
-    <a href="inscription.html" class="nav-link">Créer un compte →</a>
-  </nav>
 
-  <div class="page-wrap">
-    <div class="left-panel">
-      <div class="left-logo">Mbote</div>
-      <div style="font-size:13px;color:rgba(255,255,255,.8);font-weight:600;letter-spacing:1px;text-transform:uppercase">Le dating congolais</div>
-      <div class="left-fruits">🍒 🍇 🍉 🍑</div>
-      <div class="left-tagline">Bon retour parmi nous !</div>
-      <p class="left-desc">Tes matchs t'attendent. Connecte-toi pour voir qui a swipé ton profil.</p>
-    </div>
+<nav>
+  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <a href="inscription.html" class="nav-link">Créer un compte →</a>
+</nav>
 
-    <div class="right-panel">
-      <div class="form-title">Connexion 👋</div>
-      <p class="form-sub">Content de te revoir ! Entre tes identifiants.</p>
+<div class="page-wrap">
 
-      <div class="error-banner" id="errorBanner">❌ <span id="errorText"></span></div>
-
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="email" placeholder="ton@email.com" autocomplete="email">
-      </div>
-      <div class="form-group">
-        <label>Mot de passe</label>
-        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
-      </div>
-      <div class="forgot-link"><a href="#" onclick="resetPassword()">Mot de passe oublié ?</a></div>
-
-      <button class="btn-submit" id="submitBtn" onclick="handleConnexion()">
-        <span id="btnText">Se connecter</span>
-        <div class="spinner" id="spinner"></div>
-      </button>
-
-      <div class="signup-link">Pas encore membre ? <a href="inscription.html">Créer un compte 🍒</a></div>
-    </div>
+  <!-- LEFT -->
+  <div class="left-panel">
+    <div class="left-logo">Mbote</div>
+    <div class="left-sub">Le dating congolais</div>
+    <div class="left-fruits">🍒 🍇 🍉 🍑</div>
+    <div class="left-tagline">Bon retour<br>parmi nous !</div>
+    <p class="left-desc">Tes matchs t'attendent. Connecte-toi pour voir qui a swipé ton profil aujourd'hui.</p>
   </div>
 
-  <script type="module">
-    import { connecter, resetPassword as reset, protegerPage, onAuthStateChanged, auth } from "./firebase.js";
+  <!-- RIGHT -->
+  <div class="right-panel">
+    <div class="form-title">Connexion 👋</div>
+    <p class="form-sub">Content de te revoir ! Entre tes identifiants pour accéder à ton compte.</p>
 
-    // Si déjà connecté → rediriger
-    onAuthStateChanged(auth, (user) => {
-      if (user) window.location.href = "swipe.html";
-    });
+    <div class="error-banner" id="errorBanner">❌ <span id="errorText"></span></div>
+    <div class="success-banner" id="successBanner">✅ <span id="successText"></span></div>
 
-    window.handleConnexion = async function() {
-      const email    = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      const btn      = document.getElementById('submitBtn');
-      const spinner  = document.getElementById('spinner');
-      const btnText  = document.getElementById('btnText');
-      const errBanner = document.getElementById('errorBanner');
+    <div class="form-group">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="ton@email.com" autocomplete="email">
+    </div>
 
-      if (!email || !password) {
-        showError("Remplis tous les champs.");
-        return;
-      }
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <div class="password-toggle">
+        <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="toggle-eye" onclick="togglePassword()" id="eyeBtn">👁️</button>
+      </div>
+    </div>
 
-      // Loading
-      btn.disabled   = true;
-      btnText.style.display = 'none';
-      spinner.style.display = 'block';
-      errBanner.classList.remove('show');
+    <div class="forgot-link">
+      <a href="#" onclick="resetPassword(); return false;">Mot de passe oublié ?</a>
+    </div>
 
-      const result = await connecter(email, password);
+    <button class="btn-submit" id="submitBtn" onclick="handleConnexion()">
+      <span id="btnText">Se connecter</span>
+      <div class="spinner" id="spinner"></div>
+    </button>
 
-      if (result.success) {
-        window.location.href = "swipe.html";
-      } else {
-        showError(result.error);
-        btn.disabled = false;
-        btnText.style.display = 'block';
-        spinner.style.display = 'none';
-      }
-    };
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">Nouveau sur Mbote ?</div>
+      <div class="divider-line"></div>
+    </div>
 
-    window.resetPassword = async function() {
-      const email = document.getElementById('email').value.trim();
-      if (!email) { showError("Entre ton email d'abord."); return; }
-      const result = await reset(email);
-      if (result.success) {
-        showError("📧 Email de réinitialisation envoyé !");
-        document.getElementById('errorBanner').style.background = '#E8F8EF';
-        document.getElementById('errorBanner').style.color = '#1A6E42';
-      } else {
-        showError(result.error);
-      }
-    };
+    <div class="signup-link">
+      Pas encore membre ? <a href="inscription.html">Créer un compte gratuitement 🍒</a>
+    </div>
+  </div>
+</div>
 
-    function showError(msg) {
-      document.getElementById('errorText').textContent = msg;
-      document.getElementById('errorBanner').classList.add('show');
+<script type="module">
+  import { connecter, resetPassword as firebaseReset, auth, onAuthStateChanged } from "./firebase.js";
+
+  // Si déjà connecté → rediriger vers swipe
+  onAuthStateChanged(auth, (user) => {
+    if (user) window.location.href = "swipe.html";
+  });
+
+  // Expose les fonctions au HTML
+  window.handleConnexion = handleConnexion;
+  window.resetPassword   = resetPassword;
+  window.togglePassword  = togglePassword;
+
+  // ── CONNEXION ──────────────────────────────────────────
+  async function handleConnexion() {
+    const email    = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const btn      = document.getElementById('submitBtn');
+    const spinner  = document.getElementById('spinner');
+    const btnText  = document.getElementById('btnText');
+
+    // Validation basique
+    if (!email) { showError("Entre ton adresse email."); return; }
+    if (!password) { showError("Entre ton mot de passe."); return; }
+    const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailOk) { showError("Adresse email invalide."); return; }
+
+    // Loading
+    btn.disabled          = true;
+    btnText.style.display = 'none';
+    spinner.style.display = 'block';
+    hideMessages();
+
+    const result = await connecter(email, password);
+
+    if (result.success) {
+      showSuccess("Connexion réussie ! Redirection...");
+      setTimeout(() => window.location.href = "swipe.html", 800);
+    } else {
+      showError(result.error);
+      btn.disabled          = false;
+      btnText.style.display = 'block';
+      spinner.style.display = 'none';
     }
+  }
 
-    // Entrée clavier
-    document.getElementById('password').addEventListener('keydown', e => {
-      if (e.key === 'Enter') window.handleConnexion();
-    });
-  </script>
+  // ── RESET MOT DE PASSE ─────────────────────────────────
+  async function resetPassword() {
+    const email = document.getElementById('email').value.trim();
+    if (!email) {
+      showError("Entre ton email d'abord, puis clique sur 'Mot de passe oublié'.");
+      return;
+    }
+    hideMessages();
+    const result = await firebaseReset(email);
+    if (result.success) {
+      showSuccess("📧 Email de réinitialisation envoyé ! Vérifie ta boîte mail.");
+    } else {
+      showError(result.error);
+    }
+  }
+
+  // ── AFFICHER/CACHER MOT DE PASSE ───────────────────────
+  function togglePassword() {
+    const input = document.getElementById('password');
+    const btn   = document.getElementById('eyeBtn');
+    if (input.type === 'password') {
+      input.type  = 'text';
+      btn.textContent = '🙈';
+    } else {
+      input.type  = 'password';
+      btn.textContent = '👁️';
+    }
+  }
+
+  // ── HELPERS ────────────────────────────────────────────
+  function showError(msg) {
+    document.getElementById('errorText').textContent = msg;
+    document.getElementById('errorBanner').classList.add('show');
+    document.getElementById('successBanner').classList.remove('show');
+  }
+  function showSuccess(msg) {
+    document.getElementById('successText').textContent = msg;
+    document.getElementById('successBanner').classList.add('show');
+    document.getElementById('errorBanner').classList.remove('show');
+  }
+  function hideMessages() {
+    document.getElementById('errorBanner').classList.remove('show');
+    document.getElementById('successBanner').classList.remove('show');
+  }
+
+  // Connexion avec la touche Entrée
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleConnexion();
+  });
+</script>
+
 </body>
 </html>
