@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Découvrir — Mbote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #F7F3EE;
+      color: #1A1A2E;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    :root {
+      --cherry: #E8394A;
+      --cherry-dark: #C42E3C;
+      --orange: #FF8C42;
+      --grape: #7B5EA7;
+      --green: #27AE60;
+      --dark: #1A1A2E;
+      --sand: #F7F0E8;
+      --muted: #888;
+      --border: #E8E0D8;
+      --white: #FFFFFF;
+    }
+
+    /* ===== TOP NAV ===== */
+    .top-nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+    .nav-logo {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--cherry);
+      text-decoration: none;
+    }
+    .nav-fruit-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #FEECED;
+      color: var(--cherry);
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+    .nav-actions { display: flex; gap: 12px; align-items: center; }
+    .nav-icon-btn {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--sand);
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s;
+      text-decoration: none;
+    }
+    .nav-icon-btn:hover { background: var(--border); }
+
+    /* ===== MAIN AREA ===== */
+    .main {
+      flex: 1;
+      display: flex;
+      gap: 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ===== FILTERS SIDEBAR ===== */
+    .filters-sidebar {
+      width: 260px;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      flex-shrink: 0;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .filter-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+    .filter-group { }
+    .filter-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .filter-chip {
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--muted);
+      transition: all .2s;
+      font-family: 'Nunito', sans-serif;
+    }
+    .filter-chip:hover { border-color: var(--cherry); color: var(--cherry); }
+    .filter-chip.active { background: var(--cherry); color: #fff; border-color: var(--cherry); }
+    .range-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--cherry);
+      cursor: pointer;
+    }
+    .filter-divider {
+      height: 1px;
+      background: var(--border);
+    }
+    .btn-reset {
+      background: transparent;
+      border: 2px solid var(--border);
+      border-radius: 50px;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: all .2s;
+    }
+    .btn-reset:hover { border-color: var(--dark); color: var(--dark); }
+
+    /* ===== SWIPE ZONE ===== */
+    .swipe-zone {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .profiles-count {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    /* ===== CARD STACK ===== */
+    .card-stack {
+      position: relative;
+      width: 340px;
+      height: 480px;
+    }
+    .swipe-card {
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      cursor: grab;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      will-change: transform;
+    }
+    .swipe-card:active { cursor: grabbing; }
+    .swipe-card.card-1 { z-index: 3; }
+    .swipe-card.card-2 {
+      z-index: 2;
+      transform: scale(0.96) translateY(12px);
+    }
+    .swipe-card.card-3 {
+      z-index: 1;
+      transform: scale(0.92) translateY(22px);
+    }
+    .swipe-card.leaving-right {
+      transition: transform 0.4s ease, opacity 0.4s ease !important;
+      transform: translateX(140%) rotate(20deg) !important;
+      opacity: 0;
+    }
+    .swipe-card.leaving-left {
+      transition: transform 0.4s ease, opacity 0.4s ease !important;
+      transform: translateX(-140%) rotate(-20deg) !important;
+      opacity: 0;
+    }
+
+    /* CARD PHOTO */
+    .card-photo {
+      width: 100%;
+      height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 100px;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .card-gradient {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 120px;
+      background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+    }
+    .card-fruit-badge {
+      position: absolute;
+      top: 12px; right: 12px;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(4px);
+      padding: 5px 12px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--dark);
+      z-index: 1;
+    }
+    .card-verified {
+      position: absolute;
+      top: 12px; left: 12px;
+      background: rgba(39,174,96,0.9);
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #fff;
+      z-index: 1;
+    }
+    .card-name-overlay {
+      position: absolute;
+      bottom: 12px; left: 16px;
+      z-index: 1;
+      color: #fff;
+    }
+    .card-name-overlay .cn-name {
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .card-name-overlay .cn-age {
+      font-size: 16px;
+      font-weight: 600;
+      opacity: 0.9;
+    }
+
+    /* CARD BODY */
+    .card-body {
+      padding: 14px 16px;
+      flex: 1;
+    }
+    .card-city {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .card-bio {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .card-tags {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 50px;
+      background: var(--sand);
+      color: var(--dark);
+    }
+
+    /* LIKE / DISLIKE OVERLAY */
+    .like-label, .nope-label {
+      position: absolute;
+      top: 40px;
+      padding: 8px 20px;
+      border-radius: 10px;
+      font-size: 28px;
+      font-weight: 900;
+      opacity: 0;
+      transition: opacity 0.1s;
+      z-index: 10;
+      pointer-events: none;
+      letter-spacing: 2px;
+      transform: rotate(-15deg);
+    }
+    .like-label {
+      left: 20px;
+      border: 4px solid #27AE60;
+      color: #27AE60;
+      transform: rotate(-15deg);
+    }
+    .nope-label {
+      right: 20px;
+      border: 4px solid var(--cherry);
+      color: var(--cherry);
+      transform: rotate(15deg);
+    }
+
+    /* ===== ACTION BUTTONS ===== */
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 20px;
+    }
+    .action-btn {
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      transition: transform .15s, box-shadow .15s;
+      flex-shrink: 0;
+    }
+    .action-btn:hover { transform: scale(1.1); }
+    .action-btn:active { transform: scale(0.95); }
+    .btn-rewind {
+      width: 48px; height: 48px;
+      background: var(--white);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+      color: var(--orange);
+      font-size: 18px;
+    }
+    .btn-dislike {
+      width: 58px; height: 58px;
+      background: var(--white);
+      box-shadow: 0 4px 20px rgba(232,57,74,0.2);
+      color: var(--cherry);
+    }
+    .btn-super {
+      width: 48px; height: 48px;
+      background: var(--white);
+      box-shadow: 0 2px 16px rgba(123,94,167,0.2);
+      color: var(--grape);
+      font-size: 18px;
+    }
+    .btn-like {
+      width: 58px; height: 58px;
+      background: var(--cherry);
+      box-shadow: 0 4px 20px rgba(232,57,74,0.35);
+      color: #fff;
+    }
+    .btn-boost {
+      width: 48px; height: 48px;
+      background: var(--white);
+      box-shadow: 0 2px 16px rgba(255,140,66,0.2);
+      color: var(--orange);
+      font-size: 18px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      display: none;
+      text-align: center;
+      padding: 40px 20px;
+    }
+    .empty-icon { font-size: 64px; margin-bottom: 16px; }
+    .empty-title { font-size: 22px; font-weight: 900; color: var(--dark); margin-bottom: 10px; }
+    .empty-sub { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 24px; }
+    .btn-reload {
+      background: var(--cherry);
+      color: #fff;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* ===== MATCH POPUP ===== */
+    .match-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .match-overlay.show { display: flex; }
+    .match-popup {
+      background: linear-gradient(160deg, var(--cherry) 0%, var(--orange) 100%);
+      border-radius: 28px;
+      padding: 48px 40px;
+      text-align: center;
+      max-width: 360px;
+      width: 90%;
+      animation: popIn .4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes popIn {
+      from { transform: scale(0.7); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .match-label { font-size: 13px; font-weight: 800; color: rgba(255,255,255,0.8); letter-spacing: 2px; text-transform: uppercase; }
+    .match-title { font-size: 34px; font-weight: 900; color: #fff; margin: 6px 0 20px; }
+    .match-avatars { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .match-av {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      border: 4px solid #fff;
+      font-size: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+    .match-heart { font-size: 32px; }
+    .match-sub { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6; margin-bottom: 28px; }
+    .match-sub strong { color: #fff; }
+    .btn-match-msg {
+      display: block; width: 100%;
+      background: #fff;
+      color: var(--cherry);
+      border: none;
+      padding: 14px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      margin-bottom: 10px;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .btn-match-msg:hover { opacity: 0.9; }
+    .btn-match-skip {
+      display: block; width: 100%;
+      background: transparent;
+      color: rgba(255,255,255,0.8);
+      border: 2px solid rgba(255,255,255,0.4);
+      padding: 12px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: border-color .2s;
+    }
+    .btn-match-skip:hover { border-color: #fff; color: #fff; }
+
+    /* ===== BOTTOM NAV (mobile) ===== */
+    .bottom-nav {
+      display: none;
+      background: var(--white);
+      border-top: 1px solid var(--border);
+      padding: 10px 0 16px;
+      justify-content: space-around;
+      flex-shrink: 0;
+    }
+    .bnav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      cursor: pointer;
+      opacity: 0.4;
+      text-decoration: none;
+      transition: opacity .2s;
+    }
+    .bnav-item.active { opacity: 1; }
+    .bnav-icon { font-size: 22px; }
+    .bnav-label { font-size: 9px; font-weight: 800; color: var(--dark); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 900px) {
+      .filters-sidebar { display: none; }
+    }
+    @media (max-width: 600px) {
+      .card-stack { width: 300px; height: 440px; }
+      .bottom-nav { display: flex; }
+      body { overflow: hidden; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP NAV -->
+  <div class="top-nav">
+    <a href="index.html" class="nav-logo">🍒 Mbote</a>
+    <div class="nav-fruit-badge" onclick="openFruitModal()">
+      🍒 Cerise <span style="font-size:10px;opacity:.6">▼</span>
+    </div>
+    <div class="nav-actions">
+      <a href="messages.html" class="nav-icon-btn" title="Messages">💬</a>
+      <a href="profil.html" class="nav-icon-btn" title="Mon profil">👤</a>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- FILTERS SIDEBAR -->
+    <div class="filters-sidebar">
+      <div>
+        <div class="filter-title">🍒 Fruit recherché</div>
+        <div class="filter-chips">
+          <button class="filter-chip active" onclick="toggleChip(this)">Tous</button>
+          <button class="filter-chip" onclick="toggleChip(this)">🍒 Cerise</button>
+          <button class="filter-chip" onclick="toggleChip(this)">🍇 Raisin</button>
+          <button class="filter-chip" onclick="toggleChip(this)">🍉 Pastèque</button>
+          <button class="filter-chip" onclick="toggleChip(this)">🍑 Pêche</button>
+        </div>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div>
+        <div class="filter-title">📍 Ville</div>
+        <div class="filter-chips">
+          <button class="filter-chip active" onclick="toggleChip(this)">Toutes</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Kinshasa</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Brazzaville</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Lubumbashi</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Goma</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Diaspora</button>
+        </div>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div>
+        <div class="filter-title">🎂 Tranche d'âge</div>
+        <div class="range-label">
+          <span>18 ans</span>
+          <span id="ageVal">18 – 40 ans</span>
+          <span>60 ans</span>
+        </div>
+        <input type="range" min="18" max="60" value="40" oninput="document.getElementById('ageVal').textContent='18 – '+this.value+' ans'">
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div>
+        <div class="filter-title">✅ Profil vérifié</div>
+        <div class="filter-chips">
+          <button class="filter-chip" onclick="toggleChip(this)">Vérifiés seulement</button>
+          <button class="filter-chip active" onclick="toggleChip(this)">Tous les profils</button>
+        </div>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <button class="btn-reset" onclick="resetFilters()">🔄 Réinitialiser les filtres</button>
+    </div>
+
+    <!-- SWIPE ZONE -->
+    <div class="swipe-zone">
+      <div class="profiles-count" id="profilesCount">48 profils correspondent à tes critères</div>
+
+      <!-- CARD STACK -->
+      <div class="card-stack" id="cardStack">
+
+        <!-- CARD 3 (fond) -->
+        <div class="swipe-card card-3" id="card3">
+          <div class="card-photo" style="background:#E8F8EF">
+            👩🏿
+            <div class="card-gradient"></div>
+            <div class="card-fruit-badge">🍒 Cerise</div>
+            <div class="card-name-overlay">
+              <span class="cn-name">Félicité</span>
+              <span class="cn-age">, 26</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-city">📍 Brazzaville · Journaliste</div>
+          </div>
+        </div>
+
+        <!-- CARD 2 (milieu) -->
+        <div class="swipe-card card-2" id="card2">
+          <div class="card-photo" style="background:#F0EBF8">
+            👨🏿
+            <div class="card-gradient"></div>
+            <div class="card-fruit-badge">🍇 Raisin</div>
+            <div class="card-verified">✓ Vérifié</div>
+            <div class="card-name-overlay">
+              <span class="cn-name">Cédric</span>
+              <span class="cn-age">, 31</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-city">📍 Lubumbashi · Entrepreneur</div>
+          </div>
+        </div>
+
+        <!-- CARD 1 (premier plan) -->
+        <div class="swipe-card card-1" id="card1">
+          <div class="like-label" id="likeLabel">LIKE 💚</div>
+          <div class="nope-label" id="nopeLabel">NOPE ✕</div>
+          <div class="card-photo" style="background:#FEECED">
+            👩🏾
+            <div class="card-gradient"></div>
+            <div class="card-fruit-badge">🍒 Cerise</div>
+            <div class="card-verified">✓ Vérifiée</div>
+            <div class="card-name-overlay">
+              <span class="cn-name">Amina</span>
+              <span class="cn-age">, 27</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="card-city">📍 Kinshasa · Ingénieure · 2 km</div>
+            <div class="card-bio">"Passionnée de musique congolaise et de cuisine. Je cherche quelqu'un de sincère avec qui partager de beaux moments."</div>
+            <div class="card-tags">
+              <span class="card-tag">🎵 Musique</span>
+              <span class="card-tag">📚 Lectures</span>
+              <span class="card-tag">🍳 Cuisine</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-icon">🍒</div>
+        <div class="empty-title">Tu as tout vu !</div>
+        <p class="empty-sub">Tu as parcouru tous les profils disponibles.<br>Reviens demain ou modifie tes filtres pour en voir plus.</p>
+        <button class="btn-reload" onclick="reloadCards()">Revoir les profils 🔄</button>
+      </div>
+
+      <!-- ACTION BUTTONS -->
+      <div class="action-buttons" id="actionButtons">
+        <button class="action-btn btn-rewind" onclick="rewindCard()" title="Revenir en arrière">↩️</button>
+        <button class="action-btn btn-dislike" onclick="swipe('left')" title="Passer">✕</button>
+        <button class="action-btn btn-super" onclick="superLike()" title="Super Like">⭐</button>
+        <button class="action-btn btn-like" onclick="swipe('right')" title="J'aime">❤️</button>
+        <button class="action-btn btn-boost" onclick="showBoost()" title="Booster mon profil">🌸</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV (mobile) -->
+  <div class="bottom-nav">
+    <a href="index.html" class="bnav-item">
+      <div class="bnav-icon">🏠</div>
+      <div class="bnav-label">Accueil</div>
+    </a>
+    <a href="swipe.html" class="bnav-item active">
+      <div class="bnav-icon">🔥</div>
+      <div class="bnav-label">Découvrir</div>
+    </a>
+    <a href="messages.html" class="bnav-item">
+      <div class="bnav-icon">💬</div>
+      <div class="bnav-label">Messages</div>
+    </a>
+    <a href="profil.html" class="bnav-item">
+      <div class="bnav-icon">👤</div>
+      <div class="bnav-label">Profil</div>
+    </a>
+  </div>
+
+  <!-- MATCH POPUP -->
+  <div class="match-overlay" id="matchOverlay">
+    <div class="match-popup">
+      <div class="match-label">C'est un match ! 🎉</div>
+      <div class="match-title">Vous vous plaisez !</div>
+      <div class="match-avatars">
+        <div class="match-av">👨🏾</div>
+        <div class="match-heart">❤️</div>
+        <div class="match-av" id="matchAvatar">👩🏾</div>
+      </div>
+      <p class="match-sub">Toi et <strong id="matchName">Amina</strong> avez tous les deux swipé à droite.<br>Vous cherchez tous les deux 🍒 une relation sérieuse.</p>
+      <a href="messages.html" class="btn-match-msg">Envoyer un message 💬</a>
+      <button class="btn-match-skip" onclick="closeMatch()">Continuer à swiper</button>
+    </div>
+  </div>
+
+  <script>
+    /* ===== PROFILS DATA ===== */
+    const profiles = [
+      { id: 1, name: 'Amina',    age: 27, city: 'Kinshasa · Ingénieure · 2 km',   fruit: '🍒 Cerise', emoji: '👩🏾', bg: '#FEECED', verified: true,  bio: '"Passionnée de musique congolaise et de cuisine. Je cherche quelqu\'un de sincère."', tags: ['🎵 Musique','📚 Lectures','🍳 Cuisine'] },
+      { id: 2, name: 'Cédric',   age: 31, city: 'Lubumbashi · Entrepreneur',       fruit: '🍇 Raisin', emoji: '👨🏿', bg: '#F0EBF8', verified: true,  bio: '"Amateur de football et de voyages. Je cherche une sortie sympa sans prise de tête."', tags: ['⚽ Football','✈️ Voyages','🍺 Sorties'] },
+      { id: 3, name: 'Félicité', age: 26, city: 'Brazzaville · Journaliste',       fruit: '🍒 Cerise', emoji: '👩🏿', bg: '#E8F8EF', verified: false, bio: '"Curieuse, créative, j\'adore l\'art et la littérature africaine. À la recherche d\'une belle histoire."', tags: ['✈️ Voyages','🎨 Art','💃 Danse'] },
+      { id: 4, name: 'Roger',    age: 34, city: 'Goma · Médecin',                  fruit: '🍑 Pêche',  emoji: '👨🏾', bg: '#FFF0E8', verified: true,  bio: '"Sportif passionné de photo. Ouvert à tout, je laisse venir sans pression."', tags: ['🏋️ Sport','📷 Photo','🎵 Musique'] },
+      { id: 5, name: 'Sandra',   age: 29, city: 'Kinshasa · Avocate',              fruit: '🍒 Cerise', emoji: '👩🏽', bg: '#FEECED', verified: true,  bio: '"Sérieuse dans mon travail, douce dans ma vie. Je cherche quelqu\'un d\'authentique."', tags: ['🙏 Foi','💼 Business','📚 Lectures'] },
+      { id: 6, name: 'Patrick',  age: 33, city: 'Kinshasa · Architecte',           fruit: '🍇 Raisin', emoji: '👨🏾', bg: '#F0EBF8', verified: false, bio: '"Créatif et sociable. J\'adore les soirées entre amis et les nouvelles rencontres."', tags: ['🎨 Art','🍺 Sorties','🎮 Gaming'] },
+      { id: 7, name: 'Grace',    age: 24, city: 'Kinshasa · Étudiante',            fruit: '🍑 Pêche',  emoji: '👩🏿', bg: '#E8F8EF', verified: false, bio: '"Jeune, dynamique, passionnée de culture africaine. Je découvre et j\'explore !"', tags: ['🌍 Culture','💃 Danse','🎤 Musique'] },
+      { id: 8, name: 'Junior',   age: 36, city: 'Lubumbashi · Ingénieur mines',   fruit: '🍒 Cerise', emoji: '👨🏿', bg: '#FEECED', verified: true,  bio: '"Travailleur et ambitieux. Je cherche une femme sérieuse pour construire quelque chose de vrai."', tags: ['💼 Business','⚽ Football','🙏 Foi'] },
+    ];
+
+    let currentIndex = 0;
+    let lastSwipedDirection = null;
+    let swipeHistory = [];
+
+    /* ===== RENDER CARD ===== */
+    function renderCard(cardEl, profile) {
+      if (!profile) return;
+      cardEl.querySelector('.card-photo').style.background = profile.bg;
+      cardEl.querySelector('.card-photo').childNodes[0].textContent = profile.emoji;
+
+      const fruitBadge = cardEl.querySelector('.card-fruit-badge');
+      if (fruitBadge) fruitBadge.textContent = profile.fruit;
+
+      const verBadge = cardEl.querySelector('.card-verified');
+      if (verBadge) verBadge.style.display = profile.verified ? 'block' : 'none';
+
+      const overlay = cardEl.querySelector('.card-name-overlay');
+      if (overlay) {
+        overlay.querySelector('.cn-name').textContent = profile.name;
+        overlay.querySelector('.cn-age').textContent = ', ' + profile.age;
+      }
+
+      const body = cardEl.querySelector('.card-body');
+      if (body) {
+        body.querySelector('.card-city').textContent = '📍 ' + profile.city;
+        const bio = body.querySelector('.card-bio');
+        if (bio) bio.textContent = profile.bio;
+        const tags = body.querySelector('.card-tags');
+        if (tags) tags.innerHTML = profile.tags.map(t => `<span class="card-tag">${t}</span>`).join('');
+      }
+    }
+
+    /* ===== DRAG TO SWIPE ===== */
+    const card1 = document.getElementById('card1');
+    let startX = 0, startY = 0, isDragging = false, currentX = 0;
+
+    function onPointerDown(e) {
+      isDragging = true;
+      startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+      startY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+      card1.style.transition = 'none';
+    }
+    function onPointerMove(e) {
+      if (!isDragging) return;
+      const x = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+      const y = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+      currentX = x - startX;
+      const currentY = y - startY;
+      const rotate = currentX * 0.08;
+      card1.style.transform = `translateX(${currentX}px) translateY(${currentY * 0.3}px) rotate(${rotate}deg)`;
+
+      const likeLabel = document.getElementById('likeLabel');
+      const nopeLabel = document.getElementById('nopeLabel');
+      if (currentX > 40) { likeLabel.style.opacity = Math.min((currentX - 40) / 80, 1); nopeLabel.style.opacity = 0; }
+      else if (currentX < -40) { nopeLabel.style.opacity = Math.min((-currentX - 40) / 80, 1); likeLabel.style.opacity = 0; }
+      else { likeLabel.style.opacity = 0; nopeLabel.style.opacity = 0; }
+    }
+    function onPointerUp() {
+      if (!isDragging) return;
+      isDragging = false;
+      document.getElementById('likeLabel').style.opacity = 0;
+      document.getElementById('nopeLabel').style.opacity = 0;
+      card1.style.transition = '';
+      if (currentX > 80) swipe('right');
+      else if (currentX < -80) swipe('left');
+      else { card1.style.transform = ''; }
+      currentX = 0;
+    }
+
+    card1.addEventListener('mousedown', onPointerDown);
+    card1.addEventListener('touchstart', onPointerDown, { passive: true });
+    document.addEventListener('mousemove', onPointerMove);
+    document.addEventListener('touchmove', onPointerMove, { passive: true });
+    document.addEventListener('mouseup', onPointerUp);
+    document.addEventListener('touchend', onPointerUp);
+
+    /* ===== SWIPE ACTION ===== */
+    function swipe(direction) {
+      if (currentIndex >= profiles.length) return;
+
+      const profile = profiles[currentIndex];
+      swipeHistory.push({ profile, direction });
+      lastSwipedDirection = direction;
+
+      const card = document.getElementById('card1');
+      card.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+      card.classList.add(direction === 'right' ? 'leaving-right' : 'leaving-left');
+
+      // Si like → 1 chance sur 3 d'avoir un match
+      if (direction === 'right' && Math.random() < 0.33) {
+        setTimeout(() => showMatch(profile), 500);
+      }
+
+      setTimeout(() => {
+        card.classList.remove('leaving-right', 'leaving-left');
+        card.style.transition = '';
+        card.style.transform = '';
+        currentIndex++;
+        advanceCards();
+      }, 400);
+    }
+
+    function advanceCards() {
+      if (currentIndex >= profiles.length) {
+        showEmptyState();
+        return;
+      }
+      renderCard(document.getElementById('card1'), profiles[currentIndex]);
+      if (currentIndex + 1 < profiles.length) renderCard(document.getElementById('card2'), profiles[currentIndex + 1]);
+      if (currentIndex + 2 < profiles.length) renderCard(document.getElementById('card3'), profiles[currentIndex + 2]);
+      updateCount();
+    }
+
+    function rewindCard() {
+      if (swipeHistory.length === 0) return;
+      const last = swipeHistory.pop();
+      currentIndex--;
+      renderCard(document.getElementById('card1'), profiles[currentIndex]);
+      if (currentIndex + 1 < profiles.length) renderCard(document.getElementById('card2'), profiles[currentIndex + 1]);
+      updateCount();
+    }
+
+    function superLike() {
+      const profile = profiles[currentIndex];
+      if (!profile) return;
+      swipeHistory.push({ profile, direction: 'super' });
+      const card = document.getElementById('card1');
+      card.style.transition = 'transform 0.4s ease, opacity 0.4s ease';
+      card.style.transform = 'translateY(-150%) scale(0.8)';
+      card.style.opacity = '0';
+      setTimeout(() => {
+        card.style.transition = '';
+        card.style.transform = '';
+        card.style.opacity = '1';
+        currentIndex++;
+        advanceCards();
+        showToast('⭐ Super Like envoyé à ' + profile.name + ' !');
+      }, 400);
+    }
+
+    function updateCount() {
+      const remaining = profiles.length - currentIndex;
+      document.getElementById('profilesCount').textContent = remaining + ' profil' + (remaining > 1 ? 's' : '') + ' restant' + (remaining > 1 ? 's' : '');
+    }
+
+    function showEmptyState() {
+      document.getElementById('cardStack').style.display = 'none';
+      document.getElementById('actionButtons').style.display = 'none';
+      document.getElementById('profilesCount').style.display = 'none';
+      document.getElementById('emptyState').style.display = 'block';
+    }
+
+    function reloadCards() {
+      currentIndex = 0;
+      swipeHistory = [];
+      document.getElementById('cardStack').style.display = 'block';
+      document.getElementById('actionButtons').style.display = 'flex';
+      document.getElementById('profilesCount').style.display = 'block';
+      document.getElementById('emptyState').style.display = 'none';
+      advanceCards();
+    }
+
+    /* ===== MATCH POPUP ===== */
+    function showMatch(profile) {
+      document.getElementById('matchName').textContent = profile.name;
+      document.getElementById('matchAvatar').textContent = profile.emoji;
+      document.getElementById('matchOverlay').classList.add('show');
+    }
+    function closeMatch() {
+      document.getElementById('matchOverlay').classList.remove('show');
+    }
+
+    /* ===== FILTERS ===== */
+    function toggleChip(el) {
+      el.classList.toggle('active');
+    }
+    function resetFilters() {
+      document.querySelectorAll('.filter-chip').forEach((c, i) => {
+        c.classList.toggle('active', i === 0 || i === 5 || i === 10);
+      });
+    }
+
+    /* ===== TOAST ===== */
+    function showToast(msg) {
+      const t = document.createElement('div');
+      t.textContent = msg;
+      Object.assign(t.style, {
+        position: 'fixed', bottom: '80px', left: '50%',
+        transform: 'translateX(-50%)',
+        background: '#1A1A2E', color: '#fff',
+        padding: '10px 20px', borderRadius: '50px',
+        fontSize: '13px', fontWeight: '700',
+        zIndex: '200', whiteSpace: 'nowrap',
+        animation: 'fadeInUp .3s ease',
+        fontFamily: 'Nunito, sans-serif'
+      });
+      document.body.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    /* ===== BOOST ===== */
+    function showBoost() {
+      showToast('🌸 Pollen — Disponible avec Mbote Premium !');
+    }
+
+    /* ===== KEYBOARD SHORTCUTS ===== */
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  swipe('left');
+      if (e.key === 'ArrowRight') swipe('right');
+      if (e.key === 'ArrowUp')    superLike();
+      if (e.key === 'Backspace')  rewindCard();
+    });
+
+    /* ===== INIT ===== */
+    advanceCards();
+  </script>
+</body>
+</html>

@@ -1,0 +1,93 @@
+// ============================================================
+//  MBOTE — firestore.rules
+//  Règles de sécurité Firestore
+//  À copier dans : Console Firebase → Firestore → Règles
+// ============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── UTILISATEURS ─────────────────────────────────────────
+    match /users/{userId} {
+      // Lecture : utilisateur connecté peut voir tous les profils
+      allow read: if request.auth != null;
+
+      // Écriture : uniquement son propre profil
+      allow create: if request.auth != null && request.auth.uid == userId;
+      allow update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null && request.auth.uid == userId;
+
+      // Sous-collection "vus" (profils déjà vus)
+      match /vus/{vuId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+
+    // ── LIKES ────────────────────────────────────────────────
+    match /likes/{likeId} {
+      // Lecture : les deux utilisateurs concernés
+      allow read: if request.auth != null &&
+        (resource.data.from == request.auth.uid ||
+         resource.data.to   == request.auth.uid);
+
+      // Création : uniquement par l'expéditeur
+      allow create: if request.auth != null &&
+        request.resource.data.from == request.auth.uid;
+
+      allow update, delete: if false;
+    }
+
+    // ── MATCHS ───────────────────────────────────────────────
+    match /matchs/{matchId} {
+      // Lecture/écriture : uniquement les deux membres du match
+      allow read: if request.auth != null &&
+        request.auth.uid in resource.data.users;
+
+      allow create: if request.auth != null &&
+        request.auth.uid in request.resource.data.users;
+
+      allow update: if request.auth != null &&
+        request.auth.uid in resource.data.users;
+
+      // Sous-collection messages
+      match /messages/{messageId} {
+        allow read: if request.auth != null &&
+          request.auth.uid in get(/databases/$(database)/documents/matchs/$(matchId)).data.users;
+
+        allow create: if request.auth != null &&
+          request.auth.uid in get(/databases/$(database)/documents/matchs/$(matchId)).data.users &&
+          request.resource.data.from == request.auth.uid;
+
+        allow update, delete: if false;
+      }
+    }
+  }
+}
+
+
+// ============================================================
+//  MBOTE — storage.rules
+//  Règles de sécurité Firebase Storage
+//  À copier dans : Console Firebase → Storage → Règles
+// ============================================================
+
+/*
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Photos de profil
+    match /photos/{userId}/{allPaths=**} {
+      // Lecture publique pour tous les connectés
+      allow read: if request.auth != null;
+
+      // Écriture uniquement par le propriétaire
+      allow write: if request.auth != null &&
+        request.auth.uid == userId &&
+        request.resource.size < 5 * 1024 * 1024 &&   // Max 5 Mo
+        request.resource.contentType.matches('image/.*');
+    }
+  }
+}
+*/

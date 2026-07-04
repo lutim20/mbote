@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mbote Premium 💎</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: #FDF9F5; color: #1A1A2E; min-height: 100vh; }
+    :root {
+      --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42;
+      --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E;
+      --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff;
+      --gold: #F4B942;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,.96); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 5%; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 22px; font-weight: 900; color: var(--cherry); text-decoration: none; }
+    .nav-back { font-size: 14px; font-weight: 700; color: var(--muted); text-decoration: none; }
+
+    /* HERO */
+    .hero {
+      padding: 100px 5% 60px;
+      background: linear-gradient(160deg, #1A1A2E 0%, #2D1B4E 100%);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(123,94,167,.4) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(244,185,66,.15); color: var(--gold);
+      font-size: 12px; font-weight: 700; padding: 6px 16px;
+      border-radius: 50px; margin-bottom: 20px;
+      border: 1px solid rgba(244,185,66,.3);
+    }
+    .hero h1 { font-size: clamp(32px,5vw,52px); font-weight: 900; color: #fff; line-height: 1.15; margin-bottom: 16px; }
+    .hero h1 span { color: var(--gold); }
+    .hero p { font-size: 16px; color: rgba(255,255,255,.75); max-width: 500px; margin: 0 auto 40px; line-height: 1.7; }
+    .hero-perks { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+    .hero-perk { display: flex; align-items: center; gap: 8px; color: rgba(255,255,255,.8); font-size: 13px; font-weight: 600; }
+    .perk-check { width: 20px; height: 20px; border-radius: 50%; background: var(--gold); color: var(--dark); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; }
+
+    /* PLANS */
+    .plans-section { padding: 60px 5%; max-width: 960px; margin: 0 auto; }
+    .plans-title { text-align: center; font-size: clamp(24px,3vw,34px); font-weight: 900; color: var(--dark); margin-bottom: 8px; }
+    .plans-sub { text-align: center; font-size: 15px; color: var(--muted); margin-bottom: 40px; }
+    .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+
+    .plan-card {
+      background: var(--white); border-radius: 24px;
+      border: 2px solid var(--border);
+      padding: 28px 24px;
+      position: relative; overflow: hidden;
+      transition: transform .2s, box-shadow .2s;
+    }
+    .plan-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,.1); }
+    .plan-card.popular {
+      border-color: var(--cherry);
+      box-shadow: 0 8px 32px rgba(232,57,74,.15);
+    }
+    .popular-badge {
+      position: absolute; top: 0; right: 20px;
+      background: var(--cherry); color: #fff;
+      font-size: 11px; font-weight: 800; padding: 5px 14px;
+      border-radius: 0 0 12px 12px;
+    }
+    .plan-icon { font-size: 36px; margin-bottom: 12px; }
+    .plan-name { font-size: 18px; font-weight: 900; color: var(--dark); margin-bottom: 4px; }
+    .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .plan-price { margin-bottom: 24px; }
+    .plan-amount { font-size: 36px; font-weight: 900; color: var(--dark); }
+    .plan-period { font-size: 14px; color: var(--muted); font-weight: 600; }
+    .plan-save { display: inline-block; background: #E8F8EF; color: var(--green); font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-top: 6px; }
+    .plan-features { list-style: none; display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .plan-feature { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #444; font-weight: 600; }
+    .feat-check { color: var(--green); font-size: 15px; flex-shrink: 0; }
+    .feat-no { color: #ccc; font-size: 15px; flex-shrink: 0; }
+    .btn-plan {
+      display: block; width: 100%;
+      border: none; padding: 13px; border-radius: 50px;
+      font-size: 15px; font-weight: 800; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: opacity .2s, transform .15s;
+      text-align: center; text-decoration: none;
+    }
+    .btn-plan:hover { opacity: .88; transform: translateY(-1px); }
+    .btn-plan.primary { background: var(--cherry); color: #fff; }
+    .btn-plan.secondary { background: var(--sand); color: var(--dark); }
+    .btn-plan.gold { background: linear-gradient(135deg, var(--gold), #E8A020); color: var(--dark); }
+
+    /* FEATURES DETAIL */
+    .features-section { padding: 60px 5%; background: var(--white); }
+    .features-inner { max-width: 960px; margin: 0 auto; }
+    .section-label { font-size: 12px; font-weight: 700; color: var(--cherry); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .section-title { font-size: clamp(24px,3vw,34px); font-weight: 900; color: var(--dark); margin-bottom: 40px; }
+    .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .feat-card { background: var(--sand); border-radius: 20px; padding: 24px 20px; }
+    .feat-icon { font-size: 32px; margin-bottom: 12px; }
+    .feat-name { font-size: 16px; font-weight: 800; color: var(--dark); margin-bottom: 8px; }
+    .feat-desc { font-size: 13px; color: #666; line-height: 1.6; }
+    .feat-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; margin-top: 8px; background: var(--cherry); color: #fff; }
+
+    /* STRIPE FORM */
+    .payment-section { padding: 60px 5%; }
+    .payment-inner { max-width: 480px; margin: 0 auto; }
+    .payment-title { font-size: 22px; font-weight: 900; color: var(--dark); margin-bottom: 6px; }
+    .payment-sub { font-size: 14px; color: var(--muted); margin-bottom: 28px; }
+    .selected-plan-banner {
+      background: linear-gradient(135deg, var(--grape), var(--cherry));
+      border-radius: 16px; padding: 16px 20px; color: #fff;
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .spb-left { }
+    .spb-name { font-size: 15px; font-weight: 800; }
+    .spb-desc { font-size: 12px; opacity: .8; margin-top: 3px; }
+    .spb-price { font-size: 22px; font-weight: 900; }
+    .stripe-form { background: var(--white); border-radius: 20px; border: 1px solid var(--border); padding: 24px; }
+    .stripe-field { margin-bottom: 16px; }
+    .stripe-label { display: block; font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 7px; }
+    .stripe-input {
+      width: 100%; border: 2px solid var(--border); border-radius: 12px;
+      padding: 13px 16px; font-size: 14px;
+      font-family: 'Nunito', sans-serif; color: var(--dark);
+      background: var(--white); outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .stripe-input:focus { border-color: var(--cherry); box-shadow: 0 0 0 3px rgba(232,57,74,.1); }
+    .stripe-input::placeholder { color: #bbb; }
+    .stripe-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .stripe-secure { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin: 12px 0; }
+    .stripe-powered { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); justify-content: center; margin-top: 12px; }
+    .btn-pay {
+      width: 100%; background: var(--cherry); color: #fff;
+      border: none; padding: 15px; border-radius: 50px;
+      font-size: 16px; font-weight: 800; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      transition: background .2s, transform .15s;
+    }
+    .btn-pay:hover { background: var(--cherry-dark); transform: translateY(-1px); }
+    .btn-pay:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+    .payment-note { text-align: center; font-size: 11px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+    /* spinner */
+    .spinner { display: none; width: 20px; height: 20px; border: 3px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: spin .8s linear infinite; margin: 0 auto; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SUCCESS */
+    .success-screen { display: none; text-align: center; padding: 60px 20px; }
+    .success-icon { font-size: 64px; margin-bottom: 20px; }
+    .success-title { font-size: 28px; font-weight: 900; color: var(--dark); margin-bottom: 12px; }
+    .success-sub { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
+    .btn-go { display: inline-block; background: var(--cherry); color: #fff; border: none; padding: 15px 36px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; }
+
+    /* FAQ */
+    .faq-section { padding: 60px 5%; background: var(--sand); }
+    .faq-inner { max-width: 680px; margin: 0 auto; }
+    .faq-item { background: var(--white); border-radius: 16px; margin-bottom: 10px; overflow: hidden; }
+    .faq-q { padding: 16px 20px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; color: var(--dark); }
+    .faq-arrow { transition: transform .2s; font-size: 12px; color: var(--muted); }
+    .faq-arrow.open { transform: rotate(90deg); }
+    .faq-a { padding: 0 20px; max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s; font-size: 14px; color: var(--muted); line-height: 1.7; }
+    .faq-a.open { max-height: 200px; padding: 0 20px 16px; }
+
+    /* CTA */
+    .cta-section { padding: 60px 5%; background: linear-gradient(135deg, var(--dark), #2D1B4E); text-align: center; }
+    .cta-title { font-size: clamp(24px,3vw,38px); font-weight: 900; color: #fff; margin-bottom: 12px; }
+    .cta-sub { font-size: 15px; color: rgba(255,255,255,.75); margin-bottom: 32px; }
+    .btn-cta-gold { background: linear-gradient(135deg, var(--gold), #E8A020); color: var(--dark); border: none; padding: 15px 40px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+    /* FOOTER */
+    footer { background: #111; color: rgba(255,255,255,.5); padding: 24px 5%; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    footer a { color: rgba(255,255,255,.4); text-decoration: none; font-size: 12px; }
+
+    @media (max-width: 768px) {
+      .plans-grid { grid-template-columns: 1fr; }
+      .features-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .features-grid { grid-template-columns: 1fr; }
+      .stripe-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <a href="profil.html" class="nav-back">← Mon profil</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">💎 Mbote Premium</div>
+  <h1>Trouve ton match<br><span>2× plus vite</span></h1>
+  <p>Débloquer toutes les fonctionnalités Premium pour maximiser tes chances de trouver la bonne personne.</p>
+  <div class="hero-perks">
+    <div class="hero-perk"><div class="perk-check">✓</div>Likes illimités</div>
+    <div class="hero-perk"><div class="perk-check">✓</div>Voir qui t'a liké</div>
+    <div class="hero-perk"><div class="perk-check">✓</div>Super Likes × 5/jour</div>
+    <div class="hero-perk"><div class="perk-check">✓</div>Pollen boost</div>
+    <div class="hero-perk"><div class="perk-check">✓</div>Mode discret avancé</div>
+  </div>
+</section>
+
+<!-- PLANS -->
+<section class="plans-section">
+  <div class="plans-title">Choisis ton plan 🍒</div>
+  <p class="plans-sub">Sans engagement. Annule quand tu veux.</p>
+  <div class="plans-grid">
+
+    <!-- GRATUIT -->
+    <div class="plan-card">
+      <div class="plan-icon">🌱</div>
+      <div class="plan-name">Gratuit</div>
+      <div class="plan-desc">Pour découvrir Mbote et commencer à matcher.</div>
+      <div class="plan-price">
+        <span class="plan-amount">0€</span>
+        <span class="plan-period">/mois</span>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="feat-check">✓</span>20 likes par jour</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Messagerie basique</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>1 Super Like/jour</li>
+        <li class="plan-feature"><span class="feat-no">✕</span><span style="color:#bbb">Voir qui t'a liké</span></li>
+        <li class="plan-feature"><span class="feat-no">✕</span><span style="color:#bbb">Boost profil</span></li>
+        <li class="plan-feature"><span class="feat-no">✕</span><span style="color:#bbb">Mode discret avancé</span></li>
+      </ul>
+      <a href="swipe.html" class="btn-plan secondary">Continuer gratuitement</a>
+    </div>
+
+    <!-- PREMIUM MENSUEL -->
+    <div class="plan-card popular">
+      <div class="popular-badge">⭐ Le plus populaire</div>
+      <div class="plan-icon">💎</div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-desc">La formule idéale pour trouver ton match rapidement.</div>
+      <div class="plan-price">
+        <span class="plan-amount">4 990 FC</span>
+        <span class="plan-period">/mois</span>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">≈ 1,99€/mois</div>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="feat-check">✓</span>Likes <strong>illimités</strong></li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Voir qui t'a liké</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>5 Super Likes/jour</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>1 Pollen boost/semaine</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Mode discret avancé</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Filtres avancés</li>
+      </ul>
+      <button class="btn-plan primary" onclick="selectPlan('mensuel', '4 990 FC/mois')">Choisir Premium →</button>
+    </div>
+
+    <!-- PREMIUM 6 MOIS -->
+    <div class="plan-card">
+      <div class="plan-icon">🏆</div>
+      <div class="plan-name">Premium 6 mois</div>
+      <div class="plan-desc">Le meilleur rapport qualité/prix pour les sérieux.</div>
+      <div class="plan-price">
+        <span class="plan-amount">2 490 FC</span>
+        <span class="plan-period">/mois</span>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">≈ 0,99€/mois · Facturé 14 940 FC</div>
+        <span class="plan-save">🎉 Économise 50%</span>
+      </div>
+      <ul class="plan-features">
+        <li class="plan-feature"><span class="feat-check">✓</span>Tout Premium inclus</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>3 Pollen boosts/semaine</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>10 Super Likes/jour</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Rewind illimité</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Badge Premium exclusif</li>
+        <li class="plan-feature"><span class="feat-check">✓</span>Priorité dans les résultats</li>
+      </ul>
+      <button class="btn-plan gold" onclick="selectPlan('6mois', '14 940 FC / 6 mois')">Choisir 6 mois →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES DETAIL -->
+<section class="features-section">
+  <div class="features-inner">
+    <div class="section-label">Fonctionnalités</div>
+    <div class="section-title">Ce que tu débloques 🔓</div>
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">❤️</div>
+        <div class="feat-name">Likes illimités</div>
+        <div class="feat-desc">Plus de limite quotidienne. Like autant de profils que tu veux, quand tu veux.</div>
+        <span class="feat-badge">Premium</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👀</div>
+        <div class="feat-name">Voir qui t'a liké</div>
+        <div class="feat-desc">Découvre tous les profils qui ont swipé à droite sur toi. Un match garanti en 1 clic.</div>
+        <span class="feat-badge">Premium</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌸</div>
+        <div class="feat-name">Pollen — Boost profil</div>
+        <div class="feat-desc">Ton profil passe en tête des résultats pendant 30 minutes. Jusqu'à 10× plus de vues.</div>
+        <span class="feat-badge">Premium</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⭐</div>
+        <div class="feat-name">Super Likes</div>
+        <div class="feat-desc">Montre à quelqu'un qu'il te plaît vraiment. Les profils avec Super Like ont 3× plus de matchs.</div>
+        <span class="feat-badge">Premium</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👁️</div>
+        <div class="feat-name">Mode discret avancé</div>
+        <div class="feat-desc">Navigue incognito. Seuls les profils que tu as likés peuvent voir ton profil.</div>
+        <span class="feat-badge">Premium</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">↩️</div>
+        <div class="feat-name">Rewind illimité</div>
+        <div class="feat-desc">Tu as passé quelqu'un par erreur ? Reviens en arrière autant de fois que tu veux.</div>
+        <span class="feat-badge">6 mois</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STRIPE PAYMENT FORM -->
+<section class="payment-section" id="paymentSection" style="display:none">
+  <div class="payment-inner">
+    <div class="payment-title">Paiement sécurisé 🔒</div>
+    <p class="payment-sub">Annule à tout moment depuis ton profil.</p>
+
+    <div class="selected-plan-banner" id="selectedPlanBanner">
+      <div class="spb-left">
+        <div class="spb-name" id="spbName">Premium mensuel</div>
+        <div class="spb-desc">Renouvellement automatique · Annulable</div>
+      </div>
+      <div class="spb-price" id="spbPrice">4 990 FC</div>
+    </div>
+
+    <div class="stripe-form" id="stripeForm">
+      <div class="stripe-field">
+        <label class="stripe-label">Nom sur la carte</label>
+        <input class="stripe-input" type="text" id="cardName" placeholder="Jean Mbote" autocomplete="cc-name">
+      </div>
+      <!-- Le vrai formulaire Stripe s'intègre ici via Stripe.js -->
+      <!-- En production, remplacer les inputs par les éléments Stripe -->
+      <div class="stripe-field">
+        <label class="stripe-label">Numéro de carte</label>
+        <input class="stripe-input" type="text" id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCard(this)">
+      </div>
+      <div class="stripe-row">
+        <div class="stripe-field">
+          <label class="stripe-label">Date d'expiration</label>
+          <input class="stripe-input" type="text" placeholder="MM / AA" maxlength="7" oninput="formatExpiry(this)">
+        </div>
+        <div class="stripe-field">
+          <label class="stripe-label">CVC</label>
+          <input class="stripe-input" type="text" placeholder="123" maxlength="4">
+        </div>
+      </div>
+      <div class="stripe-secure">🔒 Paiement sécurisé par chiffrement SSL 256 bits</div>
+      <button class="btn-pay" id="payBtn" onclick="processPaiement()">
+        <span id="payText">Payer maintenant →</span>
+        <div class="spinner" id="paySpinner"></div>
+      </button>
+      <div class="payment-note">
+        En continuant, tu acceptes nos <a href="#" style="color:var(--cherry)">CGV</a> et autorises le prélèvement récurrent.<br>
+        Annule à tout moment depuis Profil → Paramètres → Premium.
+      </div>
+      <div class="stripe-powered">Paiement sécurisé par <strong style="color:#635BFF;margin-left:4px">Stripe</strong> 💳</div>
+    </div>
+
+    <!-- Succès -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🎉</div>
+      <h2 class="success-title">Bienvenue dans Premium ! 💎</h2>
+      <p class="success-sub">Ton abonnement est actif. Toutes les fonctionnalités Premium sont maintenant disponibles.<br>Bonne chance pour trouver ton match ! 🍒</p>
+      <a href="swipe.html" class="btn-go">Commencer à swiper 🔥</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq-section">
+  <div class="faq-inner">
+    <div class="section-label" style="color:var(--cherry)">FAQ</div>
+    <div class="section-title" style="margin-bottom:24px">Questions fréquentes</div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Comment annuler mon abonnement ? <span class="faq-arrow">▶</span></div>
+      <div class="faq-a">Va dans Profil → Paramètres → Mbote Premium → Annuler l'abonnement. L'annulation prend effet à la fin de la période en cours. Tu ne seras plus débité le mois suivant.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Puis-je payer en francs congolais ? <span class="faq-arrow">▶</span></div>
+      <div class="faq-a">Oui ! Les prix sont affichés en francs congolais (FC) et en euros. Le paiement est traité par Stripe qui accepte les cartes Visa et Mastercard locales.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Qu'est-ce que le Pollen (boost profil) ? <span class="faq-arrow">▶</span></div>
+      <div class="faq-a">Le Pollen met ton profil en tête des résultats pendant 30 minutes dans ta ville. Tu peux recevoir jusqu'à 10× plus de vues et de likes pendant cette période. Idéal à utiliser le soir ou le week-end.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Ma carte bancaire est-elle sécurisée ? <span class="faq-arrow">▶</span></div>
+      <div class="faq-a">Oui. Mbote n'a jamais accès à tes données bancaires. Tout est géré par Stripe, le leader mondial du paiement en ligne, certifié PCI DSS niveau 1. Tes données sont chiffrées SSL 256 bits.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Premium fonctionne-t-il en diaspora ? <span class="faq-arrow">▶</span></div>
+      <div class="faq-a">Oui ! Mbote Premium est disponible partout dans le monde. Que tu sois à Kinshasa, Brazzaville, Paris ou Bruxelles, tu profites de toutes les fonctionnalités.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL -->
+<section class="cta-section">
+  <div class="cta-title">Prêt(e) à trouver ton match ? 🍒</div>
+  <p class="cta-sub">Rejoins les membres Premium et multiplie tes chances de rencontrer la bonne personne.</p>
+  <button class="btn-cta-gold" onclick="selectPlan('mensuel', '4 990 FC/mois')">Essayer Premium 💎</button>
+</section>
+
+<footer>
+  <span>© 2025 Mbote · Fait avec ❤️ pour le Congo</span>
+  <div style="display:flex;gap:16px">
+    <a href="#">CGV</a>
+    <a href="#">Confidentialité</a>
+    <a href="#">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // ─── PLAN SELECTION ────────────────────────────────────
+  function selectPlan(plan, price) {
+    document.getElementById('paymentSection').style.display = 'block';
+    document.getElementById('spbName').textContent  = plan === 'mensuel' ? 'Premium mensuel' : 'Premium 6 mois';
+    document.getElementById('spbPrice').textContent = price.split('/')[0];
+    document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ─── FORMAT CARTE ──────────────────────────────────────
+  function formatCard(input) {
+    let val = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value = val.replace(/(.{4})/g, '$1 ').trim();
+  }
+  function formatExpiry(input) {
+    let val = input.value.replace(/\D/g, '').substring(0, 4);
+    if (val.length >= 2) val = val.substring(0,2) + ' / ' + val.substring(2);
+    input.value = val;
+  }
+
+  // ─── PAIEMENT (SIMULATION) ─────────────────────────────
+  // En production : utiliser Stripe.js + createPaymentMethod()
+  async function processPaiement() {
+    const name = document.getElementById('cardName').value.trim();
+    const card = document.getElementById('cardNumber').value.replace(/\s/g,'');
+
+    if (!name) { showErr("Entre le nom sur ta carte."); return; }
+    if (card.length < 16) { showErr("Numéro de carte invalide."); return; }
+
+    const btn     = document.getElementById('payBtn');
+    const spinner = document.getElementById('paySpinner');
+    const text    = document.getElementById('payText');
+
+    btn.disabled       = true;
+    text.style.display = 'none';
+    spinner.style.display = 'block';
+
+    // Simuler appel Stripe (en prod : stripe.createPaymentMethod + appel backend)
+    await new Promise(r => setTimeout(r, 2000));
+
+    // Succès
+    document.getElementById('stripeForm').style.display    = 'none';
+    document.getElementById('successScreen').style.display = 'block';
+
+    // En production, appeler ton backend pour créer la subscription Stripe :
+    /*
+    const response = await fetch('/api/create-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ paymentMethodId, priceId: 'price_XXXX', uid: currentUser.uid })
+    });
+    const data = await response.json();
+    if (data.error) { showErr(data.error); return; }
+    // Mettre à jour Firestore : users/{uid}.premium = true
+    */
+  }
+
+  function showErr(msg) {
+    let err = document.getElementById('stripeError');
+    if (!err) {
+      err = document.createElement('div');
+      err.id = 'stripeError';
+      err.style.cssText = 'background:#FEECED;color:#E8394A;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:700;margin-bottom:12px';
+      document.getElementById('stripeForm').prepend(err);
+    }
+    err.textContent = '❌ ' + msg;
+  }
+
+  // ─── FAQ ───────────────────────────────────────────────
+  function toggleFaq(el) {
+    const answer = el.nextElementSibling;
+    const arrow  = el.querySelector('.faq-arrow');
+    answer.classList.toggle('open');
+    arrow.classList.toggle('open');
+  }
+</script>
+
+<!-- 
+  INTÉGRATION STRIPE EN PRODUCTION :
+  
+  1. Créer un compte sur https://stripe.com
+  2. Installer Stripe.js :
+     <script src="https://js.stripe.com/v3/"></script>
+  3. Créer les Prix dans la console Stripe :
+     - Prix mensuel : 1,99€ récurrent
+     - Prix 6 mois : 5,99€ récurrent
+  4. Remplacer le formulaire par les éléments Stripe :
+     const stripe  = Stripe('ta_cle_publique');
+     const elements = stripe.elements();
+     const card    = elements.create('card');
+     card.mount('#card-element');
+  5. Créer un backend (Node.js/Firebase Functions) pour :
+     - Créer le PaymentIntent côté serveur
+     - Confirmer le paiement
+     - Mettre à jour Firestore (premium: true)
+-->
+</body>
+</html>

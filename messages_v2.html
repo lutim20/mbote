@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages — Mbote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #F7F3EE; color: #1A1A2E; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+    :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E; --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff; }
+
+    /* NAV */
+    .top-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; z-index: 10; }
+    .nav-logo { font-size: 20px; font-weight: 900; color: var(--cherry); text-decoration: none; }
+    .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; text-decoration: none; }
+    .nav-icon-btn:hover { background: var(--border); }
+
+    /* LAYOUT */
+    .main { flex: 1; display: flex; overflow: hidden; }
+
+    /* LEFT PANEL */
+    .conv-panel { width: 320px; flex-shrink: 0; background: var(--white); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+    .conv-tabs { display: flex; border-bottom: 1px solid var(--border); padding: 0 16px; flex-shrink: 0; }
+    .conv-tab { flex: 1; padding: 14px 0; font-size: 13px; font-weight: 700; color: var(--muted); cursor: pointer; text-align: center; border-bottom: 3px solid transparent; transition: color .2s, border-color .2s; }
+    .conv-tab.active { color: var(--cherry); border-color: var(--cherry); }
+    .conv-search { padding: 12px 16px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    .search-input { width: 100%; background: var(--sand); border: none; border-radius: 50px; padding: 9px 16px; font-size: 13px; font-family: 'Nunito', sans-serif; color: var(--dark); outline: none; }
+    .search-input::placeholder { color: var(--muted); }
+
+    /* NEW MATCHES */
+    .new-matches { padding: 14px 16px 10px; flex-shrink: 0; border-bottom: 1px solid var(--border); }
+    .nm-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 12px; }
+    .nm-row { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 4px; }
+    .nm-row::-webkit-scrollbar { display: none; }
+    .nm-item { display: flex; flex-direction: column; align-items: center; gap: 5px; cursor: pointer; flex-shrink: 0; }
+    .nm-avatar { width: 52px; height: 52px; border-radius: 50%; font-size: 26px; display: flex; align-items: center; justify-content: center; border: 3px solid var(--cherry); position: relative; transition: transform .15s; }
+    .nm-avatar:hover { transform: scale(1.05); }
+    .nm-dot { position: absolute; bottom: 1px; right: 1px; width: 12px; height: 12px; border-radius: 50%; background: var(--green); border: 2px solid var(--white); }
+    .nm-name { font-size: 11px; font-weight: 700; color: var(--dark); }
+
+    /* CONV LIST */
+    .conv-list { flex: 1; overflow-y: auto; }
+    .conv-list::-webkit-scrollbar { width: 4px; }
+    .conv-list::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .conv-section-title { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .8px; padding: 12px 16px 6px; }
+    .conv-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; transition: background .15s; position: relative; }
+    .conv-item:hover { background: var(--sand); }
+    .conv-item.active { background: #FEECED; }
+    .conv-avatar { width: 48px; height: 48px; border-radius: 50%; font-size: 26px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+    .conv-online { position: absolute; bottom: 1px; right: 1px; width: 11px; height: 11px; border-radius: 50%; background: var(--green); border: 2px solid var(--white); }
+    .conv-info { flex: 1; min-width: 0; }
+    .conv-name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 3px; }
+    .conv-name { font-size: 14px; font-weight: 800; color: var(--dark); }
+    .conv-time { font-size: 11px; color: var(--muted); font-weight: 600; flex-shrink: 0; }
+    .conv-preview { font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 500; }
+    .conv-preview.unread { color: var(--dark); font-weight: 700; }
+    .conv-unread-badge { width: 18px; height: 18px; border-radius: 50%; background: var(--cherry); color: #fff; font-size: 10px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .conv-empty { padding: 40px 20px; text-align: center; color: var(--muted); font-size: 13px; }
+
+    /* CHAT PANEL */
+    .chat-panel { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: #F7F3EE; }
+
+    /* CHAT HEADER */
+    .chat-header { background: var(--white); border-bottom: 1px solid var(--border); padding: 12px 20px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .chat-hav { width: 44px; height: 44px; border-radius: 50%; font-size: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; position: relative; }
+    .chat-hon { position: absolute; bottom: 1px; right: 1px; width: 11px; height: 11px; border-radius: 50%; background: var(--green); border: 2px solid var(--white); }
+    .chat-hinfo { flex: 1; }
+    .chat-hname { font-size: 15px; font-weight: 800; color: var(--dark); }
+    .chat-hmeta { font-size: 12px; color: var(--muted); margin-top: 1px; }
+    .chat-hactions { display: flex; gap: 8px; }
+    .chat-hbtn { width: 36px; height: 36px; border-radius: 50%; background: var(--sand); border: none; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+    .chat-hbtn:hover { background: var(--border); }
+
+    /* ICEBREAKER */
+    .icebreaker { margin: 12px 20px 0; background: linear-gradient(135deg, #F0EBF8, #E8E0F8); border-radius: 14px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .ice-icon { font-size: 22px; }
+    .ice-text { flex: 1; }
+    .ice-label { font-size: 11px; font-weight: 700; color: var(--grape); text-transform: uppercase; letter-spacing: .5px; }
+    .ice-question { font-size: 13px; font-weight: 700; color: var(--dark); margin-top: 2px; line-height: 1.4; }
+    .ice-actions { display: flex; gap: 6px; flex-shrink: 0; }
+    .ice-btn { background: var(--grape); color: #fff; border: none; padding: 7px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: opacity .2s; }
+    .ice-btn:hover { opacity: .85; }
+    .ice-refresh { background: rgba(123,94,167,.15); color: var(--grape); border: none; padding: 7px 10px; border-radius: 50px; font-size: 14px; cursor: pointer; transition: opacity .2s; }
+    .ice-refresh:hover { opacity: .7; }
+
+    /* MESSAGES */
+    .messages-area { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 4px; }
+    .messages-area::-webkit-scrollbar { width: 4px; }
+    .messages-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+    .msg-date { text-align: center; font-size: 11px; font-weight: 700; color: var(--muted); margin: 8px 0; }
+    .msg-row { display: flex; align-items: flex-end; gap: 8px; margin-bottom: 2px; }
+    .msg-row.me { justify-content: flex-end; }
+    .msg-row.them { justify-content: flex-start; }
+    .msg-av { width: 28px; height: 28px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .msg-av.hidden { visibility: hidden; }
+    .msg-bubble { max-width: 65%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; }
+    .msg-row.them .msg-bubble { background: var(--white); color: var(--dark); border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+    .msg-row.me .msg-bubble { background: var(--cherry); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-meta { display: flex; align-items: center; gap: 4px; margin-top: 3px; }
+    .msg-time { font-size: 10px; opacity: .6; }
+    .msg-row.me .msg-meta { justify-content: flex-end; }
+    .msg-status { font-size: 11px; }
+    .msg-status.lu { color: #4FC3F7; }
+
+    /* Typing */
+    .typing-row { display: none; align-items: flex-end; gap: 8px; margin-bottom: 4px; }
+    .typing-row.show { display: flex; }
+    .typing-bubble { background: var(--white); border-radius: 18px; border-bottom-left-radius: 4px; padding: 10px 16px; box-shadow: 0 1px 4px rgba(0,0,0,.06); display: flex; gap: 4px; align-items: center; }
+    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: bounce 1.2s infinite; }
+    .typing-dot:nth-child(2) { animation-delay: .2s; }
+    .typing-dot:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,60%,100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+
+    /* INPUT */
+    .chat-input-area { background: var(--white); border-top: 1px solid var(--border); padding: 12px 16px; display: flex; gap: 10px; align-items: flex-end; flex-shrink: 0; }
+    .input-extras { display: flex; gap: 6px; }
+    .extra-btn { width: 36px; height: 36px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; flex-shrink: 0; }
+    .extra-btn:hover { background: var(--border); }
+    .chat-input { flex: 1; background: var(--sand); border: 2px solid transparent; border-radius: 20px; padding: 9px 16px; font-size: 14px; font-family: 'Nunito', sans-serif; color: var(--dark); outline: none; resize: none; max-height: 100px; line-height: 1.4; transition: border-color .2s, background .2s; }
+    .chat-input:focus { border-color: var(--cherry); background: var(--white); }
+    .chat-input::placeholder { color: var(--muted); }
+    .send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--cherry); border: none; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .2s, transform .15s; }
+    .send-btn:hover:not(:disabled) { background: var(--cherry-dark); transform: scale(1.05); }
+    .send-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+    /* EMPTY CHAT */
+    .empty-chat { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 40px; color: var(--muted); }
+    .empty-chat-icon { font-size: 56px; margin-bottom: 16px; }
+    .empty-chat-title { font-size: 20px; font-weight: 900; color: var(--dark); margin-bottom: 8px; }
+    .empty-chat-sub { font-size: 14px; line-height: 1.7; }
+
+    /* NOTIFICATION BANNER */
+    .notif-banner { position: fixed; top: 70px; right: 20px; background: var(--dark); color: #fff; border-radius: 16px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; z-index: 200; max-width: 300px; box-shadow: 0 8px 24px rgba(0,0,0,.2); animation: slideIn .3s ease; cursor: pointer; }
+    .notif-banner.hide { animation: slideOut .3s ease forwards; }
+    @keyframes slideIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(120%); opacity: 0; } }
+    .notif-av { font-size: 24px; }
+    .notif-content { flex: 1; }
+    .notif-name { font-size: 13px; font-weight: 800; }
+    .notif-msg { font-size: 12px; opacity: .8; margin-top: 1px; }
+
+    /* MATCH POPUP */
+    .match-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.7); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    .match-overlay.show { display: flex; }
+    .match-popup { background: linear-gradient(160deg, var(--cherry) 0%, var(--orange) 100%); border-radius: 28px; padding: 44px 36px; text-align: center; max-width: 340px; width: 90%; animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from { transform: scale(.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .match-label { font-size: 13px; font-weight: 800; color: rgba(255,255,255,.8); letter-spacing: 2px; text-transform: uppercase; }
+    .match-title { font-size: 30px; font-weight: 900; color: #fff; margin: 6px 0 16px; }
+    .match-avatars { display: flex; justify-content: center; align-items: center; gap: 14px; margin-bottom: 14px; }
+    .match-av { width: 72px; height: 72px; border-radius: 50%; background: rgba(255,255,255,.2); border: 4px solid #fff; font-size: 40px; display: flex; align-items: center; justify-content: center; }
+    .match-sub { font-size: 14px; color: rgba(255,255,255,.85); line-height: 1.6; margin-bottom: 24px; }
+    .btn-match-msg { display: block; width: 100%; background: #fff; color: var(--cherry); border: none; padding: 13px; border-radius: 50px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-bottom: 10px; transition: opacity .2s; }
+    .btn-match-msg:hover { opacity: .9; }
+    .btn-match-skip { display: block; width: 100%; background: transparent; color: rgba(255,255,255,.8); border: 2px solid rgba(255,255,255,.4); padding: 11px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
+
+    /* BOTTOM NAV */
+    .bottom-nav { display: none; background: var(--white); border-top: 1px solid var(--border); padding: 10px 0 16px; justify-content: space-around; flex-shrink: 0; }
+    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; opacity: .4; text-decoration: none; transition: opacity .2s; }
+    .bnav-item.active { opacity: 1; }
+    .bnav-icon { font-size: 22px; }
+    .bnav-label { font-size: 9px; font-weight: 800; color: var(--dark); }
+
+    /* LOADING */
+    .loading-msgs { display: flex; flex-direction: column; gap: 12px; padding: 16px 20px; }
+    .skeleton { border-radius: 12px; background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite; height: 40px; }
+    .skeleton.me { width: 60%; align-self: flex-end; }
+    .skeleton.them { width: 55%; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    @media (max-width: 768px) { .conv-panel { width: 100%; display: none; } .conv-panel.show { display: flex; } .chat-panel { display: none; } .chat-panel.show { display: flex; } .bottom-nav { display: flex; } .back-mobile { display: flex !important; } }
+    .back-mobile { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <div style="font-size:15px;font-weight:800;color:var(--dark)">Messages</div>
+  <div style="display:flex;gap:8px">
+    <a href="swipe.html" class="nav-icon-btn">🔥</a>
+    <a href="profil.html" class="nav-icon-btn">👤</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- LEFT — CONVERSATIONS -->
+  <div class="conv-panel show" id="convPanel">
+    <div class="conv-tabs">
+      <div class="conv-tab active" onclick="switchTab('matchs',this)">Matchs <span id="matchCount" style="background:var(--cherry);color:#fff;font-size:10px;padding:1px 6px;border-radius:10px;margin-left:4px">0</span></div>
+      <div class="conv-tab" onclick="switchTab('messages',this)">Messages</div>
+    </div>
+    <div class="conv-search">
+      <input class="search-input" type="text" placeholder="🔍 Rechercher..." oninput="filterConvs(this.value)">
+    </div>
+    <div class="new-matches" id="newMatchesSection">
+      <div class="nm-title">Nouveaux matchs</div>
+      <div class="nm-row" id="newMatchesRow">
+        <div style="font-size:12px;color:var(--muted);padding:8px 0">Chargement...</div>
+      </div>
+    </div>
+    <div class="conv-section-title">Conversations</div>
+    <div class="conv-list" id="convList">
+      <div class="loading-msgs">
+        <div class="skeleton them"></div>
+        <div class="skeleton me"></div>
+        <div class="skeleton them"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT — CHAT -->
+  <div class="chat-panel show" id="chatPanel">
+    <div class="empty-chat" id="emptyChat">
+      <div class="empty-chat-icon">💬</div>
+      <div class="empty-chat-title">Tes messages</div>
+      <p class="empty-chat-sub">Sélectionne une conversation<br>ou swipe pour trouver des matchs !</p>
+    </div>
+
+    <div id="chatView" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+      <div class="chat-header">
+        <button class="back-mobile nav-icon-btn" onclick="showConvPanel()">←</button>
+        <div class="chat-hav" id="chatAvatar" style="background:#FEECED">👩🏾<div class="chat-hon" id="chatOnlineDot"></div></div>
+        <div class="chat-hinfo">
+          <div class="chat-hname" id="chatName">—</div>
+          <div class="chat-hmeta" id="chatMeta">—</div>
+        </div>
+        <div class="chat-hactions">
+          <button class="chat-hbtn" onclick="showProfil()" title="Voir profil">👤</button>
+          <button class="chat-hbtn" onclick="showOptions()" title="Options">⋯</button>
+        </div>
+      </div>
+
+      <div class="icebreaker" id="icebreakerBanner">
+        <div class="ice-icon">🎲</div>
+        <div class="ice-text">
+          <div class="ice-label">Question brise-glace</div>
+          <div class="ice-question" id="iceQuestion">Chargement...</div>
+        </div>
+        <div class="ice-actions">
+          <button class="ice-refresh" onclick="refreshIce()" title="Autre question">🔄</button>
+          <button class="ice-btn" onclick="sendIcebreaker()">Envoyer</button>
+        </div>
+      </div>
+
+      <div class="messages-area" id="messagesArea">
+        <div class="loading-msgs">
+          <div class="skeleton them"></div>
+          <div class="skeleton me"></div>
+          <div class="skeleton them" style="width:45%"></div>
+        </div>
+      </div>
+
+      <div class="typing-row" id="typingRow">
+        <div class="msg-av" id="typingAv">👩🏾</div>
+        <div class="typing-bubble">
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+          <div class="typing-dot"></div>
+        </div>
+      </div>
+
+      <div class="chat-input-area">
+        <div class="input-extras">
+          <button class="extra-btn" onclick="toggleEmoji()" title="Emoji">😊</button>
+          <button class="extra-btn" onclick="pickPhoto()" title="Photo">📷</button>
+        </div>
+        <textarea class="chat-input" id="chatInput" placeholder="Écris un message..." rows="1" oninput="autoResize(this);toggleSendBtn(this)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()" disabled>➤</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="swipe.html" class="bnav-item"><div class="bnav-icon">🔥</div><div class="bnav-label">Découvrir</div></a>
+  <a href="messages.html" class="bnav-item active"><div class="bnav-icon">💬</div><div class="bnav-label">Messages</div></a>
+  <a href="profil.html" class="bnav-item"><div class="bnav-icon">👤</div><div class="bnav-label">Profil</div></a>
+</div>
+
+<!-- MATCH POPUP -->
+<div class="match-overlay" id="matchOverlay">
+  <div class="match-popup">
+    <div class="match-label">C'est un match ! 🎉</div>
+    <div class="match-title">Vous vous plaisez !</div>
+    <div class="match-avatars">
+      <div class="match-av" id="myMatchAv">👨🏾</div>
+      <div style="font-size:28px">❤️</div>
+      <div class="match-av" id="theirMatchAv">👩🏾</div>
+    </div>
+    <p class="match-sub" id="matchSub">Vous cherchez tous les deux 🍒 une relation sérieuse.</p>
+    <button class="btn-match-msg" onclick="startMatchChat()">Envoyer un message 💬</button>
+    <button class="btn-match-skip" onclick="closeMatch()">Continuer à swiper</button>
+  </div>
+</div>
+
+<script type="module">
+  import {
+    auth, db, onAuthStateChanged, protegerPage,
+    getMatchs, getMessages, envoyerMessage, updateProfil
+  } from "./firebase.js";
+  import {
+    collection, onSnapshot, query, orderBy, doc,
+    updateDoc, serverTimestamp, getDoc
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ─── ÉTAT ───────────────────────────────────────────────
+  let currentUser    = null;
+  let currentMatchId = null;
+  let currentProfil  = null;
+  let unsubMessages  = null;   // écouteur temps réel messages
+  let unsubMatchs    = null;   // écouteur temps réel matchs
+  let matchsData     = [];
+  let iceIdx         = 0;
+
+  const ICEBREAKERS = [
+    "Si tu pouvais voyager partout au Congo, quelle ville visiterais-tu en premier ?",
+    "Quel est le plat congolais que tu mangerais sans jamais te lasser ?",
+    "C'est quoi ta chanson congolaise préférée de tous les temps ?",
+    "Si tu devais décrire Kinshasa en un mot, ce serait lequel ?",
+    "Quel est ton souvenir d'enfance préféré au Congo ?",
+    "Si tu étais un fruit Mbote, lequel serais-tu et pourquoi ? 😄",
+    "Quelle est la chose qui te manque le plus quand tu es loin du Congo ?",
+    "Le meilleur endroit où manger à Kinshasa selon toi ?",
+    "Tu préfères Fally Ipupa ou Innoss'B et pourquoi ? 😄",
+    "Si tu organisais une soirée idéale, ça ressemblerait à quoi ?",
+  ];
+
+  // ─── INIT ───────────────────────────────────────────────
+  const user = await protegerPage(true);
+  if (!user) return;
+  currentUser = user;
+
+  document.getElementById('iceQuestion').textContent = ICEBREAKERS[0];
+  loadMatchs();
+
+  // ─── MATCHS TEMPS RÉEL ──────────────────────────────────
+  function loadMatchs() {
+    const q = query(
+      collection(db, "matchs"),
+      where("users", "array-contains", currentUser.uid)
+    );
+
+    // Écoute en temps réel
+    unsubMatchs = onSnapshot(q, async (snap) => {
+      matchsData = [];
+
+      for (const matchDoc of snap.docs) {
+        const data     = matchDoc.data();
+        const autreUid = data.users.find(u => u !== currentUser.uid);
+        try {
+          const autreSnap = await getDoc(doc(db, "users", autreUid));
+          if (autreSnap.exists()) {
+            matchsData.push({
+              matchId:  matchDoc.id,
+              lastMsg:  data.lastMsg || null,
+              lastTime: data.lastMsgTime,
+              profil:   { uid: autreUid, ...autreSnap.data() }
+            });
+          }
+        } catch(e) { console.error(e); }
+      }
+
+      matchsData.sort((a,b) => (b.lastTime?.seconds||0) - (a.lastTime?.seconds||0));
+      renderMatchs();
+    });
+  }
+
+  function renderMatchs() {
+    const count = matchsData.length;
+    document.getElementById('matchCount').textContent = count;
+
+    // Nouveaux matchs (sans messages)
+    const nmRow   = document.getElementById('newMatchesRow');
+    const newOnes = matchsData.filter(m => !m.lastMsg);
+    if (newOnes.length === 0) {
+      nmRow.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:4px 0">Aucun nouveau match</div>';
+    } else {
+      nmRow.innerHTML = newOnes.map(m => `
+        <div class="nm-item" onclick="openChat('${m.matchId}')">
+          <div class="nm-avatar" style="background:${m.profil.photoBg||'#FEECED'}">
+            ${m.profil.photoURL ? `<img src="${m.profil.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">` : (m.profil.emoji || '👤')}
+            ${m.profil.online ? '<div class="nm-dot"></div>' : ''}
+          </div>
+          <div class="nm-name">${m.profil.prenom}</div>
+        </div>
+      `).join('');
+    }
+
+    // Liste conversations
+    const convList = document.getElementById('convList');
+    if (count === 0) {
+      convList.innerHTML = '<div class="conv-empty">🍒 Commence à swiper pour avoir des matchs !</div>';
+      return;
+    }
+
+    const withMsg = matchsData.filter(m => m.lastMsg);
+    if (withMsg.length === 0) {
+      convList.innerHTML = '<div class="conv-empty">Lance la conversation avec tes nouveaux matchs !</div>';
+      return;
+    }
+
+    convList.innerHTML = withMsg.map(m => `
+      <div class="conv-item ${currentMatchId === m.matchId ? 'active' : ''}"
+           onclick="openChat('${m.matchId}')"
+           id="conv_${m.matchId}">
+        <div class="conv-avatar" style="background:${m.profil.photoBg||'#FEECED'}">
+          ${m.profil.photoURL
+            ? `<img src="${m.profil.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`
+            : (m.profil.emoji || '👤')}
+          ${m.profil.online ? '<div class="conv-online"></div>' : ''}
+        </div>
+        <div class="conv-info">
+          <div class="conv-name-row">
+            <span class="conv-name">${m.profil.prenom}</span>
+            <span class="conv-time">${formatTime(m.lastTime)}</span>
+          </div>
+          <div class="conv-preview">${m.lastMsg}</div>
+        </div>
+        <div style="font-size:14px">${m.profil.fruit?.split(' ')[0] || ''}</div>
+      </div>
+    `).join('');
+  }
+
+  // ─── OUVRIR UN CHAT ─────────────────────────────────────
+  window.openChat = async function(matchId) {
+    currentMatchId = matchId;
+    const match = matchsData.find(m => m.matchId === matchId);
+    if (!match) return;
+    currentProfil = match.profil;
+
+    // UI header
+    const av = document.getElementById('chatAvatar');
+    av.style.background = currentProfil.photoBg || '#FEECED';
+    if (currentProfil.photoURL) {
+      av.innerHTML = `<img src="${currentProfil.photoURL}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      av.childNodes[0] && (av.childNodes[0].textContent = currentProfil.emoji || '👤');
+    }
+    document.getElementById('chatOnlineDot').style.display = currentProfil.online ? 'block' : 'none';
+    document.getElementById('chatName').textContent  = `${currentProfil.prenom}, ${currentProfil.age || ''}`;
+    document.getElementById('chatMeta').textContent  = `${currentProfil.fruit || ''} · ${currentProfil.ville || ''} · ${currentProfil.online ? 'En ligne' : 'Hors ligne'}`;
+    document.getElementById('typingAv').textContent  = currentProfil.emoji || '👤';
+
+    // Masquer empty, afficher chat
+    document.getElementById('emptyChat').style.display   = 'none';
+    document.getElementById('chatView').style.display    = 'flex';
+    document.getElementById('icebreakerBanner').style.display = match.lastMsg ? 'none' : 'flex';
+
+    // Marquer actif dans la liste
+    document.querySelectorAll('.conv-item').forEach(el => el.classList.remove('active'));
+    const convEl = document.getElementById('conv_' + matchId);
+    if (convEl) convEl.classList.add('active');
+
+    // Écouter les messages en temps réel
+    if (unsubMessages) unsubMessages();
+    const q = query(
+      collection(db, "matchs", matchId, "messages"),
+      orderBy("timestamp", "asc")
+    );
+
+    // Afficher skeleton
+    document.getElementById('messagesArea').innerHTML = `
+      <div class="loading-msgs">
+        <div class="skeleton them"></div>
+        <div class="skeleton me"></div>
+        <div class="skeleton them" style="width:45%"></div>
+      </div>`;
+
+    unsubMessages = onSnapshot(q, (snap) => {
+      renderMessages(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    });
+
+    // Mobile : afficher panel chat
+    if (window.innerWidth <= 768) {
+      document.getElementById('convPanel').classList.remove('show');
+      document.getElementById('chatPanel').classList.add('show');
+    }
+  };
+
+  // ─── AFFICHER MESSAGES ──────────────────────────────────
+  function renderMessages(msgs) {
+    const area = document.getElementById('messagesArea');
+    if (msgs.length === 0) {
+      area.innerHTML = `
+        <div style="text-align:center;padding:32px 20px;color:var(--muted)">
+          <div style="font-size:36px;margin-bottom:10px">👋</div>
+          <div style="font-size:14px;font-weight:700">Dis bonjour à ${currentProfil?.prenom || ''} !</div>
+          <div style="font-size:12px;margin-top:4px">Utilisez la question brise-glace ou écrivez un message.</div>
+        </div>`;
+      return;
+    }
+
+    let html = '<div class="msg-date">Aujourd\'hui</div>';
+    let prevFrom = null;
+
+    msgs.forEach((msg, i) => {
+      const isMe      = msg.from === currentUser.uid;
+      const side      = isMe ? 'me' : 'them';
+      const nextMsg   = msgs[i + 1];
+      const isLast    = !nextMsg || nextMsg.from !== msg.from;
+      const time      = msg.timestamp?.toDate ? formatMsgTime(msg.timestamp.toDate()) : '';
+      const showAv    = !isMe && isLast;
+
+      html += `
+        <div class="msg-row ${side}">
+          ${!isMe ? `<div class="msg-av ${showAv ? '' : 'hidden'}">${currentProfil?.emoji || '👤'}</div>` : ''}
+          <div>
+            <div class="msg-bubble">${escapeHtml(msg.texte)}</div>
+            ${isLast ? `
+              <div class="msg-meta">
+                <span class="msg-time">${time}</span>
+                ${isMe ? `<span class="msg-status ${msg.lu ? 'lu' : ''}">✓✓</span>` : ''}
+              </div>` : ''}
+          </div>
+        </div>`;
+      prevFrom = msg.from;
+    });
+
+    area.innerHTML = html;
+    scrollToBottom();
+  }
+
+  // ─── ENVOYER MESSAGE ────────────────────────────────────
+  window.sendMessage = async function() {
+    const input = document.getElementById('chatInput');
+    const texte = input.value.trim();
+    if (!texte || !currentMatchId) return;
+
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('sendBtn').disabled = true;
+
+    await envoyerMessage(currentMatchId, currentUser.uid, texte);
+
+    // Cacher la bannière brise-glace
+    document.getElementById('icebreakerBanner').style.display = 'none';
+  };
+
+  // ─── BRISE-GLACE ────────────────────────────────────────
+  window.sendIcebreaker = function() {
+    const q = document.getElementById('iceQuestion').textContent;
+    document.getElementById('chatInput').value = q;
+    document.getElementById('sendBtn').disabled = false;
+    window.sendMessage();
+    document.getElementById('icebreakerBanner').style.display = 'none';
+  };
+
+  window.refreshIce = function() {
+    iceIdx = (iceIdx + 1) % ICEBREAKERS.length;
+    document.getElementById('iceQuestion').textContent = ICEBREAKERS[iceIdx];
+  };
+
+  // ─── FILTRES ────────────────────────────────────────────
+  window.filterConvs = function(val) {
+    const v = val.toLowerCase();
+    document.querySelectorAll('.conv-item').forEach(el => {
+      const name = el.querySelector('.conv-name')?.textContent.toLowerCase() || '';
+      el.style.display = name.includes(v) ? '' : 'none';
+    });
+  };
+
+  window.switchTab = function(tab, el) {
+    document.querySelectorAll('.conv-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('newMatchesSection').style.display = tab === 'matchs' ? 'block' : 'none';
+  };
+
+  // ─── MOBILE ─────────────────────────────────────────────
+  window.showConvPanel = function() {
+    document.getElementById('convPanel').classList.add('show');
+    document.getElementById('chatPanel').classList.remove('show');
+  };
+
+  // ─── MATCH POPUP ────────────────────────────────────────
+  window.showMatchPopup = function(profil) {
+    document.getElementById('theirMatchAv').textContent = profil.emoji || '👤';
+    document.getElementById('matchSub').innerHTML =
+      `Toi et <strong>${profil.prenom}</strong> avez tous les deux swipé à droite.<br>Vous cherchez tous les deux ${profil.fruit || ''}.`;
+    document.getElementById('matchOverlay').classList.add('show');
+  };
+  window.closeMatch = function() { document.getElementById('matchOverlay').classList.remove('show'); };
+  window.startMatchChat = function() {
+    closeMatch();
+    if (currentMatchId) openChat(currentMatchId);
+  };
+
+  // ─── NOTIFICATIONS NAVIGATEUR ───────────────────────────
+  if ('Notification' in window && Notification.permission === 'default') {
+    Notification.requestPermission();
+  }
+
+  function showNotifBanner(profil, msg) {
+    const existing = document.querySelector('.notif-banner');
+    if (existing) existing.remove();
+    const banner = document.createElement('div');
+    banner.className = 'notif-banner';
+    banner.innerHTML = `
+      <div class="notif-av">${profil.emoji || '💬'}</div>
+      <div class="notif-content">
+        <div class="notif-name">${profil.prenom}</div>
+        <div class="notif-msg">${msg}</div>
+      </div>`;
+    banner.onclick = () => { banner.classList.add('hide'); setTimeout(() => banner.remove(), 300); };
+    document.body.appendChild(banner);
+    setTimeout(() => { banner.classList.add('hide'); setTimeout(() => banner.remove(), 300); }, 4000);
+
+    // Notification système si droit accordé
+    if (Notification.permission === 'granted') {
+      new Notification(`Mbote — ${profil.prenom}`, { body: msg, icon: '🍒' });
+    }
+  }
+
+  // ─── HELPERS ────────────────────────────────────────────
+  function scrollToBottom() {
+    const area = document.getElementById('messagesArea');
+    setTimeout(() => area.scrollTop = area.scrollHeight, 50);
+  }
+
+  function formatTime(ts) {
+    if (!ts?.toDate) return '';
+    const d    = ts.toDate();
+    const now  = new Date();
+    const diff = (now - d) / 1000;
+    if (diff < 60) return 'À l\'instant';
+    if (diff < 3600) return Math.floor(diff/60) + 'min';
+    if (diff < 86400) return d.getHours()+'h'+String(d.getMinutes()).padStart(2,'0');
+    return d.toLocaleDateString('fr', { day:'numeric', month:'short' });
+  }
+
+  function formatMsgTime(d) {
+    return d.getHours() + 'h' + String(d.getMinutes()).padStart(2, '0');
+  }
+
+  function escapeHtml(text) {
+    return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  }
+
+  window.autoResize = function(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  };
+  window.toggleSendBtn = function(el) {
+    document.getElementById('sendBtn').disabled = !el.value.trim();
+  };
+  window.showProfil  = () => showToast('👤 Profil — Phase 3 ✅');
+  window.showOptions = () => showToast('⋯ Options — signalement, blocage');
+  window.toggleEmoji = () => showToast('😊 Émojis — Phase 3 ✅');
+  window.pickPhoto   = () => showToast('📷 Photo — Phase 3 avec Storage ✅');
+
+  function showToast(msg) {
+    const t = document.createElement('div');
+    Object.assign(t.style, { position:'fixed', bottom:'90px', left:'50%', transform:'translateX(-50%)', background:'#1A1A2E', color:'#fff', padding:'10px 22px', borderRadius:'50px', fontSize:'13px', fontWeight:'700', zIndex:'400', whiteSpace:'nowrap', fontFamily:'Nunito,sans-serif' });
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  }
+
+  // Clavier
+  document.getElementById('chatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); window.sendMessage(); }
+  });
+
+  // Import where manquant
+  function where(field, op, val) {
+    const { where: w } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+    return w(field, op, val);
+  }
+</script>
+
+<!-- Import where séparé car besoin top-level -->
+<script type="module">
+  import { where } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  window._where = where;
+</script>
+</body>
+</html>

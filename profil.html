@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon Profil — Mbote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Nunito', sans-serif; background: #F7F3EE; color: #1A1A2E; min-height: 100vh; }
+    :root {
+      --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42;
+      --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E;
+      --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #FFFFFF;
+    }
+    .top-nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.96); backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 20px; height: 60px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo { font-size: 20px; font-weight: 900; color: var(--cherry); text-decoration: none; }
+    .nav-title { font-size: 16px; font-weight: 800; color: var(--dark); }
+    .nav-icon-btn {
+      width: 38px; height: 38px; border-radius: 50%;
+      background: var(--sand); border: none; font-size: 18px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background .2s; text-decoration: none;
+    }
+    .nav-icon-btn:hover { background: var(--border); }
+    .page-wrap {
+      padding: 76px 20px 90px; max-width: 960px; margin: 0 auto;
+      display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start;
+    }
+    /* PROFILE CARD */
+    .profile-card {
+      background: var(--white); border-radius: 24px;
+      border: 1px solid var(--border); overflow: hidden;
+      position: sticky; top: 76px;
+    }
+    .profile-cover {
+      height: 100px;
+      background: linear-gradient(135deg, var(--cherry), var(--orange));
+      position: relative;
+    }
+    .profile-cover-edit {
+      position: absolute; top: 10px; right: 10px;
+      background: rgba(255,255,255,0.3); border: none; border-radius: 50px;
+      padding: 5px 12px; font-size: 11px; font-weight: 700;
+      color: #fff; cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+    .profile-avatar-wrap {
+      display: flex; justify-content: center;
+      margin-top: -44px; margin-bottom: 12px;
+    }
+    .profile-avatar {
+      width: 88px; height: 88px; border-radius: 50%;
+      font-size: 52px; display: flex; align-items: center; justify-content: center;
+      border: 4px solid var(--white); box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      background: #FEECED; position: relative; cursor: pointer;
+    }
+    .avatar-edit-btn {
+      position: absolute; bottom: 2px; right: 2px;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: var(--cherry); color: #fff; border: 2px solid var(--white);
+      font-size: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+    .profile-card-body { padding: 0 20px 20px; text-align: center; }
+    .profile-name { font-size: 20px; font-weight: 900; color: var(--dark); }
+    .profile-age-city { font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 3px; }
+    .profile-fruit-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #FEECED; color: var(--cherry);
+      font-size: 12px; font-weight: 800;
+      padding: 5px 14px; border-radius: 50px;
+      margin: 10px auto 10px; cursor: pointer; transition: background .2s;
+    }
+    .profile-fruit-badge:hover { background: #FCCDD1; }
+    .profile-verified {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: #E8F8EF; color: var(--green);
+      font-size: 11px; font-weight: 700;
+      padding: 4px 12px; border-radius: 50px; margin-bottom: 14px;
+    }
+    .profile-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 16px;
+    }
+    .pstat { background: var(--white); padding: 12px 8px; text-align: center; }
+    .pstat-num { font-size: 20px; font-weight: 900; color: var(--dark); }
+    .pstat-label { font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px; }
+    .btn-edit-profile {
+      display: block; width: 100%; background: var(--cherry); color: #fff;
+      border: none; padding: 11px; border-radius: 50px;
+      font-size: 14px; font-weight: 800; cursor: pointer;
+      font-family: 'Nunito', sans-serif; transition: background .2s; margin-bottom: 8px;
+    }
+    .btn-edit-profile:hover { background: var(--cherry-dark); }
+    .btn-preview {
+      display: block; width: 100%; background: transparent; color: var(--dark);
+      border: 2px solid var(--border); padding: 9px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif;
+      transition: border-color .2s;
+    }
+    .btn-preview:hover { border-color: var(--dark); }
+    /* RIGHT COLUMN */
+    .right-col { display: flex; flex-direction: column; gap: 20px; }
+    .section-card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 20px; border-bottom: 1px solid var(--border);
+    }
+    .section-title { font-size: 15px; font-weight: 800; color: var(--dark); }
+    .btn-edit-section {
+      background: var(--sand); color: var(--dark); border: none;
+      padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700;
+      cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s;
+    }
+    .btn-edit-section:hover { background: var(--border); }
+    .section-body { padding: 16px 20px; }
+    /* BIO */
+    .bio-text {
+      font-size: 14px; color: #555; line-height: 1.7;
+      border: none; width: 100%; font-family: 'Nunito', sans-serif;
+      resize: none; outline: none; background: transparent; cursor: default;
+    }
+    .bio-text.editing {
+      background: var(--sand); border: 2px solid var(--cherry);
+      border-radius: 12px; padding: 10px 14px; cursor: text;
+    }
+    .bio-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: 6px; }
+    /* PHOTOS */
+    .photos-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .photo-slot {
+      aspect-ratio: 1/1; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; cursor: pointer; position: relative;
+      overflow: hidden; transition: opacity .2s;
+    }
+    .photo-slot:hover { opacity: .85; }
+    .photo-slot.filled { background: #FEECED; }
+    .photo-slot.empty {
+      border: 2.5px dashed var(--border); background: var(--sand);
+      font-size: 24px; color: var(--muted); flex-direction: column; gap: 6px;
+      font-family: 'Nunito', sans-serif;
+    }
+    .photo-slot.empty span { font-size: 11px; font-weight: 700; }
+    .photo-del {
+      position: absolute; top: 6px; right: 6px;
+      width: 22px; height: 22px; border-radius: 50%;
+      background: rgba(0,0,0,0.5); color: #fff;
+      font-size: 12px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; transition: opacity .2s;
+    }
+    .photo-slot:hover .photo-del { opacity: 1; }
+    .photo-main-badge {
+      position: absolute; bottom: 6px; left: 6px;
+      background: var(--cherry); color: #fff;
+      font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 20px;
+    }
+    /* INTERESTS */
+    .interests-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+    .interest-pill {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: var(--sand); color: var(--dark);
+      font-size: 12px; font-weight: 700;
+      padding: 6px 12px; border-radius: 50px;
+      border: 2px solid transparent; cursor: default;
+    }
+    .interest-pill.editable { cursor: pointer; transition: border-color .15s, background .15s; }
+    .interest-pill.editable:hover { border-color: var(--cherry); }
+    .interest-pill.selected { background: var(--cherry); color: #fff; }
+    /* PREF */
+    .pref-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .pref-row:last-child { border-bottom: none; }
+    .pref-left { display: flex; align-items: center; gap: 10px; }
+    .pref-icon { font-size: 20px; width: 28px; text-align: center; }
+    .pref-label { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .pref-value { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    select.pref-select {
+      border: 2px solid var(--border); border-radius: 50px;
+      padding: 6px 12px; font-size: 13px; font-weight: 700;
+      font-family: 'Nunito', sans-serif; color: var(--dark);
+      outline: none; cursor: pointer; background: var(--white); transition: border-color .2s;
+    }
+    select.pref-select:focus { border-color: var(--cherry); }
+    .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
+    .toggle input { display: none; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: var(--border); border-radius: 50px; transition: background .2s;
+    }
+    .toggle-slider::after {
+      content: ''; position: absolute; width: 18px; height: 18px;
+      border-radius: 50%; background: #fff; top: 3px; left: 3px;
+      transition: transform .2s; box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+    }
+    .toggle input:checked + .toggle-slider { background: var(--cherry); }
+    .toggle input:checked + .toggle-slider::after { transform: translateX(20px); }
+    /* PREMIUM */
+    .premium-banner {
+      background: linear-gradient(135deg, #7B5EA7, #E8394A);
+      border-radius: 20px; padding: 20px; color: #fff;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .prem-icon { font-size: 36px; flex-shrink: 0; }
+    .prem-title { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
+    .prem-sub { font-size: 12px; opacity: .85; line-height: 1.5; }
+    .btn-premium {
+      background: #fff; color: var(--grape); border: none;
+      padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; flex-shrink: 0;
+    }
+    /* SETTINGS */
+    .setting-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 20px; cursor: pointer; transition: background .15s;
+      border-bottom: 1px solid var(--border);
+    }
+    .setting-item:last-child { border-bottom: none; }
+    .setting-item:hover { background: var(--sand); }
+    .setting-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
+    .setting-label { font-size: 14px; font-weight: 700; color: var(--dark); flex: 1; }
+    .setting-arrow { color: var(--muted); font-size: 16px; }
+    .setting-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-red { background: #FEECED; color: var(--cherry); }
+    .badge-green { background: #E8F8EF; color: var(--green); }
+    /* DANGER */
+    .danger-zone { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+    .btn-danger {
+      background: transparent; color: var(--cherry);
+      border: 2px solid #FCCDD1; padding: 10px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif;
+      transition: background .2s;
+    }
+    .btn-danger:hover { background: #FEECED; }
+    .btn-logout {
+      background: var(--dark); color: #fff; border: none; padding: 10px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5); z-index: 200;
+      align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: var(--white); border-radius: 24px; padding: 28px;
+      max-width: 380px; width: 90%;
+      animation: popIn .3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    @keyframes popIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+    .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .modal-fruits { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .modal-fruit {
+      border: 2.5px solid var(--border); border-radius: 16px;
+      padding: 16px 12px; cursor: pointer; text-align: center; transition: border-color .15s, background .15s;
+    }
+    .modal-fruit:hover { border-color: var(--cherry); }
+    .modal-fruit.selected { border-color: var(--cherry); background: #FEECED; }
+    .mf-emoji { font-size: 28px; margin-bottom: 6px; }
+    .mf-name { font-size: 13px; font-weight: 800; color: var(--dark); }
+    .mf-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .modal-btns { display: flex; gap: 10px; }
+    .btn-modal-cancel {
+      flex: 1; background: var(--sand); color: var(--dark); border: none;
+      padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+    }
+    .btn-modal-save {
+      flex: 1; background: var(--cherry); color: #fff; border: none;
+      padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 800;
+      cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s;
+    }
+    .btn-modal-save:hover { background: var(--cherry-dark); }
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+      background: var(--dark); color: #fff; padding: 10px 22px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; z-index: 300; white-space: nowrap;
+      animation: fadeUp .3s ease; font-family: 'Nunito', sans-serif;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
+    /* BOTTOM NAV */
+    .bottom-nav {
+      display: none; position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--white); border-top: 1px solid var(--border);
+      padding: 10px 0 16px; justify-content: space-around; z-index: 50;
+    }
+    .bnav-item {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      cursor: pointer; opacity: 0.4; text-decoration: none; transition: opacity .2s;
+    }
+    .bnav-item.active { opacity: 1; }
+    .bnav-icon { font-size: 22px; }
+    .bnav-label { font-size: 9px; font-weight: 800; color: var(--dark); }
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; padding: 70px 16px 90px; }
+      .profile-card { position: static; }
+      .bottom-nav { display: flex; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-nav">
+  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <div class="nav-title">Mon profil</div>
+  <div style="display:flex;gap:8px">
+    <a href="swipe.html" class="nav-icon-btn">🔥</a>
+    <a href="messages.html" class="nav-icon-btn">💬</a>
+  </div>
+</div>
+
+<div class="page-wrap">
+  <!-- LEFT -->
+  <div>
+    <div class="profile-card">
+      <div class="profile-cover">
+        <button class="profile-cover-edit">✏️ Modifier</button>
+      </div>
+      <div class="profile-avatar-wrap">
+        <div class="profile-avatar" onclick="showToast('📷 Upload photo — Phase 2 avec Firebase !')">
+          👨🏾
+          <div class="avatar-edit-btn">✏️</div>
+        </div>
+      </div>
+      <div class="profile-card-body">
+        <div class="profile-name" id="displayName">Toi</div>
+        <div class="profile-age-city">28 ans · Kinshasa</div>
+        <div class="profile-fruit-badge" onclick="openFruitModal()">
+          <span id="displayFruit">🍒 Cerise</span>
+          <span style="opacity:.5;font-size:10px">▼</span>
+        </div>
+        <br>
+        <div class="profile-verified">✅ Profil vérifié</div>
+        <div class="profile-stats">
+          <div class="pstat"><div class="pstat-num">24</div><div class="pstat-label">Likes</div></div>
+          <div class="pstat"><div class="pstat-num">8</div><div class="pstat-label">Matchs</div></div>
+          <div class="pstat"><div class="pstat-num">142</div><div class="pstat-label">Vues</div></div>
+        </div>
+        <button class="btn-edit-profile" onclick="showToast('✏️ Modifie ta bio et tes intérêts ci-dessous !')">✏️ Modifier mon profil</button>
+        <button class="btn-preview" onclick="showToast('👁️ Aperçu profil public')">👁️ Voir mon profil</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right-col">
+
+    <!-- PREMIUM -->
+    <div class="premium-banner">
+      <div class="prem-icon">💎</div>
+      <div style="flex:1">
+        <div class="prem-title">Mbote Premium</div>
+        <div class="prem-sub">Likes illimités · Voir qui t'a liké · Pollen boost · Super likes</div>
+      </div>
+      <button class="btn-premium" onclick="showToast('💎 Premium — Phase 4 avec Stripe !')">Essayer</button>
+    </div>
+
+    <!-- BIO -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">📝 Ma bio</div>
+        <button class="btn-edit-section" id="bioEditBtn" onclick="toggleBio()">Modifier</button>
+      </div>
+      <div class="section-body">
+        <textarea class="bio-text" id="bioText" maxlength="300" readonly>Passionné de musique congolaise et de football. J'adore cuisiner le poulet moambé et voyager à travers le Congo. Je cherche quelqu'un de sincère et d'authentique avec qui partager de beaux moments.</textarea>
+        <div class="bio-count" id="bioCount" style="display:none"><span id="bioLen">0</span>/300</div>
+      </div>
+    </div>
+
+    <!-- PHOTOS -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">📸 Mes photos</div>
+        <button class="btn-edit-section" onclick="showToast('📸 Gestion photos — Phase 2 avec Firebase Storage !')">Ajouter</button>
+      </div>
+      <div class="section-body">
+        <div class="photos-grid">
+          <div class="photo-slot filled">
+            👨🏾
+            <div class="photo-del" onclick="showToast('🗑️ Supprimer photo')">✕</div>
+            <div class="photo-main-badge">Principale</div>
+          </div>
+          <div class="photo-slot filled" style="background:#E8F8EF">🤩<div class="photo-del" onclick="showToast('🗑️ Supprimer')">✕</div></div>
+          <div class="photo-slot filled" style="background:#F0EBF8">😎<div class="photo-del" onclick="showToast('🗑️ Supprimer')">✕</div></div>
+          <div class="photo-slot empty" onclick="showToast('📸 Upload — Phase 2 !')">➕ <span>Ajouter</span></div>
+          <div class="photo-slot empty" onclick="showToast('📸 Upload — Phase 2 !')">➕ <span>Ajouter</span></div>
+          <div class="photo-slot empty" onclick="showToast('📸 Upload — Phase 2 !')">➕ <span>Ajouter</span></div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:12px">💡 Les profils avec 4+ photos reçoivent 3× plus de matchs.</p>
+      </div>
+    </div>
+
+    <!-- INTERESTS -->
+    <div class="section-card">
+      <div class="section-header">
+        <div class="section-title">✨ Centres d'intérêt</div>
+        <button class="btn-edit-section" id="interestsEditBtn" onclick="toggleInterests()">Modifier</button>
+      </div>
+      <div class="section-body">
+        <div class="interests-wrap" id="interestsWrap">
+          <span class="interest-pill selected">🎵 Musique congolaise</span>
+          <span class="interest-pill selected">⚽ Football</span>
+          <span class="interest-pill selected">🍳 Cuisine</span>
+          <span class="interest-pill selected">✈️ Voyages</span>
+          <span class="interest-pill selected">🙏 Foi & spiritualité</span>
+          <span class="interest-pill selected">💼 Business</span>
+        </div>
+        <div id="allInterests" style="display:none;margin-top:12px">
+          <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Clique pour ajouter ou retirer :</p>
+          <div class="interests-wrap">
+            <span class="interest-pill editable selected" onclick="togglePill(this)">🎵 Musique congolaise</span>
+            <span class="interest-pill editable selected" onclick="togglePill(this)">⚽ Football</span>
+            <span class="interest-pill editable selected" onclick="togglePill(this)">🍳 Cuisine</span>
+            <span class="interest-pill editable selected" onclick="togglePill(this)">✈️ Voyages</span>
+            <span class="interest-pill editable selected" onclick="togglePill(this)">🙏 Foi & spiritualité</span>
+            <span class="interest-pill editable selected" onclick="togglePill(this)">💼 Business</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">💃 Ndombolo</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">📚 Lectures</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">🎨 Art</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">🏋️ Fitness</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">🎮 Gaming</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">📷 Photographie</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">🌍 Culture africaine</span>
+            <span class="interest-pill editable" onclick="togglePill(this)">🎤 Afrobeats</span>
+          </div>
+          <button onclick="saveInterests()" style="margin-top:14px;background:var(--cherry);color:#fff;border:none;padding:9px 22px;border-radius:50px;font-size:13px;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif">Enregistrer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREFERENCES -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">⚙️ Préférences de recherche</div></div>
+      <div class="section-body" style="padding:0 20px">
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">📍</div><div><div class="pref-label">Ma ville</div></div></div>
+          <select class="pref-select"><option>Kinshasa</option><option>Brazzaville</option><option>Lubumbashi</option><option>Goma</option><option>Diaspora</option></select>
+        </div>
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">🎂</div><div><div class="pref-label">Tranche d'âge</div></div></div>
+          <select class="pref-select"><option>18–25 ans</option><option selected>20–35 ans</option><option>25–40 ans</option><option>Tous</option></select>
+        </div>
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">🍒</div><div><div class="pref-label">Fruits acceptés</div></div></div>
+          <select class="pref-select"><option selected>Tous</option><option>🍒 Cerise seulement</option><option>🍒+🍑 Cerise & Pêche</option></select>
+        </div>
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">✅</div><div><div class="pref-label">Profils vérifiés uniquement</div></div></div>
+          <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
+        </div>
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">👁️</div><div><div class="pref-label">Mode discret</div><div class="pref-value">Masque ta distance exacte</div></div></div>
+          <label class="toggle"><input type="checkbox"><div class="toggle-slider"></div></label>
+        </div>
+        <div class="pref-row">
+          <div class="pref-left"><div class="pref-icon">🔔</div><div><div class="pref-label">Notifications</div></div></div>
+          <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-title">🛠️ Paramètres</div></div>
+      <div class="setting-item" onclick="showToast('💎 Premium — Phase 4 !')"><div class="setting-icon">💎</div><div class="setting-label">Mbote Premium</div><span class="setting-badge badge-red">Nouveau</span><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="showToast('✅ Déjà vérifié !')"><div class="setting-icon">✅</div><div class="setting-label">Vérifier mon profil</div><span class="setting-badge badge-green">Vérifié</span><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="showToast('🔒 Sécurité — Phase 2 !')"><div class="setting-icon">🔒</div><div class="setting-label">Sécurité & mot de passe</div><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="showToast('🙈 Blocages & signalements — Phase 2 !')"><div class="setting-icon">🙈</div><div class="setting-label">Blocages & signalements</div><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="showToast('📜 Conditions d\'utilisation')"><div class="setting-icon">📜</div><div class="setting-label">Conditions & confidentialité</div><div class="setting-arrow">›</div></div>
+      <div class="setting-item" onclick="showToast('❓ Centre d\'aide Mbote')"><div class="setting-icon">❓</div><div class="setting-label">Aide & support</div><div class="setting-arrow">›</div></div>
+    </div>
+
+    <!-- DANGER ZONE -->
+    <div class="section-card">
+      <div class="section-header"><div class="section-title" style="color:var(--cherry)">⚠️ Zone sensible</div></div>
+      <div class="danger-zone">
+        <button class="btn-logout" onclick="showToast('👋 Déconnexion — Phase 2 avec Firebase Auth !')">🚪 Se déconnecter</button>
+        <button class="btn-danger" onclick="if(confirm('Supprimer ton compte Mbote ? Action irréversible.')) showToast('🗑️ Suppression — Phase 2 !')">🗑️ Supprimer mon compte</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a href="swipe.html" class="bnav-item"><div class="bnav-icon">🔥</div><div class="bnav-label">Découvrir</div></a>
+  <a href="messages.html" class="bnav-item"><div class="bnav-icon">💬</div><div class="bnav-label">Messages</div></a>
+  <a href="profil.html" class="bnav-item active"><div class="bnav-icon">👤</div><div class="bnav-label">Profil</div></a>
+</div>
+
+<!-- FRUIT MODAL -->
+<div class="modal-overlay" id="fruitModal">
+  <div class="modal">
+    <div class="modal-title">Changer ton fruit 🍒</div>
+    <div class="modal-sub">Ton fruit s'affiche sur ton profil. Tout le monde verra ce que tu cherches.</div>
+    <div class="modal-fruits">
+      <div class="modal-fruit selected" onclick="selectModalFruit(this,'🍒 Cerise')"><div class="mf-emoji">🍒</div><div class="mf-name">Cerise</div><div class="mf-desc">Relation sérieuse</div></div>
+      <div class="modal-fruit" onclick="selectModalFruit(this,'🍇 Raisin')"><div class="mf-emoji">🍇</div><div class="mf-name">Raisin</div><div class="mf-desc">Amitié & sorties</div></div>
+      <div class="modal-fruit" onclick="selectModalFruit(this,'🍉 Pastèque')"><div class="mf-emoji">🍉</div><div class="mf-name">Pastèque</div><div class="mf-desc">Sans engagement</div></div>
+      <div class="modal-fruit" onclick="selectModalFruit(this,'🍑 Pêche')"><div class="mf-emoji">🍑</div><div class="mf-name">Pêche</div><div class="mf-desc">On verra bien…</div></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeFruitModal()">Annuler</button>
+      <button class="btn-modal-save" onclick="saveFruit()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedFruit = '🍒 Cerise';
+  let bioEditing = false;
+  let interestsEditing = false;
+
+  function toggleBio() {
+    bioEditing = !bioEditing;
+    const ta = document.getElementById('bioText');
+    const btn = document.getElementById('bioEditBtn');
+    const count = document.getElementById('bioCount');
+    if (bioEditing) {
+      ta.removeAttribute('readonly'); ta.classList.add('editing');
+      btn.textContent = 'Enregistrer'; count.style.display = 'block';
+      document.getElementById('bioLen').textContent = ta.value.length;
+      ta.focus();
+      ta.oninput = () => document.getElementById('bioLen').textContent = ta.value.length;
+    } else {
+      ta.setAttribute('readonly', true); ta.classList.remove('editing');
+      btn.textContent = 'Modifier'; count.style.display = 'none';
+      showToast('✅ Bio enregistrée !');
+    }
+  }
+
+  function toggleInterests() {
+    interestsEditing = !interestsEditing;
+    document.getElementById('interestsEditBtn').textContent = interestsEditing ? 'Fermer' : 'Modifier';
+    document.getElementById('interestsWrap').style.display = interestsEditing ? 'none' : 'flex';
+    document.getElementById('allInterests').style.display = interestsEditing ? 'block' : 'none';
+  }
+
+  function togglePill(el) { el.classList.toggle('selected'); }
+
+  function saveInterests() {
+    const selected = document.querySelectorAll('#allInterests .interest-pill.selected');
+    const wrap = document.getElementById('interestsWrap');
+    wrap.innerHTML = '';
+    selected.forEach(pill => {
+      const span = document.createElement('span');
+      span.className = 'interest-pill selected';
+      span.textContent = pill.textContent;
+      wrap.appendChild(span);
+    });
+    toggleInterests();
+    showToast('✅ Centres d\'intérêt enregistrés !');
+  }
+
+  function openFruitModal() { document.getElementById('fruitModal').classList.add('show'); }
+  function closeFruitModal() { document.getElementById('fruitModal').classList.remove('show'); }
+  function selectModalFruit(el, fruit) {
+    document.querySelectorAll('.modal-fruit').forEach(f => f.classList.remove('selected'));
+    el.classList.add('selected'); selectedFruit = fruit;
+  }
+  function saveFruit() {
+    document.getElementById('displayFruit').textContent = selectedFruit;
+    closeFruitModal(); showToast('🍒 Fruit mis à jour : ' + selectedFruit);
+  }
+
+  function showToast(msg) {
+    const existing = document.querySelector('.toast');
+    if (existing) existing.remove();
+    const t = document.createElement('div');
+    t.className = 'toast'; t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2800);
+  }
+
+  document.getElementById('fruitModal').addEventListener('click', function(e) {
+    if (e.target === this) closeFruitModal();
+  });
+</script>
+</body>
+</html>
