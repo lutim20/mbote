@@ -20,15 +20,12 @@ import {
   getDoc,
   updateDoc,
   collection,
-  query,
-  where,
   getDocs,
   orderBy,
-  limit,
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ─── CONFIG FIREBASE (mbote-app) ─────────────────────────────
+// ─── CONFIG FIREBASE ─────────────────────────────────────────
 const firebaseConfig = {
   apiKey:            "AIzaSyBiNHcfaE2zI3qxXfKWoN8gnfGhGqRhi_g",
   authDomain:        "mbote-app-2e4ed.firebaseapp.com",
@@ -38,7 +35,6 @@ const firebaseConfig = {
   messagingSenderId: "483321291415",
   appId:             "1:483321291415:web:228bab54e1f956c433ffd2"
 };
-// ─────────────────────────────────────────────────────────────
 
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
@@ -81,10 +77,12 @@ export async function inscrire(email, password, profileData) {
 export async function connecter(email, password) {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    await updateDoc(doc(db, "users", userCredential.user.uid), {
-      lastSeen: serverTimestamp(),
-      online:   true
-    });
+    try {
+      await updateDoc(doc(db, "users", userCredential.user.uid), {
+        lastSeen: serverTimestamp(),
+        online:   true
+      });
+    } catch(e) {}
     return { success: true, user: userCredential.user };
   } catch (error) {
     return { success: false, error: getErrorMessage(error.code) };
@@ -96,12 +94,17 @@ export async function deconnecter() {
   try {
     const user = auth.currentUser;
     if (user) {
-      await updateDoc(doc(db, "users", user.uid), { online: false, lastSeen: serverTimestamp() });
+      try {
+        await updateDoc(doc(db, "users", user.uid), {
+          online: false,
+          lastSeen: serverTimestamp()
+        });
+      } catch(e) {}
     }
     await signOut(auth);
     window.location.href = "index.html";
   } catch (error) {
-    console.error("Erreur déconnexion :", error);
+    console.error("Erreur déconnexion:", error);
   }
 }
 
@@ -129,7 +132,10 @@ export async function getProfil(uid) {
 // ─── METTRE À JOUR PROFIL ────────────────────────────────────
 export async function updateProfil(uid, data) {
   try {
-    await updateDoc(doc(db, "users", uid), { ...data, updatedAt: serverTimestamp() });
+    await updateDoc(doc(db, "users", uid), {
+      ...data,
+      updatedAt: serverTimestamp()
+    });
     return { success: true };
   } catch (error) {
     return { success: false, error: error.message };
@@ -137,35 +143,85 @@ export async function updateProfil(uid, data) {
 }
 
 // ─── LIKE / MATCH ────────────────────────────────────────────
-export async function enregistrerLike(fromUid, toUid, action = "like") {
+// Version corrigée — détection fiable du like mutuel
+export async function enregistrerLike(fromUid, toUid, action) {
+  if (!action) action = "like";
+
   try {
-    await setDoc(doc(db, "users", fromUid, "vus", toUid), {
-      action,
+    console.log("Like enregistré:", fromUid, "->", toUid, "action:", action);
+
+    // 1. Marquer comme vu
+    await setDoc(doc(db, "vus", fromUid + "_" + toUid), {
+      from:      fromUid,
+      to:        toUid,
+      action:    action,
       timestamp: serverTimestamp()
     });
 
-    if (action !== "like" && action !== "superlike") return { success: true, match: false };
-
-    await setDoc(doc(db, "likes", `${fromUid}_${toUid}`), {
-      from: fromUid, to: toUid, action, timestamp: serverTimestamp()
-    });
-
-    const toUser = await getDoc(doc(db, "users", toUid));
-    if (toUser.exists()) {
-      await updateDoc(doc(db, "users", toUid), { likes: (toUser.data().likes || 0) + 1 });
+    // Si dislike → stop
+    if (action === "dislike") {
+      return { success: true, match: false };
     }
 
-    const reverseLike = await getDoc(doc(db, "likes", `${toUid}_${fromUid}`));
-    if (reverseLike.exists()) {
+    // 2. Enregistrer le like dans collection "likes"
+    await setDoc(doc(db, "likes", fromUid + "_" + toUid), {
+      from:      fromUid,
+      to:        toUid,
+      action:    action,
+      timestamp: serverTimestamp()
+    });
+    console.log("Like sauvegardé dans Firestore");
+
+    // 3. Incrémenter likes reçus
+    try {
+      const toUserSnap = await getDoc(doc(db, "users", toUid));
+      if (toUserSnap.exists()) {
+        await updateDoc(doc(db, "users", toUid), {
+          likes: (toUserSnap.data().likes || 0) + 1
+        });
+      }
+    } catch(e) { console.error("Erreur update likes:", e); }
+
+    // 4. Vérifier like inverse (like mutuel)
+    const reverseId   = toUid + "_" + fromUid;
+    const reverseSnap = await getDoc(doc(db, "likes", reverseId));
+    console.log("Like inverse existe ?", reverseSnap.exists());
+
+    if (reverseSnap.exists()) {
+      // ✅ MATCH !
       const matchId = [fromUid, toUid].sort().join("_");
+      console.log("MATCH créé ! matchId:", matchId);
+
       await setDoc(doc(db, "matchs", matchId), {
-        users: [fromUid, toUid], timestamp: serverTimestamp(), lastMsg: null
+        users:       [fromUid, toUid],
+        timestamp:   serverTimestamp(),
+        lastMsg:     null,
+        lastMsgTime: null
       });
-      return { success: true, match: true, matchId };
+
+      // Incrémenter matchs des deux côtés
+      try {
+        const fromSnap = await getDoc(doc(db, "users", fromUid));
+        if (fromSnap.exists()) {
+          await updateDoc(doc(db, "users", fromUid), {
+            matchs: (fromSnap.data().matchs || 0) + 1
+          });
+        }
+        const toSnap = await getDoc(doc(db, "users", toUid));
+        if (toSnap.exists()) {
+          await updateDoc(doc(db, "users", toUid), {
+            matchs: (toSnap.data().matchs || 0) + 1
+          });
+        }
+      } catch(e) { console.error("Erreur update matchs:", e); }
+
+      return { success: true, match: true, matchId: matchId };
     }
 
     return { success: true, match: false };
+
   } catch (error) {
+    console.error("Erreur enregistrerLike:", error);
     return { success: false, error: error.message };
   }
 }
@@ -175,10 +231,15 @@ export async function envoyerMessage(matchId, fromUid, texte) {
   try {
     const msgRef = doc(collection(db, "matchs", matchId, "messages"));
     await setDoc(msgRef, {
-      from: fromUid, texte, lu: false, timestamp: serverTimestamp()
+      from:      fromUid,
+      texte:     texte,
+      lu:        false,
+      timestamp: serverTimestamp()
     });
     await updateDoc(doc(db, "matchs", matchId), {
-      lastMsg: texte, lastMsgTime: serverTimestamp(), lastMsgFrom: fromUid
+      lastMsg:     texte,
+      lastMsgTime: serverTimestamp(),
+      lastMsgFrom: fromUid
     });
     return { success: true };
   } catch (error) {
@@ -187,9 +248,10 @@ export async function envoyerMessage(matchId, fromUid, texte) {
 }
 
 // ─── PROTECTION PAGE ─────────────────────────────────────────
-export function protegerPage(redirectSiNonConnecte = true) {
-  return new Promise((resolve) => {
-    onAuthStateChanged(auth, (user) => {
+export function protegerPage(redirectSiNonConnecte) {
+  if (redirectSiNonConnecte === undefined) redirectSiNonConnecte = true;
+  return new Promise(function(resolve) {
+    onAuthStateChanged(auth, function(user) {
       if (user) {
         resolve(user);
       } else {
