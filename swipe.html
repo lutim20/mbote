@@ -238,10 +238,15 @@
     swipeHistory = [];
 
     try {
-      // Profils déjà vus
-      var vusSnap = await getDocs(collection(db, "users", currentUser.uid, "vus"));
-      var vusIds  = [currentUser.uid];
-      vusSnap.forEach(function(d) { vusIds.push(d.id); });
+      // Profils déjà vus (collection racine vus/)
+      var vusIds = [currentUser.uid];
+      try {
+        var vusSnap = await getDocs(collection(db, "vus"));
+        vusSnap.forEach(function(d) {
+          var data = d.data();
+          if (data.from === currentUser.uid) vusIds.push(data.to);
+        });
+      } catch(e) { console.log("Pas encore de vus"); }
 
       // Genre recherché
       var genreRecherche = myData.recherche || (myData.genre === 'homme' ? 'femme' : 'homme');
