@@ -346,16 +346,24 @@
     let currentStep  = 1;
     let selectedFruit = null;
 
-    // Expose fonctions au HTML
-    window.goStep        = goStep;
-    window.selectFruit   = selectFruit;
-    window.toggleInterest= toggleInterest;
-    window.previewPhoto  = previewPhoto;
-    window.submitForm    = submitForm;
-
     /* ── NAVIGATION ── */
     function goStep(step) {
-      if (step > currentStep && !validateStep(currentStep)) return;
+      console.log("goStep appelé:", step, "currentStep:", currentStep);
+      if (step > currentStep) {
+        var ok = validateStep(currentStep);
+        console.log("Validation étape", currentStep, ":", ok);
+        if (!ok) {
+          console.log("Validation échouée - champs:", 
+            "prenom:", document.getElementById('prenom').value,
+            "dob:", document.getElementById('dob').value,
+            "genre:", document.getElementById('genre').value,
+            "email:", document.getElementById('email').value,
+            "pwd:", document.getElementById('password').value.length,
+            "pwd2:", document.getElementById('password2').value.length
+          );
+          return;
+        }
+      }
       document.getElementById('step' + currentStep).classList.remove('active');
       currentStep = step;
       document.getElementById('step' + step).classList.add('active');
@@ -388,7 +396,8 @@
         const pwd2   = document.getElementById('password2').value;
         showErr('prenom',    !prenom);                                    if (!prenom) valid = false;
         const age = dob ? getAge(dob) : 0;
-        showErr('dob',       !dob || age < 18);                           if (!dob || age < 18) valid = false;
+        showErr('dob',       !dob || age < 18);
+        if (!dob || age < 18) valid = false;
         showErr('genre',     !genre);                                     if (!genre) valid = false;
         const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         showErr('email',     !emailOk);                                   if (!emailOk) valid = false;
@@ -417,12 +426,24 @@
     }
 
     function getAge(dob) {
-      const today = new Date(), birth = new Date(dob);
-      let age = today.getFullYear() - birth.getFullYear();
-      const m = today.getMonth() - birth.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
-      return age;
+      if (!dob) return 0;
+      try {
+        var today = new Date();
+        var birth = new Date(dob);
+        if (isNaN(birth.getTime())) return 0;
+        var age = today.getFullYear() - birth.getFullYear();
+        var m = today.getMonth() - birth.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+        return age;
+      } catch(e) { return 0; }
     }
+
+    // Expose fonctions au HTML (après déclaration)
+    window.goStep         = goStep;
+    window.selectFruit    = selectFruit;
+    window.toggleInterest = toggleInterest;
+    window.previewPhoto   = previewPhoto;
+    window.submitForm     = submitForm;
 
     document.getElementById('dob').max = new Date().toISOString().split('T')[0];
 
@@ -538,7 +559,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('./sw.js')
           .then(function(reg) { console.log('[PWA] Service Worker enregistré'); })
           .catch(function(e) { console.log('[PWA] Erreur:', e); });
       });
