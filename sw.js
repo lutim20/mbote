@@ -1,79 +1,114 @@
 // ============================================================
-//  MBOTE — sw.js  (Service Worker)
-//  Notifications push en arrière-plan
-//  Placer ce fichier à la RACINE du projet (même niveau que index.html)
+//  MBOTE — sw.js (Service Worker PWA)
+//  Cache les fichiers pour mode hors-ligne + installation
 // ============================================================
 
-const CACHE_NAME = 'mbote-v1';
+const CACHE_NAME    = 'mbote-v2';
+const CACHE_TIMEOUT = 3600; // 1 heure
 
-// Fichiers à mettre en cache pour le mode hors-ligne
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
+  '/connexion.html',
+  '/inscription.html',
   '/swipe.html',
   '/messages_v2.html',
   '/profil.html',
   '/firebase.js',
+  '/notifications.js',
+  '/manifest.json'
 ];
 
-// ─── INSTALLATION ────────────────────────────────────────────
-self.addEventListener('install', (event) => {
+// ─── INSTALLATION ─────────────────────────────────────────────
+self.addEventListener('install', function(event) {
+  console.log('[SW] Installation...');
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(CACHE_NAME).then(function(cache) {
       console.log('[SW] Mise en cache des fichiers');
-      return cache.addAll(FILES_TO_CACHE);
+      // On essaie de mettre en cache mais on ignore les erreurs
+      return Promise.allSettled(
+        FILES_TO_CACHE.map(function(url) {
+          return cache.add(url).catch(function(e) {
+            console.warn('[SW] Impossible de cacher:', url, e);
+          });
+        })
+      );
     })
   );
   self.skipWaiting();
 });
 
-// ─── ACTIVATION ──────────────────────────────────────────────
-self.addEventListener('activate', (event) => {
+// ─── ACTIVATION ───────────────────────────────────────────────
+self.addEventListener('activate', function(event) {
+  console.log('[SW] Activation...');
   event.waitUntil(
-    caches.keys().then((keyList) =>
-      Promise.all(
-        keyList.map((key) => {
+    caches.keys().then(function(keyList) {
+      return Promise.all(
+        keyList.map(function(key) {
           if (key !== CACHE_NAME) {
-            console.log('[SW] Suppression ancien cache :', key);
+            console.log('[SW] Suppression ancien cache:', key);
             return caches.delete(key);
           }
         })
-      )
-    )
+      );
+    })
   );
   self.clients.claim();
 });
 
-// ─── FETCH (Cache first pour les assets) ─────────────────────
-self.addEventListener('fetch', (event) => {
-  // Ne pas intercepter les requêtes Firebase
-  if (event.request.url.includes('firebase') ||
-      event.request.url.includes('googleapis')) return;
+// ─── FETCH ────────────────────────────────────────────────────
+self.addEventListener('fetch', function(event) {
+  // Ne pas intercepter Firebase, Google Fonts, extensions
+  var url = event.request.url;
+  if (url.includes('firebase') ||
+      url.includes('googleapis') ||
+      url.includes('gstatic') ||
+      url.includes('chrome-extension') ||
+      event.request.method !== 'GET') {
+    return;
+  }
 
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    caches.match(event.request).then(function(cached) {
+      // Stratégie Network First : essayer le réseau d'abord
+      return fetch(event.request).then(function(response) {
+        // Mettre en cache la nouvelle version
+        if (response && response.status === 200) {
+          var responseClone = response.clone();
+          caches.open(CACHE_NAME).then(function(cache) {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return response;
+      }).catch(function() {
+        // Si pas de réseau → utiliser le cache
+        if (cached) {
+          console.log('[SW] Hors-ligne, utilisation du cache:', url);
+          return cached;
+        }
+        // Si pas de cache non plus → page offline
+        if (event.request.mode === 'navigate') {
+          return caches.match('/index.html');
+        }
+      });
     })
   );
 });
 
-// ─── NOTIFICATIONS PUSH ──────────────────────────────────────
-self.addEventListener('push', (event) => {
-  const data = event.data?.json() || {};
+// ─── NOTIFICATIONS PUSH ───────────────────────────────────────
+self.addEventListener('push', function(event) {
+  var data = {};
+  try { data = event.data.json(); } catch(e) {}
 
-  const options = {
+  var options = {
     body:    data.body    || 'Tu as un nouveau message sur Mbote !',
-    icon:    data.icon    || '/icon-192.png',
-    badge:   data.badge   || '/badge-72.png',
-    image:   data.image   || null,
+    icon:    '/icon-192.png',
+    badge:   '/icon-192.png',
     vibrate: [200, 100, 200],
-    data: {
-      url:     data.url     || '/messages_v2.html',
-      matchId: data.matchId || null,
-    },
+    data:    { url: data.url || '/messages_v2.html' },
     actions: [
-      { action: 'reply',  title: '💬 Répondre' },
-      { action: 'ignore', title: 'Ignorer' },
+      { action: 'open',   title: '💬 Voir le message' },
+      { action: 'ignore', title: 'Ignorer' }
     ]
   };
 
@@ -85,40 +120,26 @@ self.addEventListener('push', (event) => {
   );
 });
 
-// ─── CLIC SUR NOTIFICATION ───────────────────────────────────
-self.addEventListener('notificationclick', (event) => {
+// ─── CLIC NOTIFICATION ────────────────────────────────────────
+self.addEventListener('notificationclick', function(event) {
   event.notification.close();
-
   if (event.action === 'ignore') return;
 
-  const url = event.notification.data?.url || '/messages_v2.html';
+  var url = event.notification.data && event.notification.data.url
+    ? event.notification.data.url
+    : '/messages_v2.html';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
-      // Si l'app est déjà ouverte → focus + naviguer
-      for (const client of clientList) {
-        if (client.url.includes(self.location.origin) && 'focus' in client) {
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
+      for (var i = 0; i < clientList.length; i++) {
+        var client = clientList[i];
+        if ('focus' in client) {
           client.focus();
           client.navigate(url);
           return;
         }
       }
-      // Sinon → ouvrir une nouvelle fenêtre
       if (clients.openWindow) return clients.openWindow(url);
     })
   );
 });
-
-// ─── SYNC EN ARRIÈRE-PLAN ────────────────────────────────────
-// Envoie les messages mis en file d'attente quand la connexion revient
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-messages') {
-    event.waitUntil(syncPendingMessages());
-  }
-});
-
-async function syncPendingMessages() {
-  // Récupérer les messages en attente depuis IndexedDB
-  // (à implémenter si nécessaire pour le mode hors-ligne)
-  console.log('[SW] Synchronisation des messages en attente...');
-}

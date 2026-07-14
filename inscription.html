@@ -104,6 +104,13 @@
     @media (max-width: 900px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } .right-panel { padding: 90px 24px 48px; max-width: 100%; } }
     @media (max-width: 480px) { .fruit-picker { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
   </style>
+  <!-- PWA -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#E8394A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Mbote">
+  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
 
@@ -525,6 +532,16 @@
     function showSubmitError(msg) {
       document.getElementById('submitErrorText').textContent = msg;
       document.getElementById('submitError').classList.add('show');
+    }
+  </script>
+  <!-- Service Worker PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js')
+          .then(function(reg) { console.log('[PWA] Service Worker enregistré'); })
+          .catch(function(e) { console.log('[PWA] Erreur:', e); });
+      });
     }
   </script>
 </body>
