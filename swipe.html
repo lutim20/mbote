@@ -157,6 +157,7 @@
 
 <script type="module">
   import { auth, db, onAuthStateChanged, enregistrerLike } from "./firebase.js";
+  import { initNotifBadge } from "./notifications.js";
   import {
     collection, query, where, getDocs, doc, getDoc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -180,6 +181,7 @@
       return;
     }
     currentUser = user;
+    initNotifBadge();
 
     // Charger mon profil
     try {
@@ -238,7 +240,7 @@
     swipeHistory = [];
 
     try {
-      // Profils déjà vus (collection racine vus/)
+      // Profils déjà vus (collection racine)
       var vusIds = [currentUser.uid];
       try {
         var vusSnap = await getDocs(collection(db, "vus"));

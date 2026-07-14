@@ -273,6 +273,7 @@
 
 <script type="module">
   import { auth, db, onAuthStateChanged, deconnecter, updateProfil } from "./firebase.js";
+  import { initNotifBadge } from "./notifications.js";
   import { doc, getDoc, collection, getDocs, updateDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
@@ -299,6 +300,7 @@
   onAuthStateChanged(auth, async function(user) {
     if (!user) { window.location.href = "connexion.html"; return; }
     currentUser = user;
+    initNotifBadge();
     await loadProfil();
 
     document.getElementById('logoutBtn').addEventListener('click', async function() {
