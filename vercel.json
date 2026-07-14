@@ -9,29 +9,18 @@
     { "source": "/connexion",  "destination": "/connexion.html" },
     { "source": "/inscription","destination": "/inscription.html" }
   ],
-  "redirects": [
-    { "source": "/((?!.*\\.html$).*)", "destination": "/404.html", "statusCode": 404 }
-  ],
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/firebase.js",
       "headers": [
-        { "key": "X-Content-Type-Options", "value": "nosniff" },
-        { "key": "X-Frame-Options",        "value": "DENY" },
-        { "key": "X-XSS-Protection",       "value": "1; mode=block" }
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
       ]
     },
     {
       "source": "/sw.js",
       "headers": [
         { "key": "Service-Worker-Allowed", "value": "/" },
-        { "key": "Cache-Control",          "value": "no-cache, no-store, must-revalidate" }
-      ]
-    },
-    {
-      "source": "/firebase.js",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        { "key": "Cache-Control", "value": "no-cache" }
       ]
     }
   ]
