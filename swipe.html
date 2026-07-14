@@ -11,7 +11,7 @@
     :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E; --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff; }
     .top-nav { background: var(--white); border-bottom: 1px solid var(--border); padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
     .nav-logo { font-size: 20px; font-weight: 900; color: var(--cherry); text-decoration: none; }
-    .nav-fruit-badge { display: flex; align-items: center; gap: 6px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 50px; }
+    .nav-intention-badge { display: flex; align-items: center; gap: 6px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 50px; }
     .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; }
     .main { flex: 1; display: flex; overflow: hidden; }
     .swipe-zone { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
@@ -25,7 +25,7 @@
     .card-photo { width: 100%; height: 280px; display: flex; align-items: center; justify-content: center; font-size: 90px; position: relative; flex-shrink: 0; background: #FEECED; overflow: hidden; }
     .card-photo img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
     .card-gradient { position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(0,0,0,.5), transparent); }
-    .card-fruit-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; color: var(--dark); z-index: 2; }
+    .card-intention-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,.92); padding: 5px 12px; border-radius: 50px; font-size: 12px; font-weight: 800; color: var(--dark); z-index: 2; }
     .card-verified { position: absolute; top: 12px; left: 12px; background: rgba(39,174,96,.9); padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: #fff; z-index: 2; display: none; }
     .card-name-overlay { position: absolute; bottom: 12px; left: 16px; z-index: 2; color: #fff; }
     .cn-name { font-size: 22px; font-weight: 900; }
@@ -84,7 +84,7 @@
 
 <div class="top-nav">
   <a href="index.html" class="nav-logo">🍒 Mbote</a>
-  <div class="nav-fruit-badge" id="fruitBadge">🍒 Cerise</div>
+  <div class="nav-intention-badge" id="intentionBadge">❤️ Motema</div>
   <div style="display:flex;gap:8px">
     <a href="messages_v2.html" class="nav-icon-btn">💬</a>
     <a href="profil.html" class="nav-icon-btn">👤</a>
@@ -100,18 +100,18 @@
     <div class="profiles-count" id="profilesCount" style="display:none"></div>
     <div class="card-stack" id="cardStack" style="display:none">
       <div class="swipe-card card-3" id="card3">
-        <div class="card-photo" id="c3photo" style="background:#E8F8EF"><div class="card-fruit-badge" id="c3fruit">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c3name"></span></div></div>
+        <div class="card-photo" id="c3photo" style="background:#E8F8EF"><div class="card-intention-badge" id="c3intention">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c3name"></span></div></div>
         <div class="card-body"><div class="card-city" id="c3city"></div></div>
       </div>
       <div class="swipe-card card-2" id="card2">
-        <div class="card-photo" id="c2photo" style="background:#F0EBF8"><div class="card-fruit-badge" id="c2fruit">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c2name"></span></div></div>
+        <div class="card-photo" id="c2photo" style="background:#F0EBF8"><div class="card-intention-badge" id="c2intention">🍒</div><div class="card-gradient"></div><div class="card-name-overlay"><span class="cn-name" id="c2name"></span></div></div>
         <div class="card-body"><div class="card-city" id="c2city"></div></div>
       </div>
       <div class="swipe-card card-1" id="card1">
         <div class="like-label" id="likeLabel">LIKE 💚</div>
         <div class="nope-label" id="nopeLabel">NOPE ✕</div>
         <div class="card-photo" id="c1photo" style="background:#FEECED">
-          <div class="card-fruit-badge" id="c1fruit"></div>
+          <div class="card-intention-badge" id="c1intention"></div>
           <div class="card-verified" id="c1verified">✓ Vérifié</div>
           <div class="card-gradient"></div>
           <div class="card-name-overlay">
@@ -192,8 +192,8 @@
       const snap = await getDoc(doc(db, "users", currentUser.uid));
       if (snap.exists()) {
         myData = snap.data();
-        if (myData.fruit) {
-          document.getElementById('fruitBadge').textContent = myData.fruit;
+        if (myData.intention) {
+          document.getElementById('intentionBadge').textContent = myData.intention;
         }
       }
     } catch(e) {
@@ -297,7 +297,7 @@
     if (!profile) return;
 
     var photoEl  = document.getElementById(prefix + 'photo');
-    var fruitEl  = document.getElementById(prefix + 'fruit');
+    var intentionEl  = document.getElementById(prefix + 'intention');
     var nameEl   = document.getElementById(prefix + 'name');
     var cityEl   = document.getElementById(prefix + 'city');
 
@@ -326,8 +326,8 @@
       photoEl.appendChild(em);
     }
 
-    // Fruit
-    if (fruitEl) fruitEl.textContent = profile.fruit || '🍒';
+    // Intention
+    if (intentionEl) intentionEl.textContent = profile.intention || '🍒';
 
     // Nom
     if (nameEl) nameEl.textContent = profile.prenom || 'Utilisateur';

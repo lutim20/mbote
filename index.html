@@ -54,7 +54,7 @@
     .phone-avatar { font-size: 72px; margin-bottom: 10px; transition: all .3s; }
     .phone-name { font-size: 18px; font-weight: 900; color: var(--dark); }
     .phone-info { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 600; }
-    .phone-fruit-badge { position: absolute; top: 10px; right: 10px; background: #fff; padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: var(--cherry); }
+    .phone-intention-badge { position: absolute; top: 10px; right: 10px; background: #fff; padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; color: var(--cherry); }
     .phone-tags { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
     .phone-tag { background: rgba(255,255,255,.7); font-size: 10px; padding: 3px 8px; border-radius: 20px; font-weight: 700; color: var(--dark); }
     .phone-actions { display: flex; justify-content: center; gap: 16px; padding: 12px 16px 16px; }
@@ -68,26 +68,26 @@
     @keyframes float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 
     /* FRUITS */
-    .fruits-section { padding: 80px 5%; background: var(--white); }
+    .intentions-section { padding: 80px 5%; background: var(--white); }
     .section-inner { max-width: 1100px; margin: 0 auto; }
     .section-badge { font-size: 12px; font-weight: 700; color: var(--cherry); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
     .section-title { font-size: clamp(28px,4vw,40px); font-weight: 900; color: var(--dark); margin-bottom: 14px; line-height: 1.2; }
     .section-sub { font-size: 16px; color: #666; max-width: 540px; line-height: 1.7; margin-bottom: 48px; }
-    .fruits-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
-    .fruit-card { border-radius: 20px; padding: 28px 20px; display: flex; flex-direction: column; gap: 10px; transition: transform .2s, box-shadow .2s; cursor: default; }
-    .fruit-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.08); }
-    .fruit-card.cherry { background: #FEECED; }
-    .fruit-card.grape  { background: #F0EBF8; }
-    .fruit-card.wm     { background: #E8F8EF; }
-    .fruit-card.peach  { background: #FFF0E8; }
-    .fruit-emoji { font-size: 40px; }
-    .fruit-name { font-size: 17px; font-weight: 900; color: var(--dark); }
-    .fruit-intent { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 50px; display: inline-block; width: fit-content; }
-    .cherry .fruit-intent { background: #FCCDD1; color: var(--cherry); }
-    .grape  .fruit-intent { background: #DDD3EF; color: #4A3483; }
-    .wm     .fruit-intent { background: #C3EDD7; color: #1A6E42; }
-    .peach  .fruit-intent { background: #FDDDC5; color: #B05A0A; }
-    .fruit-desc { font-size: 13px; color: #555; line-height: 1.6; }
+    .intentions-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+    .intention-card { border-radius: 20px; padding: 28px 20px; display: flex; flex-direction: column; gap: 10px; transition: transform .2s, box-shadow .2s; cursor: default; }
+    .intention-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,.08); }
+    .intention-card.cherry { background: #FEECED; }
+    .intention-card.grape  { background: #F0EBF8; }
+    .intention-card.wm     { background: #E8F8EF; }
+    .intention-card.peach  { background: #FFF0E8; }
+    .intention-emoji { font-size: 40px; }
+    .intention-name { font-size: 17px; font-weight: 900; color: var(--dark); }
+    .intention-intent { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 50px; display: inline-block; width: fit-content; }
+    .cherry .intention-intent { background: #FCCDD1; color: var(--cherry); }
+    .grape  .intention-intent { background: #DDD3EF; color: #4A3483; }
+    .wm     .intention-intent { background: #C3EDD7; color: #1A6E42; }
+    .peach  .intention-intent { background: #FDDDC5; color: #B05A0A; }
+    .intention-desc { font-size: 13px; color: #555; line-height: 1.6; }
 
     /* HOW */
     .how-section { padding: 80px 5%; background: var(--sand); }
@@ -101,7 +101,7 @@
 
     /* CTA */
     .cta-section { padding: 80px 5%; background: linear-gradient(135deg, var(--cherry) 0%, var(--orange) 100%); text-align: center; color: #fff; }
-    .cta-fruits { font-size: 32px; margin-bottom: 20px; letter-spacing: 4px; }
+    .cta-intentions { font-size: 32px; margin-bottom: 20px; letter-spacing: 4px; }
     .cta-title { font-size: clamp(28px,4vw,44px); font-weight: 900; margin-bottom: 16px; line-height: 1.2; }
     .cta-sub { font-size: 16px; opacity: .9; margin-bottom: 36px; max-width: 500px; margin-left: auto; margin-right: auto; line-height: 1.7; }
     .btn-white-lg { background: #fff; color: var(--cherry); border: none; padding: 16px 40px; border-radius: 50px; font-size: 17px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; display: inline-block; transition: transform .15s; }
@@ -126,9 +126,9 @@
     .mobile-menu a { text-decoration: none; color: var(--dark); font-size: 16px; font-weight: 700; padding: 8px 0; border-bottom: 1px solid var(--border); }
 
     /* RESPONSIVE */
-    @media (max-width: 1024px) { .fruits-grid, .how-grid { grid-template-columns: repeat(2,1fr); } .footer-top { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 768px) { .hero-inner { grid-template-columns: 1fr; gap: 48px; } .hero-visual { order: -1; } .phone-mockup { width: 220px; height: 420px; } .float-badge { display: none; } .nav-links { display: none; } .hamburger { display: block; } .fruits-grid, .how-grid { grid-template-columns: 1fr 1fr; } .footer-top { grid-template-columns: 1fr; gap: 28px; } }
-    @media (max-width: 480px) { .fruits-grid, .how-grid { grid-template-columns: 1fr; } .hero-cta { flex-direction: column; } }
+    @media (max-width: 1024px) { .intentions-grid, .how-grid { grid-template-columns: repeat(2,1fr); } .footer-top { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 768px) { .hero-inner { grid-template-columns: 1fr; gap: 48px; } .hero-visual { order: -1; } .phone-mockup { width: 220px; height: 420px; } .float-badge { display: none; } .nav-links { display: none; } .hamburger { display: block; } .intentions-grid, .how-grid { grid-template-columns: 1fr 1fr; } .footer-top { grid-template-columns: 1fr; gap: 28px; } }
+    @media (max-width: 480px) { .intentions-grid, .how-grid { grid-template-columns: 1fr; } .hero-cta { flex-direction: column; } }
 
     /* FADE */
     .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .6s ease, transform .6s ease; }
@@ -145,9 +145,9 @@
 <body>
 
 <nav>
-  <a href="#" class="nav-logo">🍒 Mbote</a>
+  <a href="#" class="nav-logo">❤️ Mbote</a>
   <div class="nav-links">
-    <a href="#fruits">Nos fruits</a>
+    <a href="#intentions">Nos intentions</a>
     <a href="#comment">Comment ça marche</a>
     <a href="connexion.html">Connexion</a>
     <a href="inscription.html" class="btn-nav">Rejoindre gratuitement</a>
@@ -156,7 +156,7 @@
 </nav>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="#fruits"    onclick="toggleMenu()">Nos fruits</a>
+  <a href="#intentions"    onclick="toggleMenu()">Nos intentions</a>
   <a href="#comment"   onclick="toggleMenu()">Comment ça marche</a>
   <a href="connexion.html">Connexion</a>
   <a href="inscription.html" class="btn-nav" style="text-align:center">Rejoindre gratuitement</a>
@@ -168,10 +168,10 @@
     <div class="hero-text">
       <div class="hero-badge">🇨🇩 La première app de rencontres congolaise</div>
       <h1>Dis ce que tu veux,<br>trouve qui tu <em>cherches.</em></h1>
-      <p>Sur Mbote, chaque profil affiche son intention dès le départ grâce à un fruit. Fini les malentendus.</p>
+      <p>Sur Mbote, chaque profil affiche son intention dès le départ grâce à un intention. Fini les malentendus.</p>
       <div class="hero-cta">
-        <a href="inscription.html" class="btn-primary">Choisir mon fruit 🍒</a>
-        <a href="#fruits" class="btn-secondary">Comment ça marche</a>
+        <a href="inscription.html" class="btn-primary">Choisir mon intention ❤️</a>
+        <a href="#intentions" class="btn-secondary">Comment ça marche</a>
       </div>
       <div class="hero-stats">
         <div class="stat-block">
@@ -202,7 +202,7 @@
           </div>
           <div style="padding:12px;flex:1;display:flex;flex-direction:column">
             <div class="phone-card" id="heroCard">
-              <div class="phone-fruit-badge" id="heroFruit">🍒 Cerise</div>
+              <div class="phone-intention-badge" id="heroIntention">❤️ Motema</div>
               <div class="phone-avatar" id="heroAvatar">👩🏾</div>
               <div class="phone-name" id="heroName">Amina M.</div>
               <div class="phone-info" id="heroInfo">27 ans · Kinshasa</div>
@@ -223,16 +223,16 @@
 </section>
 
 <!-- FRUITS -->
-<section class="fruits-section" id="fruits">
+<section class="intentions-section" id="intentions">
   <div class="section-inner">
     <div class="section-badge fade-up">Le concept Mbote</div>
-    <h2 class="section-title fade-up">Quel est ton fruit ?</h2>
-    <p class="section-sub fade-up">Choisis un fruit qui représente ce que tu recherches. Pas de devinettes, pas de mauvaises surprises.</p>
-    <div class="fruits-grid">
-      <div class="fruit-card cherry fade-up"><div class="fruit-emoji">🍒</div><div class="fruit-name">La Cerise</div><span class="fruit-intent">Relation sérieuse</span><p class="fruit-desc">Tu cherches ton âme sœur, quelqu'un avec qui construire quelque chose de vrai.</p></div>
-      <div class="fruit-card grape fade-up"><div class="fruit-emoji">🍇</div><div class="fruit-name">Le Raisin</div><span class="fruit-intent">Amitié & sorties</span><p class="fruit-desc">Un verre, une sortie à Kinshasa, des bons moments sans pression.</p></div>
-      <div class="fruit-card wm fade-up"><div class="fruit-emoji">🍉</div><div class="fruit-name">La Pastèque</div><span class="fruit-intent">Sans engagement</span><p class="fruit-desc">Du fun, de la bonne humeur, en toute transparence.</p></div>
-      <div class="fruit-card peach fade-up"><div class="fruit-emoji">🍑</div><div class="fruit-name">La Pêche</div><span class="fruit-intent">On verra bien…</span><p class="fruit-desc">Pas encore décidé(e) ? Ouvert(e) à tout et tu laisses venir.</p></div>
+    <h2 class="section-title fade-up">Quelle est ton intention ?</h2>
+    <p class="section-sub fade-up">Choisis un intention qui représente ce que tu recherches. Pas de devinettes, pas de mauvaises surprises.</p>
+    <div class="intentions-grid">
+      <div class="intention-card cherry fade-up"><div class="intention-emoji">🍒</div><div class="intention-name">Motema ❤️</div><span class="intention-intent">Motema — Relation sérieuse</span><p class="intention-desc">Tu cherches ton âme sœur, quelqu'un avec qui construire quelque chose de vrai.</p></div>
+      <div class="intention-card grape fade-up"><div class="intention-emoji">🍇</div><div class="intention-name">Lokumu 😊</div><span class="intention-intent">Lokumu — Faire connaissance</span><p class="intention-desc">Un verre, une sortie à Kinshasa, des bons moments sans pression.</p></div>
+      <div class="intention-card wm fade-up"><div class="intention-emoji">🍉</div><div class="intention-name">Chance ✨</div><span class="intention-intent">Chance — On verra bien</span><p class="intention-desc">Du fun, de la bonne humeur, en toute transparence.</p></div>
+      <div class="intention-card peach fade-up"><div class="intention-emoji">🍑</div><div class="intention-name">Moto 🔥</div><span class="intention-intent">Moto — Relation légère</span><p class="intention-desc">Pas encore décidé(e) ? Relation plus légère et tu laisses venir.</p></div>
     </div>
   </div>
 </section>
@@ -244,7 +244,7 @@
     <h2 class="section-title fade-up">Comment ça marche</h2>
     <div class="how-grid">
       <div class="how-card fade-up"><div class="how-num">1</div><div class="how-icon">✍️</div><div class="how-title">Crée ton profil</div><p class="how-desc">Photo, prénom, âge, ville et centres d'intérêt en 2 minutes.</p></div>
-      <div class="how-card fade-up"><div class="how-num">2</div><div class="how-icon">🍒</div><div class="how-title">Choisis ton fruit</div><p class="how-desc">Affiche tes intentions honnêtement pour éviter les malentendus.</p></div>
+      <div class="how-card fade-up"><div class="how-num">2</div><div class="how-icon">🍒</div><div class="how-title">Choisis ton intention</div><p class="how-desc">Affiche tes intentions honnêtement pour éviter les malentendus.</p></div>
       <div class="how-card fade-up"><div class="how-num">3</div><div class="how-icon">🔥</div><div class="how-title">Swipe les profils</div><p class="how-desc">Glisse à droite pour liker, à gauche pour passer. Match mutuel = conversation !</p></div>
       <div class="how-card fade-up"><div class="how-num">4</div><div class="how-icon">💬</div><div class="how-title">Lance la conversation</div><p class="how-desc">Une question brise-glace pour démarrer. Fini les "Bonjour ça va ?" sans suite.</p></div>
     </div>
@@ -253,7 +253,7 @@
 
 <!-- CTA -->
 <section class="cta-section">
-  <div class="cta-fruits">🍒 🍇 🍉 🍑</div>
+  <div class="cta-intentions">🍒 🍇 🍉 🍑</div>
   <h2 class="cta-title">Ton prochain match t'attend.</h2>
   <p class="cta-sub">Rejoins Mbote gratuitement et trouve quelqu'un qui cherche la même chose que toi.</p>
   <a href="inscription.html" class="btn-white-lg">Créer mon profil gratuitement →</a>
@@ -269,7 +269,7 @@
     <div class="footer-col">
       <h4>L'app</h4>
       <ul>
-        <li><a href="#fruits">Les fruits</a></li>
+        <li><a href="#intentions">Les intentions</a></li>
         <li><a href="#comment">Comment ça marche</a></li>
         <li><a href="inscription.html">S'inscrire</a></li>
         <li><a href="premium.html">Mbote Premium 💎</a></li>
@@ -333,10 +333,10 @@
 
   // ── HERO SWIPE DEMO ───────────────────────────────────
   var heroProfiles = [
-    { emoji:'👩🏾', name:'Amina M.',    info:'27 ans · Kinshasa',    fruit:'🍒 Cerise',  bg:'#FEECED', tags:['🎵 Musique','📚 Lectures'] },
-    { emoji:'👨🏿', name:'Cédric K.',   info:'31 ans · Lubumbashi',  fruit:'🍇 Raisin',  bg:'#E8F8EF', tags:['⚽ Football','🎮 Gaming'] },
-    { emoji:'👩🏿', name:'Félicité N.', info:'26 ans · Brazzaville', fruit:'🍒 Cerise',  bg:'#F0EBF8', tags:['✈️ Voyages','🎨 Art'] },
-    { emoji:'👨🏾', name:'Roger T.',    info:'34 ans · Goma',        fruit:'🍑 Pêche',   bg:'#FFF0E8', tags:['🏋️ Sport','📷 Photo'] },
+    { emoji:'👩🏾', name:'Amina M.',    info:'27 ans · Kinshasa',    intention:'❤️ Motema',  bg:'#FEECED', tags:['🎵 Musique','📚 Lectures'] },
+    { emoji:'👨🏿', name:'Cédric K.',   info:'31 ans · Lubumbashi',  intention:'😊 Lokumu',  bg:'#E8F8EF', tags:['⚽ Football','🎮 Gaming'] },
+    { emoji:'👩🏿', name:'Félicité N.', info:'26 ans · Brazzaville', intention:'❤️ Motema',  bg:'#F0EBF8', tags:['✈️ Voyages','🎨 Art'] },
+    { emoji:'👨🏾', name:'Roger T.',    info:'34 ans · Goma',        intention:'🔥 Moto',   bg:'#FFF0E8', tags:['🏋️ Sport','📷 Photo'] },
   ];
   var heroIdx = 0;
 
@@ -351,7 +351,7 @@
       document.getElementById('heroAvatar').textContent  = p.emoji;
       document.getElementById('heroName').textContent    = p.name;
       document.getElementById('heroInfo').textContent    = p.info;
-      document.getElementById('heroFruit').textContent   = p.fruit;
+      document.getElementById('heroIntention').textContent   = p.intention;
       document.getElementById('heroCard').style.background = p.bg;
       document.getElementById('heroTags').innerHTML = p.tags.map(function(t) {
         return '<span class="phone-tag">' + t + '</span>';

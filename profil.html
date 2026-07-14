@@ -28,7 +28,7 @@
     .profile-card-body { padding: 0 20px 20px; text-align: center; }
     .profile-name { font-size: 20px; font-weight: 900; color: var(--dark); }
     .profile-age-city { font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 3px; }
-    .profile-fruit-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 50px; margin: 10px auto 10px; cursor: pointer; }
+    .profile-intention-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 50px; margin: 10px auto 10px; cursor: pointer; }
     .profile-verified { display: inline-flex; align-items: center; gap: 5px; background: #E8F8EF; color: var(--green); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px; margin-bottom: 14px; }
 
     /* STATS */
@@ -106,10 +106,10 @@
     @keyframes popIn { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
     .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-    .modal-fruits { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .modal-fruit { border: 2.5px solid var(--border); border-radius: 16px; padding: 16px 12px; cursor: pointer; text-align: center; transition: border-color .15s, background .15s; }
-    .modal-fruit:hover { border-color: var(--cherry); }
-    .modal-fruit.selected { border-color: var(--cherry); background: #FEECED; }
+    .modal-intentions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .modal-intention { border: 2.5px solid var(--border); border-radius: 16px; padding: 16px 12px; cursor: pointer; text-align: center; transition: border-color .15s, background .15s; }
+    .modal-intention:hover { border-color: var(--cherry); }
+    .modal-intention.selected { border-color: var(--cherry); background: #FEECED; }
     .mf-emoji { font-size: 28px; margin-bottom: 6px; }
     .mf-name { font-size: 13px; font-weight: 800; color: var(--dark); }
     .mf-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
@@ -160,7 +160,7 @@
       <div class="profile-card-body">
         <div class="profile-name" id="profileName">Chargement...</div>
         <div class="profile-age-city" id="profileMeta">...</div>
-        <div class="profile-fruit-badge" id="profileFruit" onclick="openFruitModal()">🍒 Chargement...</div>
+        <div class="profile-intention-badge" id="profileIntention" onclick="openIntentionModal()">🍒 Chargement...</div>
         <br>
         <div class="profile-verified" id="profileVerified" style="display:none">✅ Profil vérifié</div>
         <div class="profile-stats">
@@ -261,19 +261,19 @@
 </div>
 
 <!-- FRUIT MODAL -->
-<div class="modal-overlay" id="fruitModal">
+<div class="modal-overlay" id="intentionModal">
   <div class="modal">
-    <div class="modal-title">Changer ton fruit 🍒</div>
-    <div class="modal-sub">Ton fruit s'affiche sur ton profil.</div>
-    <div class="modal-fruits">
-      <div class="modal-fruit" onclick="selectModalFruit(this,'🍒 Cerise')"><div class="mf-emoji">🍒</div><div class="mf-name">Cerise</div><div class="mf-desc">Relation sérieuse</div></div>
-      <div class="modal-fruit" onclick="selectModalFruit(this,'🍇 Raisin')"><div class="mf-emoji">🍇</div><div class="mf-name">Raisin</div><div class="mf-desc">Amitié & sorties</div></div>
-      <div class="modal-fruit" onclick="selectModalFruit(this,'🍉 Pastèque')"><div class="mf-emoji">🍉</div><div class="mf-name">Pastèque</div><div class="mf-desc">Sans engagement</div></div>
-      <div class="modal-fruit" onclick="selectModalFruit(this,'🍑 Pêche')"><div class="mf-emoji">🍑</div><div class="mf-name">Pêche</div><div class="mf-desc">On verra bien…</div></div>
+    <div class="modal-title">Changer ton intention 🍒</div>
+    <div class="modal-sub">Ton intention s'affiche sur ton profil.</div>
+    <div class="modal-intentions">
+      <div class="modal-intention" onclick="selectModalIntention(this,'❤️ Motema')"><div class="mf-emoji">🍒</div><div class="mf-name">Cerise</div><div class="mf-desc">Motema — Relation sérieuse</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'😊 Lokumu')"><div class="mf-emoji">🍇</div><div class="mf-name">Raisin</div><div class="mf-desc">Lokumu — Faire connaissance</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'✨ Chance')"><div class="mf-emoji">🍉</div><div class="mf-name">Pastèque</div><div class="mf-desc">Chance — On verra bien</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'🔥 Moto')"><div class="mf-emoji">🍑</div><div class="mf-name">Pêche</div><div class="mf-desc">Moto — Relation légère</div></div>
     </div>
     <div class="modal-btns">
-      <button class="btn-modal-cancel" onclick="closeFruitModal()">Annuler</button>
-      <button class="btn-modal-save" onclick="saveFruit()">Enregistrer</button>
+      <button class="btn-modal-cancel" onclick="closeIntentionModal()">Annuler</button>
+      <button class="btn-modal-save" onclick="saveIntention()">Enregistrer</button>
     </div>
   </div>
 </div>
@@ -288,7 +288,7 @@
 
   let currentUser = null;
   let myData      = {};
-  let selectedFruit = null;
+  let selectedIntention = null;
   let bioEditing    = false;
   let interestsEditing = false;
 
@@ -296,10 +296,10 @@
   window.toggleBio       = toggleBio;
   window.toggleInterests = toggleInterests;
   window.saveInterests   = saveInterests;
-  window.openFruitModal  = openFruitModal;
-  window.closeFruitModal = closeFruitModal;
-  window.selectModalFruit= selectModalFruit;
-  window.saveFruit       = saveFruit;
+  window.openIntentionModal  = openIntentionModal;
+  window.closeIntentionModal = closeIntentionModal;
+  window.selectModalIntention= selectModalIntention;
+  window.saveIntention       = saveIntention;
   window.confirmDelete   = confirmDelete;
   window.showToast       = showToast;
 
@@ -352,10 +352,10 @@
         avEl.textContent = myData.genre === 'femme' ? '👩🏾' : '👨🏾';
       }
 
-      // Fruit
-      var fruit = myData.fruit || '🍒 Cerise';
-      document.getElementById('profileFruit').textContent = fruit + ' ▼';
-      selectedFruit = fruit;
+      // Intention
+      var intention = myData.intention || '❤️ Motema';
+      document.getElementById('profileIntention').textContent = intention + ' ▼';
+      selectedIntention = intention;
 
       // Vérifié
       if (myData.verified) {
@@ -453,20 +453,20 @@
   }
 
   // ── FRUIT MODAL ───────────────────────────────────────
-  function openFruitModal() { document.getElementById('fruitModal').classList.add('show'); }
-  function closeFruitModal() { document.getElementById('fruitModal').classList.remove('show'); }
-  function selectModalFruit(el, fruit) {
-    document.querySelectorAll('.modal-fruit').forEach(function(f) { f.classList.remove('selected'); });
+  function openIntentionModal() { document.getElementById('intentionModal').classList.add('show'); }
+  function closeIntentionModal() { document.getElementById('intentionModal').classList.remove('show'); }
+  function selectModalIntention(el, intention) {
+    document.querySelectorAll('.modal-intention').forEach(function(f) { f.classList.remove('selected'); });
     el.classList.add('selected');
-    selectedFruit = fruit;
+    selectedIntention = intention;
   }
-  async function saveFruit() {
+  async function saveIntention() {
     try {
-      await updateDoc(doc(db, "users", currentUser.uid), { fruit: selectedFruit, updatedAt: serverTimestamp() });
-      myData.fruit = selectedFruit;
-      document.getElementById('profileFruit').textContent = selectedFruit + ' ▼';
-      closeFruitModal();
-      showToast('🍒 Fruit mis à jour : ' + selectedFruit);
+      await updateDoc(doc(db, "users", currentUser.uid), { intention: selectedIntention, updatedAt: serverTimestamp() });
+      myData.intention = selectedIntention;
+      document.getElementById('profileIntention').textContent = selectedIntention + ' ▼';
+      closeIntentionModal();
+      showToast('🍒 Intention mis à jour : ' + selectedIntention);
     } catch(e) { showToast('❌ Erreur : ' + e.message); }
   }
 
@@ -488,8 +488,8 @@
     setTimeout(function() { t.remove(); }, 2800);
   }
 
-  document.getElementById('fruitModal').addEventListener('click', function(e) {
-    if (e.target === this) closeFruitModal();
+  document.getElementById('intentionModal').addEventListener('click', function(e) {
+    if (e.target === this) closeIntentionModal();
   });
 </script>
   <!-- Service Worker PWA -->

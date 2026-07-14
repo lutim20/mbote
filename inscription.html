@@ -22,7 +22,7 @@
     .left-panel { background: linear-gradient(160deg, var(--cherry) 0%, var(--orange) 100%); display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 100px 48px 60px; position: sticky; top: 0; height: 100vh; text-align: center; }
     .left-logo { font-size: 48px; font-weight: 900; color: #fff; margin-bottom: 8px; }
     .left-sub { font-size: 14px; color: rgba(255,255,255,.8); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 40px; }
-    .left-fruits { font-size: 42px; letter-spacing: 8px; margin-bottom: 36px; }
+    .left-intentions { font-size: 42px; letter-spacing: 8px; margin-bottom: 36px; }
     .left-tagline { font-size: 22px; font-weight: 900; color: #fff; line-height: 1.35; margin-bottom: 16px; }
     .left-desc { font-size: 14px; color: rgba(255,255,255,.8); line-height: 1.7; max-width: 320px; }
     .right-panel { padding: 100px 48px 60px; display: flex; flex-direction: column; justify-content: center; max-width: 560px; margin: 0 auto; width: 100%; }
@@ -50,12 +50,12 @@
     .error-msg { font-size: 12px; color: var(--cherry); margin-top: 5px; display: none; font-weight: 700; }
     .error-msg.show { display: block; }
     .input-error { border-color: var(--cherry) !important; }
-    .fruit-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
-    .fruit-option { border: 3px solid var(--border); border-radius: 18px; padding: 20px 16px; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; gap: 6px; background: var(--white); -webkit-tap-highlight-color: transparent; }
-    .fruit-option.selected.cherry { border-color: var(--cherry); background: #FEECED; }
-    .fruit-option.selected.grape  { border-color: var(--grape); background: #F0EBF8; }
-    .fruit-option.selected.wm     { border-color: var(--watermelon); background: #E8F8EF; }
-    .fruit-option.selected.peach  { border-color: var(--orange); background: #FFF0E8; }
+    .intention-picker { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 8px; }
+    .intention-option { border: 3px solid var(--border); border-radius: 18px; padding: 20px 16px; cursor: pointer; transition: all .15s; display: flex; flex-direction: column; gap: 6px; background: var(--white); -webkit-tap-highlight-color: transparent; }
+    .intention-option.selected.cherry { border-color: var(--cherry); background: #FEECED; }
+    .intention-option.selected.grape  { border-color: var(--grape); background: #F0EBF8; }
+    .intention-option.selected.wm     { border-color: var(--watermelon); background: #E8F8EF; }
+    .intention-option.selected.peach  { border-color: var(--orange); background: #FFF0E8; }
     .fo-emoji { font-size: 30px; }
     .fo-name { font-size: 14px; font-weight: 800; color: var(--dark); }
     .fo-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
@@ -81,7 +81,7 @@
     .success-sub { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
     .btn-go { display: inline-block; background: var(--cherry); color: #fff; border: none; padding: 15px 36px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; }
     @media (max-width: 900px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } .right-panel { padding: 90px 24px 48px; max-width: 100%; } }
-    @media (max-width: 480px) { .fruit-picker { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .intention-picker { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
@@ -94,7 +94,7 @@
     <div class="left-panel">
       <div class="left-logo">Mbote</div>
       <div class="left-sub">Le dating congolais</div>
-      <div class="left-fruits">🍒 🍇 🍉 🍑</div>
+      <div class="left-intentions">🍒 🍇 🍉 🍑</div>
       <div class="left-tagline">Dis ce que tu veux,<br>trouve qui tu cherches.</div>
       <p class="left-desc">Affiche tes intentions dès le départ. Fini les malentendus.</p>
     </div>
@@ -112,7 +112,7 @@
       <div class="step-labels">
         <span class="step-label active" id="lbl1">Compte</span>
         <span class="step-label" id="lbl2">Profil</span>
-        <span class="step-label" id="lbl3">Fruit</span>
+        <span class="step-label" id="lbl3">Intention</span>
         <span class="step-label" id="lbl4">Intérêts</span>
       </div>
 
@@ -216,31 +216,31 @@
 
       <!-- ÉTAPE 3 -->
       <div class="form-step" id="step3">
-        <div class="step-title">Choisis ton fruit 🍒</div>
-        <p class="step-sub">Ton fruit affiche tes intentions sur ton profil.</p>
-        <div class="fruit-picker">
-          <div class="fruit-option cherry" id="fruit-cherry">
-            <div class="fo-emoji">🍒</div>
-            <div class="fo-name">La Cerise</div>
-            <div class="fo-desc">Relation sérieuse et durable</div>
+        <div class="step-title">Choisis ton intention 🍒</div>
+        <p class="step-sub">Ton intention affiche tes intentions sur ton profil.</p>
+        <div class="intention-picker">
+          <div class="intention-option cherry" id="intention-cherry">
+            <div class="fo-emoji">❤️</div>
+            <div class="fo-name">Motema ❤️</div>
+            <div class="fo-desc">Motema — Relation sérieuse</div>
           </div>
-          <div class="fruit-option grape" id="fruit-grape">
-            <div class="fo-emoji">🍇</div>
-            <div class="fo-name">Le Raisin</div>
-            <div class="fo-desc">Sorties, amitié, sans pression</div>
+          <div class="intention-option grape" id="intention-grape">
+            <div class="fo-emoji">😊</div>
+            <div class="fo-name">Lokumu 😊</div>
+            <div class="fo-desc">Faire connaissance dans le respect</div>
           </div>
-          <div class="fruit-option wm" id="fruit-wm">
-            <div class="fo-emoji">🍉</div>
-            <div class="fo-name">La Pastèque</div>
-            <div class="fo-desc">Sans engagement, fun !</div>
+          <div class="intention-option wm" id="intention-wm">
+            <div class="fo-emoji">✨</div>
+            <div class="fo-name">Chance ✨</div>
+            <div class="fo-desc">Voir où les choses mènent</div>
           </div>
-          <div class="fruit-option peach" id="fruit-peach">
-            <div class="fo-emoji">🍑</div>
-            <div class="fo-name">La Pêche</div>
-            <div class="fo-desc">Ouvert(e) à tout</div>
+          <div class="intention-option peach" id="intention-peach">
+            <div class="fo-emoji">🔥</div>
+            <div class="fo-name">Moto 🔥</div>
+            <div class="fo-desc">Relation plus légère</div>
           </div>
         </div>
-        <div class="error-msg show" id="err-fruit" style="display:none">Choisis ton fruit.</div>
+        <div class="error-msg show" id="err-intention" style="display:none">Choisis ton intention.</div>
         <p class="form-hint" style="margin-top:12px">Tu pourras changer d'avis plus tard.</p>
         <button class="btn-next" id="btnStep3" style="margin-top:20px">Continuer →</button>
         <button class="btn-prev" id="btnPrev3">← Retour</button>
@@ -294,7 +294,7 @@
   <!-- SCRIPT NORMAL (pas module) pour les fonctions du formulaire -->
   <script>
     var currentStep  = 1;
-    var selectedFruit = null;
+    var selectedIntention = null;
 
     // ── ÉTAPES ──────────────────────────────────────────
     function goStep(step) {
@@ -375,8 +375,8 @@
     });
     document.getElementById('btnPrev2').addEventListener('click', function() { goStep(1); });
     document.getElementById('btnStep3').addEventListener('click', function() {
-      if (!selectedFruit) {
-        document.getElementById('err-fruit').style.display = 'block';
+      if (!selectedIntention) {
+        document.getElementById('err-intention').style.display = 'block';
         return;
       }
       goStep(4);
@@ -385,18 +385,18 @@
     document.getElementById('btnPrev4').addEventListener('click', function() { goStep(3); });
 
     // ── FRUIT ───────────────────────────────────────────
-    var fruitMap = {
-      'fruit-cherry': '🍒 Cerise',
-      'fruit-grape':  '🍇 Raisin',
-      'fruit-wm':     '🍉 Pastèque',
-      'fruit-peach':  '🍑 Pêche'
+    var intentionMap = {
+      'intention-cherry': '❤️ Motema',
+      'intention-grape':  '😊 Lokumu',
+      'intention-wm':     '✨ Chance',
+      'intention-peach':  '🔥 Moto'
     };
-    Object.keys(fruitMap).forEach(function(id) {
+    Object.keys(intentionMap).forEach(function(id) {
       document.getElementById(id).addEventListener('click', function() {
-        document.querySelectorAll('.fruit-option').forEach(function(f) { f.classList.remove('selected'); });
+        document.querySelectorAll('.intention-option').forEach(function(f) { f.classList.remove('selected'); });
         this.classList.add('selected');
-        selectedFruit = fruitMap[id];
-        document.getElementById('err-fruit').style.display = 'none';
+        selectedIntention = intentionMap[id];
+        document.getElementById('err-intention').style.display = 'none';
       });
     });
 
@@ -456,7 +456,7 @@
         genre:     document.getElementById('genre').value,
         ville:     document.getElementById('ville').value,
         recherche: document.getElementById('recherche').value,
-        fruit:     selectedFruit,
+        intention:     selectedIntention,
         bio:       document.getElementById('bio').value.trim(),
         interests: Array.from(document.querySelectorAll('.interest-tag.selected')).map(function(el) { return el.textContent.trim(); })
       };
