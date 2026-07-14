@@ -302,7 +302,18 @@
     await loadProfil();
 
     document.getElementById('logoutBtn').addEventListener('click', async function() {
-      await deconnecter();
+      var btn = document.getElementById('logoutBtn');
+      btn.textContent = 'Déconnexion...';
+      btn.disabled = true;
+      try {
+        await deconnecter();
+        // deconnecter() redirige vers index.html automatiquement
+      } catch(e) {
+        console.error(e);
+        // Forcer la déconnexion si erreur
+        await signOut(auth);
+        window.location.href = "index.html";
+      }
     });
   });
 
