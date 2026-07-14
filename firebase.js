@@ -192,6 +192,13 @@ export async function enregistrerLike(fromUid, toUid, action) {
       const matchId = [fromUid, toUid].sort().join("_");
       console.log("MATCH créé ! matchId:", matchId);
 
+      // Vérifier si le match existe déjà pour éviter les doublons
+      const existingMatch = await getDoc(doc(db, "matchs", matchId));
+      if (existingMatch.exists()) {
+        console.log("Match déjà existant, pas de doublon");
+        return { success: true, match: true, matchId: matchId };
+      }
+
       await setDoc(doc(db, "matchs", matchId), {
         users:       [fromUid, toUid],
         timestamp:   serverTimestamp(),
