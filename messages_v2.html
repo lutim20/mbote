@@ -80,7 +80,7 @@
     .msg-av { width: 28px; height: 28px; border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; background: #FEECED; }
     .msg-av img { width: 100%; height: 100%; object-fit: cover; }
     .msg-av.hidden { visibility: hidden; }
-    .msg-bubble { max-width: 65%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-break: break-word; word-wrap: break-word; overflow-wrap: break-word; white-space: pre-wrap; min-width: 40px; }
+    .msg-bubble { max-width: 65%; padding: 10px 14px; border-radius: 18px; font-size: 14px; line-height: 1.5; word-break: break-word; overflow-wrap: break-word; display: block; }
     .msg-row.them .msg-bubble { background: var(--white); color: var(--dark); border-bottom-left-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.06); display: inline-block; }
     .msg-row.me .msg-bubble { background: var(--cherry); color: #fff; border-bottom-right-radius: 4px; display: inline-block; }
     .msg-time { font-size: 10px; opacity: .6; display: block; margin-top: 3px; }
@@ -252,6 +252,12 @@
   onAuthStateChanged(auth, async function(user) {
     if (!user) { window.location.href = "connexion.html"; return; }
     currentUser = user;
+
+    // Demander permission notifications
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+
     await loadMatchs();
     setupEvents();
   });
@@ -363,8 +369,31 @@
       collection(db, "matchs", matchId, "messages"),
       orderBy("timestamp", "asc")
     );
+    var firstLoad = true;
     unsubMessages = onSnapshot(msgQuery, function(snap) {
-      renderMessages(snap.docs.map(function(d) { return { id: d.id, ...d.data() }; }));
+      var msgs = snap.docs.map(function(d) { return { id: d.id, ...d.data() }; });
+      
+      // Notifier si nouveau message reçu (pas au premier chargement)
+      if (!firstLoad && snap.docChanges) {
+        snap.docChanges().forEach(function(change) {
+          if (change.type === 'added') {
+            var msg = change.doc.data();
+            if (msg.from !== currentUser.uid) {
+              // Notification navigateur
+              if (Notification.permission === 'granted') {
+                new Notification('🍒 Mbote — Nouveau message !', {
+                  body: msg.texte,
+                  icon: './icon-192.png'
+                });
+              }
+              // Vibration sur mobile
+              if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+            }
+          }
+        });
+      }
+      firstLoad = false;
+      renderMessages(msgs);
     });
   };
 
