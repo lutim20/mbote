@@ -86,7 +86,7 @@
 </head>
 <body>
   <nav>
-    <a href="index.html" class="nav-logo">🍒 Mbote</a>
+    <a href="index.html" class="nav-logo">❤️ Mbote</a>
     <a href="index.html" class="nav-back">← Retour</a>
   </nav>
 
@@ -94,7 +94,7 @@
     <div class="left-panel">
       <div class="left-logo">Mbote</div>
       <div class="left-sub">Le dating congolais</div>
-      <div class="left-intentions">🍒 🍇 🍉 🍑</div>
+      <div class="left-intentions">❤️ 😊 ✨ 🔥</div>
       <div class="left-tagline">Dis ce que tu veux,<br>trouve qui tu cherches.</div>
       <p class="left-desc">Affiche tes intentions dès le départ. Fini les malentendus.</p>
     </div>
@@ -216,7 +216,7 @@
 
       <!-- ÉTAPE 3 -->
       <div class="form-step" id="step3">
-        <div class="step-title">Choisis ton intention 🍒</div>
+        <div class="step-title">Choisis ton intention ❤️</div>
         <p class="step-sub">Ton intention affiche tes intentions sur ton profil.</p>
         <div class="intention-picker">
           <div class="intention-option cherry" id="intention-cherry">
@@ -277,7 +277,7 @@
           </div>
         </div>
         <div class="error-banner" id="submitError">❌ <span id="submitErrorText"></span></div>
-        <button class="btn-next" id="btnSubmit">Créer mon profil 🍒</button>
+        <button class="btn-next" id="btnSubmit">Créer mon profil ❤️</button>
         <button class="btn-prev" id="btnPrev4">← Retour</button>
       </div>
 
@@ -384,7 +384,7 @@
     document.getElementById('btnPrev3').addEventListener('click', function() { goStep(2); });
     document.getElementById('btnPrev4').addEventListener('click', function() { goStep(3); });
 
-    // ── FRUIT ───────────────────────────────────────────
+    // ── INTENTION ───────────────────────────────────────────
     var intentionMap = {
       'intention-cherry': '❤️ Motema',
       'intention-grape':  '😊 Lokumu',
@@ -486,7 +486,7 @@
       } else {
         document.getElementById('submitErrorText').textContent = result.error;
         document.getElementById('submitError').classList.add('show');
-        btn.textContent = 'Créer mon profil 🍒';
+        btn.textContent = 'Créer mon profil ❤️';
         btn.disabled = false;
       }
     };

@@ -141,7 +141,7 @@
 <body>
 
 <div class="top-nav">
-  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <a href="index.html" class="nav-logo">❤️ Mbote</a>
   <div class="nav-title">Mon profil</div>
   <div style="display:flex;gap:8px">
     <a href="swipe.html" class="nav-icon-btn">🔥</a>
@@ -160,7 +160,7 @@
       <div class="profile-card-body">
         <div class="profile-name" id="profileName">Chargement...</div>
         <div class="profile-age-city" id="profileMeta">...</div>
-        <div class="profile-intention-badge" id="profileIntention" onclick="openIntentionModal()">🍒 Chargement...</div>
+        <div class="profile-intention-badge" id="profileIntention" onclick="openIntentionModal()">❤️ Chargement...</div>
         <br>
         <div class="profile-verified" id="profileVerified" style="display:none">✅ Profil vérifié</div>
         <div class="profile-stats">
@@ -260,16 +260,16 @@
   <a href="profil.html" class="bnav-item active"><div class="bnav-icon">👤</div><div class="bnav-label">Profil</div></a>
 </div>
 
-<!-- FRUIT MODAL -->
+<!-- INTENTION MODAL -->
 <div class="modal-overlay" id="intentionModal">
   <div class="modal">
-    <div class="modal-title">Changer ton intention 🍒</div>
+    <div class="modal-title">Changer ton intention ❤️</div>
     <div class="modal-sub">Ton intention s'affiche sur ton profil.</div>
     <div class="modal-intentions">
-      <div class="modal-intention" onclick="selectModalIntention(this,'❤️ Motema')"><div class="mf-emoji">🍒</div><div class="mf-name">Cerise</div><div class="mf-desc">Motema — Relation sérieuse</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'😊 Lokumu')"><div class="mf-emoji">🍇</div><div class="mf-name">Raisin</div><div class="mf-desc">Lokumu — Faire connaissance</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'✨ Chance')"><div class="mf-emoji">🍉</div><div class="mf-name">Pastèque</div><div class="mf-desc">Chance — On verra bien</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'🔥 Moto')"><div class="mf-emoji">🍑</div><div class="mf-name">Pêche</div><div class="mf-desc">Moto — Relation légère</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'❤️ Motema')"><div class="mf-emoji">❤️</div><div class="mf-name">Motema</div><div class="mf-desc">Motema — Relation sérieuse</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'😊 Lokumu')"><div class="mf-emoji">😊</div><div class="mf-name">Lokumu</div><div class="mf-desc">Lokumu — Faire connaissance</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'✨ Chance')"><div class="mf-emoji">✨</div><div class="mf-name">Chance</div><div class="mf-desc">Chance — On verra bien</div></div>
+      <div class="modal-intention" onclick="selectModalIntention(this,'🔥 Moto')"><div class="mf-emoji">🔥</div><div class="mf-name">Moto</div><div class="mf-desc">Moto — Relation légère</div></div>
     </div>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="closeIntentionModal()">Annuler</button>
@@ -466,7 +466,7 @@
       myData.intention = selectedIntention;
       document.getElementById('profileIntention').textContent = selectedIntention + ' ▼';
       closeIntentionModal();
-      showToast('🍒 Intention mis à jour : ' + selectedIntention);
+      showToast('❤️ Intention mis à jour : ' + selectedIntention);
     } catch(e) { showToast('❌ Erreur : ' + e.message); }
   }
 

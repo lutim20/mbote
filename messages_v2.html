@@ -139,7 +139,7 @@
 <body>
 
 <div class="top-nav">
-  <a href="index.html" class="nav-logo">🍒 Mbote</a>
+  <a href="index.html" class="nav-logo">❤️ Mbote</a>
   <div class="nav-title">Messages</div>
   <div style="display:flex;gap:8px">
     <a href="swipe.html" class="nav-icon-btn">🔥</a>
@@ -305,7 +305,7 @@
   function renderConvList() {
     var list = document.getElementById('convList');
     if (matchsData.length === 0) {
-      list.innerHTML = '<div class="conv-empty"><div class="conv-empty-icon">🍒</div>Aucun match pour l\'instant.<br>Continue à swiper !</div>';
+      list.innerHTML = '<div class="conv-empty"><div class="conv-empty-icon">❤️</div>Aucun match pour l\'instant.<br>Continue à chercher !</div>';
       return;
     }
     list.innerHTML = matchsData.map(function(m) {
@@ -313,7 +313,7 @@
         ? '<img src="' + m.profil.photoURL + '">'
         : (m.profil.genre === 'femme' ? '👩🏾' : '👨🏾');
       var timeStr = m.lastTime ? formatTime(m.lastTime) : '';
-      var preview = m.lastMsg || 'Nouveau match ! Lance la conversation 🍒';
+      var preview = m.lastMsg || 'Nouveau match ! Lance la conversation ❤️';
       return '<div class="conv-item" id="conv_' + m.matchId + '" onclick="window._openChat(\'' + m.matchId + '\')">' +
         '<div class="conv-avatar">' + avatarHtml + '</div>' +
         '<div class="conv-info">' +
@@ -383,7 +383,7 @@
             if (msg.from !== currentUser.uid) {
               // Notification navigateur
               if (Notification.permission === 'granted') {
-                new Notification('🍒 Mbote — Nouveau message !', {
+                new Notification('❤️ Mbote — Nouveau message !', {
                   body: msg.texte,
                   icon: './icon-192.png'
                 });
