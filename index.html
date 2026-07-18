@@ -89,6 +89,17 @@
     .peach  .intention-intent { background: #FDDDC5; color: #B05A0A; }
     .intention-desc { font-size: 13px; color: #555; line-height: 1.6; }
 
+    /* CONCEPT BANNER */
+    .concept-banner { display: flex; align-items: center; justify-content: center; gap: 16px; background: var(--sand); border-radius: 20px; padding: 28px 24px; margin-top: 40px; flex-wrap: wrap; }
+    .concept-step { display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center; max-width: 160px; }
+    .concept-num { width: 28px; height: 28px; border-radius: 50%; background: var(--cherry); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .concept-icon { font-size: 36px; }
+    .concept-text { font-size: 13px; font-weight: 600; color: #555; line-height: 1.5; }
+    .concept-arrow { font-size: 24px; color: var(--cherry); font-weight: 900; }
+    .concept-quote { background: linear-gradient(135deg, var(--cherry), var(--orange)); border-radius: 20px; padding: 28px 32px; margin-top: 48px; text-align: center; }
+    .concept-quote p { font-size: 18px; font-weight: 700; color: #fff; font-style: italic; line-height: 1.6; }
+    @media (max-width: 600px) { .concept-arrow { display: none; } .concept-banner { gap: 20px; } }
+
     /* HOW */
     .how-section { padding: 80px 5%; background: var(--sand); }
     .how-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 24px; margin-top: 48px; }
@@ -223,17 +234,76 @@
 </section>
 
 <!-- FRUITS -->
-<section class="intentions-section" id="intentions">
-  <div class="section-inner">
+<section style="padding:80px 5%;background:#fff" id="intentions">
+  <div style="max-width:1100px;margin:0 auto">
+    
     <div class="section-badge fade-up">Le concept Mbote</div>
-    <h2 class="section-title fade-up">Quelle est ton intention ?</h2>
-    <p class="section-sub fade-up">Choisis un intention qui représente ce que tu recherches. Pas de devinettes, pas de mauvaises surprises.</p>
-    <div class="intentions-grid">
-      <div class="intention-card cherry fade-up"><div class="intention-emoji">🍒</div><div class="intention-name">Motema ❤️</div><span class="intention-intent">Motema — Relation sérieuse</span><p class="intention-desc">Tu cherches ton âme sœur, quelqu'un avec qui construire quelque chose de vrai.</p></div>
-      <div class="intention-card grape fade-up"><div class="intention-emoji">🍇</div><div class="intention-name">Lokumu 😊</div><span class="intention-intent">Lokumu — Faire connaissance</span><p class="intention-desc">Un verre, une sortie à Kinshasa, des bons moments sans pression.</p></div>
-      <div class="intention-card wm fade-up"><div class="intention-emoji">🍉</div><div class="intention-name">Chance ✨</div><span class="intention-intent">Chance — On verra bien</span><p class="intention-desc">Du fun, de la bonne humeur, en toute transparence.</p></div>
-      <div class="intention-card peach fade-up"><div class="intention-emoji">🍑</div><div class="intention-name">Moto 🔥</div><span class="intention-intent">Moto — Relation légère</span><p class="intention-desc">Pas encore décidé(e) ? Relation plus légère et tu laisses venir.</p></div>
+    <h2 class="section-title fade-up">Comment ça fonctionne ?</h2>
+    <p class="section-sub fade-up">
+      Sur Mbote, chaque profil affiche une <strong>intention</strong> — un mot en lingala qui dit clairement ce que tu cherches.
+      Fini les malentendus. Tu sais exactement ce que l'autre veut <em>avant même de matcher</em>.
+    </p>
+
+    <!-- Étapes du concept -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:16px;background:#F7F0E8;border-radius:20px;padding:28px 24px;margin-bottom:48px;flex-wrap:wrap" class="fade-up">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:160px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#E8394A;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center">1</div>
+        <div style="font-size:32px">❤️</div>
+        <div style="font-size:13px;font-weight:600;color:#555;line-height:1.5">Tu choisis ton intention à l'inscription</div>
+      </div>
+      <div style="font-size:24px;color:#E8394A;font-weight:900">→</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:160px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#E8394A;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center">2</div>
+        <div style="font-size:32px">👀</div>
+        <div style="font-size:13px;font-weight:600;color:#555;line-height:1.5">Elle s'affiche sur ton profil visible par tous</div>
+      </div>
+      <div style="font-size:24px;color:#E8394A;font-weight:900">→</div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;max-width:160px">
+        <div style="width:32px;height:32px;border-radius:50%;background:#E8394A;color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center">3</div>
+        <div style="font-size:32px">🤝</div>
+        <div style="font-size:13px;font-weight:600;color:#555;line-height:1.5">Tu matches avec des gens qui cherchent la même chose</div>
+      </div>
     </div>
+
+    <!-- Les 4 intentions -->
+    <h3 style="font-size:24px;font-weight:900;color:#1A1A2E;margin-bottom:24px;text-align:center" class="fade-up">Les 4 intentions de Mbote</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:20px">
+      <div style="background:#FEECED;border-radius:20px;padding:28px 20px;display:flex;flex-direction:column;gap:10px" class="fade-up">
+        <div style="font-size:40px">❤️</div>
+        <div style="font-size:20px;font-weight:900;color:#1A1A2E">Motema</div>
+        <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;background:#FCCDD1;color:#E8394A;width:fit-content">Relation sérieuse</div>
+        <p style="font-size:13px;color:#555;line-height:1.6"><strong>Motema</strong> signifie "cœur" en lingala. Tu cherches quelqu'un avec qui construire une vraie relation durable et sincère.</p>
+      </div>
+      <div style="background:#F0EBF8;border-radius:20px;padding:28px 20px;display:flex;flex-direction:column;gap:10px" class="fade-up">
+        <div style="font-size:40px">😊</div>
+        <div style="font-size:20px;font-weight:900;color:#1A1A2E">Lokumu</div>
+        <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;background:#DDD3EF;color:#4A3483;width:fit-content">Faire connaissance</div>
+        <p style="font-size:13px;color:#555;line-height:1.6"><strong>Lokumu</strong> signifie "respect" en lingala. Tu veux rencontrer des gens dans le respect mutuel et la bonne humeur.</p>
+      </div>
+      <div style="background:#E8F8EF;border-radius:20px;padding:28px 20px;display:flex;flex-direction:column;gap:10px" class="fade-up">
+        <div style="font-size:40px">✨</div>
+        <div style="font-size:20px;font-weight:900;color:#1A1A2E">Chance</div>
+        <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;background:#C3EDD7;color:#1A6E42;width:fit-content">On verra bien</div>
+        <p style="font-size:13px;color:#555;line-height:1.6"><strong>Chance</strong> — tu es ouvert(e) à tout. Tu laisses venir et tu vois naturellement où les choses mènent.</p>
+      </div>
+      <div style="background:#FFF0E8;border-radius:20px;padding:28px 20px;display:flex;flex-direction:column;gap:10px" class="fade-up">
+        <div style="font-size:40px">🔥</div>
+        <div style="font-size:20px;font-weight:900;color:#1A1A2E">Moto</div>
+        <div style="font-size:11px;font-weight:700;padding:4px 10px;border-radius:50px;background:#FDDDC5;color:#B05A0A;width:fit-content">Relation légère</div>
+        <p style="font-size:13px;color:#555;line-height:1.6"><strong>Moto</strong> signifie "feu/chaleur" en lingala. Du fun et de la chaleur humaine, sans prise de tête.</p>
+      </div>
+    </div>
+
+    <!-- Citation -->
+    <div style="background:linear-gradient(135deg,#E8394A,#FF8C42);border-radius:20px;padding:28px 32px;margin-top:48px;text-align:center" class="fade-up">
+      <p style="font-size:18px;font-weight:700;color:#fff;font-style:italic;line-height:1.6">
+        "Sur Mbote, tu n'as pas à deviner. L'intention est affichée. C'est ça la différence."
+      </p>
+      <a href="inscription.html" style="display:inline-block;margin-top:20px;background:#fff;color:#E8394A;border:none;padding:13px 32px;border-radius:50px;font-size:15px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;text-decoration:none">
+        Choisir mon intention →
+      </a>
+    </div>
+
   </div>
 </section>
 
