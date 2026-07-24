@@ -134,11 +134,22 @@
     /* MOBILE MENU */
     .mobile-menu { display: none; position: fixed; top: 68px; left: 0; right: 0; background: #fff; border-bottom: 1px solid var(--border); padding: 20px 5%; flex-direction: column; gap: 16px; z-index: 99; }
     .mobile-menu.open { display: flex; }
-    .mobile-menu a { text-decoration: none; color: var(--dark); font-size: 16px; font-weight: 700; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .mobile-menu a { text-decoration: none; color: var(--dark); font-size: 16px; font-weight: 700; padding: 12px 0; border-bottom: 1px solid var(--border); display: block; }
 
     /* RESPONSIVE */
     @media (max-width: 1024px) { .intentions-grid, .how-grid { grid-template-columns: repeat(2,1fr); } .footer-top { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 768px) { .hero-inner { grid-template-columns: 1fr; gap: 48px; } .hero-visual { order: -1; } .phone-mockup { width: 220px; height: 420px; } .float-badge { display: none; } .nav-links { display: none; } .hamburger { display: block; } .intentions-grid, .how-grid { grid-template-columns: 1fr 1fr; } .footer-top { grid-template-columns: 1fr; gap: 28px; } }
+    @media (max-width: 768px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { order: -1; }
+      .phone-mockup { width: 220px; height: 420px; }
+      .float-badge { display: none; }
+      .nav-links { display: none; }
+      .hamburger { display: block; }
+      .intentions-grid, .how-grid { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 28px; }
+      .nav-connexion-mobile { display: inline-flex !important; }
+    }
+    .nav-connexion-mobile { display: none; }
     @media (max-width: 480px) { .intentions-grid, .how-grid { grid-template-columns: 1fr; } .hero-cta { flex-direction: column; } }
 
     /* FADE */
@@ -163,6 +174,7 @@
     <a href="connexion.html">Connexion</a>
     <a href="inscription.html" class="btn-nav">Rejoindre gratuitement</a>
   </div>
+  <a href="connexion.html" class="nav-connexion-mobile" style="font-size:13px;font-weight:700;color:var(--cherry);text-decoration:none;padding:8px 16px;border:2px solid var(--cherry);border-radius:50px;margin-right:8px">Connexion</a>
   <button class="hamburger" onclick="toggleMenu()">☰</button>
 </nav>
 

@@ -5,138 +5,157 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mon Profil — Mbote</title>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#E8394A">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mbote">
+  <link rel="apple-touch-icon" href="./icon-192.png">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; }
     body { font-family: 'Nunito', sans-serif; background: #F7F3EE; color: #1A1A2E; min-height: 100vh; }
     :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; --grape: #7B5EA7; --green: #27AE60; --dark: #1A1A2E; --sand: #F7F0E8; --muted: #888; --border: #E8E0D8; --white: #fff; }
 
+    /* NAV */
     .top-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(255,255,255,.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 20px; height: 60px; display: flex; align-items: center; justify-content: space-between; }
     .nav-logo { font-size: 20px; font-weight: 900; color: var(--cherry); text-decoration: none; }
     .nav-title { font-size: 16px; font-weight: 800; color: var(--dark); }
-    .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; text-decoration: none; }
+    .nav-icon-btn { width: 38px; height: 38px; border-radius: 50%; background: var(--sand); border: none; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; text-decoration: none; transition: background .2s; }
     .nav-icon-btn:hover { background: var(--border); }
 
+    /* LAYOUT */
     .page-wrap { padding: 76px 20px 90px; max-width: 960px; margin: 0 auto; display: grid; grid-template-columns: 300px 1fr; gap: 24px; align-items: start; }
 
     /* PROFILE CARD */
     .profile-card { background: var(--white); border-radius: 24px; border: 1px solid var(--border); overflow: hidden; position: sticky; top: 76px; }
-    .profile-cover { height: 100px; background: linear-gradient(135deg, var(--cherry), var(--orange)); position: relative; }
+    .profile-cover { height: 100px; background: linear-gradient(135deg, var(--cherry), var(--orange)); }
     .profile-avatar-wrap { display: flex; justify-content: center; margin-top: -44px; margin-bottom: 12px; }
-    .profile-avatar { width: 88px; height: 88px; border-radius: 50%; font-size: 52px; display: flex; align-items: center; justify-content: center; border: 4px solid var(--white); box-shadow: 0 4px 16px rgba(0,0,0,.12); background: #FEECED; position: relative; overflow: hidden; }
+    .profile-avatar { width: 88px; height: 88px; border-radius: 50%; font-size: 52px; display: flex; align-items: center; justify-content: center; border: 4px solid var(--white); box-shadow: 0 4px 16px rgba(0,0,0,.12); background: #FEECED; cursor: pointer; position: relative; overflow: hidden; transition: opacity .2s; }
+    .profile-avatar:hover { opacity: .85; }
+    .profile-avatar:hover::after { content: '✏️'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(0,0,0,.3); border-radius: 50%; }
     .profile-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
     .profile-card-body { padding: 0 20px 20px; text-align: center; }
     .profile-name { font-size: 20px; font-weight: 900; color: var(--dark); }
     .profile-age-city { font-size: 13px; color: var(--muted); font-weight: 600; margin-top: 3px; }
-    .profile-intention-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 50px; margin: 10px auto 10px; cursor: pointer; }
+    .profile-intention-badge { display: inline-flex; align-items: center; gap: 5px; background: #FEECED; color: var(--cherry); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 50px; margin: 10px auto 10px; cursor: pointer; transition: background .2s; }
+    .profile-intention-badge:hover { background: #FCCDD1; }
     .profile-verified { display: inline-flex; align-items: center; gap: 5px; background: #E8F8EF; color: var(--green); font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px; margin-bottom: 14px; }
-
-    /* STATS */
     .profile-stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1px; background: var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
     .pstat { background: var(--white); padding: 12px 8px; text-align: center; }
     .pstat-num { font-size: 20px; font-weight: 900; color: var(--dark); }
-    .pstat-label { font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px; }
     .pstat-num.loading { color: var(--border); }
+    .pstat-label { font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px; }
+    .btn-edit-profile { display: block; width: 100%; background: var(--cherry); color: #fff; border: none; padding: 11px; border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-bottom: 8px; transition: background .2s; }
+    .btn-edit-profile:hover { background: var(--cherry-dark); }
+    .btn-logout { display: block; width: 100%; background: var(--dark); color: #fff; border: none; padding: 9px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: opacity .2s; margin-bottom: 8px; }
+    .btn-logout:hover { opacity: .85; }
+    .btn-danger-sm { display: block; width: 100%; background: transparent; color: var(--cherry); border: 2px solid #FCCDD1; padding: 8px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s; }
+    .btn-danger-sm:hover { background: #FEECED; }
 
-    .btn-edit-profile { display: block; width: 100%; background: var(--cherry); color: #fff; border: none; padding: 11px; border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-bottom: 8px; }
-    .btn-preview { display: block; width: 100%; background: transparent; color: var(--dark); border: 2px solid var(--border); padding: 9px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
-
-    /* RIGHT */
+    /* RIGHT COL */
     .right-col { display: flex; flex-direction: column; gap: 20px; }
     .section-card { background: var(--white); border-radius: 20px; border: 1px solid var(--border); overflow: hidden; }
     .section-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border); }
     .section-title { font-size: 15px; font-weight: 800; color: var(--dark); }
-    .btn-edit-section { background: var(--sand); color: var(--dark); border: none; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
+    .btn-edit-section { background: var(--sand); color: var(--dark); border: none; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s; }
+    .btn-edit-section:hover { background: var(--border); }
+    .btn-save-section { background: var(--cherry); color: #fff; border: none; padding: 6px 14px; border-radius: 50px; font-size: 12px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
     .section-body { padding: 16px 20px; }
 
+    /* EDIT MODE */
+    .edit-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+    .edit-overlay.show { display: flex; }
+    .edit-modal { background: var(--white); border-radius: 24px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; animation: popIn .3s cubic-bezier(.34,1.56,.64,1); }
+    @keyframes popIn { from { transform: scale(.85); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .edit-modal-title { font-size: 20px; font-weight: 900; color: var(--dark); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+    .edit-close { background: var(--sand); border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .edit-group { margin-bottom: 16px; }
+    .edit-group label { display: block; font-size: 13px; font-weight: 700; color: var(--dark); margin-bottom: 7px; }
+    .edit-group input, .edit-group select, .edit-group textarea { width: 100%; border: 2px solid var(--border); border-radius: 12px; padding: 12px 16px; font-size: 14px; font-family: 'Nunito', sans-serif; color: var(--dark); background: var(--white); outline: none; transition: border-color .2s; }
+    .edit-group input:focus, .edit-group select:focus, .edit-group textarea:focus { border-color: var(--cherry); }
+    .edit-group textarea { resize: vertical; min-height: 80px; }
+    .edit-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .btn-save-edit { width: 100%; background: var(--cherry); color: #fff; border: none; padding: 14px; border-radius: 50px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; margin-top: 8px; transition: background .2s; }
+    .btn-save-edit:hover { background: var(--cherry-dark); }
+    .btn-save-edit:disabled { opacity: .5; cursor: not-allowed; }
+
     /* BIO */
-    .bio-text { font-size: 14px; color: #555; line-height: 1.7; border: none; width: 100%; font-family: 'Nunito', sans-serif; resize: none; outline: none; background: transparent; cursor: default; }
-    .bio-text.editing { background: var(--sand); border: 2px solid var(--cherry); border-radius: 12px; padding: 10px 14px; cursor: text; }
-    .bio-count { font-size: 11px; color: var(--muted); text-align: right; margin-top: 6px; }
+    .bio-text { font-size: 14px; color: #555; line-height: 1.7; }
+    .bio-empty { font-size: 14px; color: var(--muted); font-style: italic; }
 
     /* INTERESTS */
     .interests-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
-    .interest-pill { display: inline-flex; align-items: center; gap: 4px; background: var(--cherry); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 50px; }
-    .interest-pill.editable { cursor: pointer; border: 2px solid transparent; }
-    .interest-pill.editable:not(.selected) { background: var(--sand); color: var(--dark); }
-    .interest-pill.editable.selected { background: var(--cherry); color: #fff; }
-
-    /* PREF */
-    .pref-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .pref-row:last-child { border-bottom: none; }
-    .pref-left { display: flex; align-items: center; gap: 10px; }
-    .pref-icon { font-size: 20px; width: 28px; text-align: center; }
-    .pref-label { font-size: 14px; font-weight: 700; color: var(--dark); }
-    .pref-value { font-size: 12px; color: var(--muted); margin-top: 2px; }
-    select.pref-select { border: 2px solid var(--border); border-radius: 50px; padding: 6px 12px; font-size: 13px; font-weight: 700; font-family: 'Nunito', sans-serif; color: var(--dark); outline: none; cursor: pointer; background: var(--white); }
-    .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
-    .toggle input { display: none; }
-    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 50px; transition: background .2s; }
-    .toggle-slider::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform .2s; }
-    .toggle input:checked + .toggle-slider { background: var(--cherry); }
-    .toggle input:checked + .toggle-slider::after { transform: translateX(20px); }
+    .interest-pill { background: var(--cherry); color: #fff; font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 50px; }
+    .interest-pill.editable { cursor: pointer; border: 2px solid var(--border); background: var(--sand); color: var(--dark); transition: all .15s; }
+    .interest-pill.editable.selected { background: var(--cherry); color: #fff; border-color: var(--cherry); }
+    .interests-empty { font-size: 13px; color: var(--muted); font-style: italic; }
 
     /* PREMIUM */
     .premium-banner { background: linear-gradient(135deg, #7B5EA7, #E8394A); border-radius: 20px; padding: 20px; color: #fff; display: flex; align-items: center; gap: 16px; }
     .prem-icon { font-size: 36px; flex-shrink: 0; }
     .prem-title { font-size: 16px; font-weight: 900; margin-bottom: 4px; }
     .prem-sub { font-size: 12px; opacity: .85; line-height: 1.5; }
-    .btn-premium { background: #fff; color: var(--grape); border: none; padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; flex-shrink: 0; }
+    .btn-premium { background: #fff; color: var(--grape); border: none; padding: 10px 20px; border-radius: 50px; font-size: 13px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; white-space: nowrap; flex-shrink: 0; text-decoration: none; }
+
+    /* PREFERENCES */
+    .pref-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .pref-row:last-child { border-bottom: none; }
+    .pref-left { display: flex; align-items: center; gap: 10px; }
+    .pref-icon { font-size: 20px; width: 28px; text-align: center; }
+    .pref-label { font-size: 14px; font-weight: 700; color: var(--dark); }
+    .pref-value { font-size: 12px; color: var(--muted); margin-top: 2px; }
+    .toggle { position: relative; width: 44px; height: 24px; cursor: pointer; flex-shrink: 0; }
+    .toggle input { display: none; }
+    .toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 50px; transition: background .2s; }
+    .toggle-slider::after { content: ''; position: absolute; width: 18px; height: 18px; border-radius: 50%; background: #fff; top: 3px; left: 3px; transition: transform .2s; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+    .toggle input:checked + .toggle-slider { background: var(--cherry); }
+    .toggle input:checked + .toggle-slider::after { transform: translateX(20px); }
 
     /* SETTINGS */
-    .setting-item { display: flex; align-items: center; gap: 12px; padding: 13px 20px; cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border); }
+    .setting-item { display: flex; align-items: center; gap: 12px; padding: 13px 20px; cursor: pointer; transition: background .15s; border-bottom: 1px solid var(--border); text-decoration: none; }
     .setting-item:last-child { border-bottom: none; }
     .setting-item:hover { background: var(--sand); }
     .setting-icon { font-size: 20px; width: 28px; text-align: center; flex-shrink: 0; }
     .setting-label { font-size: 14px; font-weight: 700; color: var(--dark); flex: 1; }
     .setting-arrow { color: var(--muted); font-size: 16px; }
-    .setting-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
-    .badge-red { background: #FEECED; color: var(--cherry); }
-    .badge-green { background: #E8F8EF; color: var(--green); }
+    .setting-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: #FEECED; color: var(--cherry); }
 
-    /* DANGER */
-    .danger-zone { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
-    .btn-danger { background: transparent; color: var(--cherry); border: 2px solid #FCCDD1; padding: 10px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
-    .btn-logout { background: var(--dark); color: #fff; border: none; padding: 10px; border-radius: 50px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
-
-    /* MODAL */
-    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 200; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
+    /* AVATAR MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 300; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
     .modal-overlay.show { display: flex; }
     .modal { background: var(--white); border-radius: 24px; padding: 28px; max-width: 380px; width: 90%; animation: popIn .3s cubic-bezier(.34,1.56,.64,1); }
-    @keyframes popIn { from { transform: scale(.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .modal-title { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
     .modal-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-    .modal-intentions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-    .modal-intention { border: 2.5px solid var(--border); border-radius: 16px; padding: 16px 12px; cursor: pointer; text-align: center; transition: border-color .15s, background .15s; }
-    .modal-intention:hover { border-color: var(--cherry); }
-    .modal-intention.selected { border-color: var(--cherry); background: #FEECED; }
+    .modal-fruits { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .modal-fruit { border: 2.5px solid var(--border); border-radius: 16px; padding: 16px 12px; cursor: pointer; text-align: center; transition: all .15s; }
+    .modal-fruit:hover { border-color: var(--cherry); }
+    .modal-fruit.selected { border-color: var(--cherry); background: #FEECED; }
     .mf-emoji { font-size: 28px; margin-bottom: 6px; }
     .mf-name { font-size: 13px; font-weight: 800; color: var(--dark); }
     .mf-desc { font-size: 11px; color: var(--muted); margin-top: 3px; }
     .modal-btns { display: flex; gap: 10px; }
     .btn-modal-cancel { flex: 1; background: var(--sand); color: var(--dark); border: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; }
-    .btn-modal-save { flex: 1; background: var(--cherry); color: #fff; border: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; }
+    .btn-modal-save { flex: 1; background: var(--cherry); color: #fff; border: none; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; transition: background .2s; }
+    .btn-modal-save:hover { background: var(--cherry-dark); }
 
     /* TOAST */
-    .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #fff; padding: 10px 22px; border-radius: 50px; font-size: 13px; font-weight: 700; z-index: 300; white-space: nowrap; animation: fadeUp .3s ease; font-family: 'Nunito', sans-serif; }
+    .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: var(--dark); color: #fff; padding: 10px 22px; border-radius: 50px; font-size: 13px; font-weight: 700; z-index: 400; white-space: nowrap; animation: fadeUp .3s ease; font-family: 'Nunito', sans-serif; }
     @keyframes fadeUp { from { opacity: 0; transform: translateX(-50%) translateY(10px); } to { opacity: 1; transform: translateX(-50%) translateY(0); } }
 
     /* BOTTOM NAV */
     .bottom-nav { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--white); border-top: 1px solid var(--border); padding: 10px 0 16px; justify-content: space-around; z-index: 50; }
-    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; cursor: pointer; opacity: .4; text-decoration: none; }
+    .bnav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; opacity: .4; text-decoration: none; transition: opacity .2s; }
     .bnav-item.active { opacity: 1; }
     .bnav-icon { font-size: 22px; }
     .bnav-label { font-size: 9px; font-weight: 800; color: var(--dark); }
 
-    @media (max-width: 768px) { .page-wrap { grid-template-columns: 1fr; padding: 70px 16px 90px; } .profile-card { position: static; } .bottom-nav { display: flex; } }
+    @media (max-width: 768px) {
+      .page-wrap { grid-template-columns: 1fr; padding: 70px 16px 90px; }
+      .profile-card { position: static; }
+      .bottom-nav { display: flex; }
+      .edit-row { grid-template-columns: 1fr; }
+    }
   </style>
-  <!-- PWA -->
-  <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#E8394A">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="apple-mobile-web-app-title" content="Mbote">
-  <link rel="apple-touch-icon" href="/icon-192.png">
 </head>
 <body>
 
@@ -160,7 +179,7 @@
       <div class="profile-card-body">
         <div class="profile-name" id="profileName">Chargement...</div>
         <div class="profile-age-city" id="profileMeta">...</div>
-        <div class="profile-intention-badge" id="profileIntention" onclick="openIntentionModal()">❤️ Chargement...</div>
+        <div class="profile-intention-badge" id="profileIntention" onclick="openIntentionModal()">❤️ Chargement... ▼</div>
         <br>
         <div class="profile-verified" id="profileVerified" style="display:none">✅ Profil vérifié</div>
         <div class="profile-stats">
@@ -168,8 +187,9 @@
           <div class="pstat"><div class="pstat-num loading" id="statMatchs">—</div><div class="pstat-label">Matchs</div></div>
           <div class="pstat"><div class="pstat-num loading" id="statVues">—</div><div class="pstat-label">Vues</div></div>
         </div>
-        <button class="btn-edit-profile" onclick="showToast('✏️ Modifie ta bio et tes intérêts ci-dessous !')">✏️ Modifier mon profil</button>
-        <button class="btn-preview" onclick="showToast('👁️ Aperçu profil public — bientôt disponible')">👁️ Voir mon profil</button>
+        <button class="btn-edit-profile" onclick="openEditModal()">✏️ Modifier mon profil</button>
+        <button class="btn-logout" id="logoutBtn">🚪 Se déconnecter</button>
+        <button class="btn-danger-sm" onclick="confirmDelete()">🗑️ Supprimer mon compte</button>
       </div>
     </div>
   </div>
@@ -183,18 +203,17 @@
         <div class="prem-title">Mbote Premium</div>
         <div class="prem-sub">Likes illimités · Voir qui t'a liké · Pollen boost</div>
       </div>
-      <button class="btn-premium" onclick="showToast('💎 Premium — bientôt disponible !')">Essayer</button>
+      <a href="premium.html" class="btn-premium">Essayer</a>
     </div>
 
     <!-- BIO -->
     <div class="section-card">
       <div class="section-header">
         <div class="section-title">📝 Ma bio</div>
-        <button class="btn-edit-section" id="bioEditBtn" onclick="toggleBio()">Modifier</button>
+        <button class="btn-edit-section" onclick="openEditModal()">Modifier</button>
       </div>
       <div class="section-body">
-        <textarea class="bio-text" id="bioText" maxlength="300" readonly placeholder="Ajoute une bio..."></textarea>
-        <div class="bio-count" id="bioCount" style="display:none"><span id="bioLen">0</span>/300</div>
+        <div id="bioDisplay" class="bio-empty">Ajoute une bio depuis "Modifier mon profil"</div>
       </div>
     </div>
 
@@ -205,7 +224,9 @@
         <button class="btn-edit-section" id="interestsEditBtn" onclick="toggleInterests()">Modifier</button>
       </div>
       <div class="section-body">
-        <div class="interests-wrap" id="interestsDisplay"></div>
+        <div class="interests-wrap" id="interestsDisplay">
+          <span class="interests-empty">Aucun centre d'intérêt ajouté.</span>
+        </div>
         <div id="interestsEditor" style="display:none;margin-top:12px">
           <p style="font-size:12px;color:var(--muted);margin-bottom:10px">Clique pour ajouter ou retirer :</p>
           <div class="interests-wrap" id="interestsAll"></div>
@@ -220,15 +241,23 @@
       <div class="section-body" style="padding:0 20px">
         <div class="pref-row">
           <div class="pref-left"><div class="pref-icon">📍</div><div><div class="pref-label">Ma ville</div></div></div>
-          <select class="pref-select" id="prefVille"><option>Kinshasa</option><option>Brazzaville</option><option>Lubumbashi</option><option>Goma</option><option>Diaspora</option></select>
+          <select class="pref-select" id="prefVille" onchange="savePref()" style="border:2px solid var(--border);border-radius:50px;padding:6px 12px;font-size:13px;font-weight:700;font-family:'Nunito',sans-serif;color:var(--dark);outline:none;cursor:pointer;background:var(--white)">
+            <option value="kinshasa">Kinshasa</option>
+            <option value="brazzaville">Brazzaville</option>
+            <option value="lubumbashi">Lubumbashi</option>
+            <option value="goma">Goma</option>
+            <option value="diaspora-france">France</option>
+            <option value="diaspora-belgique">Belgique</option>
+            <option value="diaspora-autre">Autre</option>
+          </select>
         </div>
         <div class="pref-row">
           <div class="pref-left"><div class="pref-icon">🔔</div><div><div class="pref-label">Notifications</div></div></div>
-          <label class="toggle"><input type="checkbox" checked><div class="toggle-slider"></div></label>
+          <label class="toggle"><input type="checkbox" id="prefNotifs" checked><div class="toggle-slider"></div></label>
         </div>
         <div class="pref-row">
           <div class="pref-left"><div class="pref-icon">👁️</div><div><div class="pref-label">Mode discret</div><div class="pref-value">Masque ta distance exacte</div></div></div>
-          <label class="toggle"><input type="checkbox"><div class="toggle-slider"></div></label>
+          <label class="toggle"><input type="checkbox" id="prefDiscret"><div class="toggle-slider"></div></label>
         </div>
       </div>
     </div>
@@ -236,19 +265,10 @@
     <!-- SETTINGS -->
     <div class="section-card">
       <div class="section-header"><div class="section-title">🛠️ Paramètres</div></div>
-      <div class="setting-item" onclick="showToast('💎 Premium — bientôt !')"><div class="setting-icon">💎</div><div class="setting-label">Mbote Premium</div><span class="setting-badge badge-red">Nouveau</span><div class="setting-arrow">›</div></div>
-      <div class="setting-item" onclick="showToast('🔒 Sécurité — bientôt !')"><div class="setting-icon">🔒</div><div class="setting-label">Sécurité & mot de passe</div><div class="setting-arrow">›</div></div>
-      <div class="setting-item" onclick="showToast('📜 CGU Mbote')"><div class="setting-icon">📜</div><div class="setting-label">Conditions & confidentialité</div><div class="setting-arrow">›</div></div>
-      <div class="setting-item" onclick="showToast('❓ Aide Mbote')"><div class="setting-icon">❓</div><div class="setting-label">Aide & support</div><div class="setting-arrow">›</div></div>
-    </div>
-
-    <!-- DANGER -->
-    <div class="section-card">
-      <div class="section-header"><div class="section-title" style="color:var(--cherry)">⚠️ Zone sensible</div></div>
-      <div class="danger-zone">
-        <button class="btn-logout" id="logoutBtn">🚪 Se déconnecter</button>
-        <button class="btn-danger" onclick="confirmDelete()">🗑️ Supprimer mon compte</button>
-      </div>
+      <a href="premium.html" class="setting-item"><div class="setting-icon">💎</div><div class="setting-label">Mbote Premium</div><span class="setting-badge">Nouveau</span><div class="setting-arrow">›</div></a>
+      <div class="setting-item" onclick="showToast('🔒 Réinitialise ton mot de passe depuis la page connexion')"><div class="setting-icon">🔒</div><div class="setting-label">Sécurité & mot de passe</div><div class="setting-arrow">›</div></div>
+      <a href="#" class="setting-item" onclick="showToast('📜 Conditions disponibles bientôt');return false"><div class="setting-icon">📜</div><div class="setting-label">Conditions & confidentialité</div><div class="setting-arrow">›</div></a>
+      <a href="#" class="setting-item" onclick="showToast('❓ Support : mbote@gmail.com');return false"><div class="setting-icon">❓</div><div class="setting-label">Aide & support</div><div class="setting-arrow">›</div></a>
     </div>
 
   </div>
@@ -260,16 +280,61 @@
   <a href="profil.html" class="bnav-item active"><div class="bnav-icon">👤</div><div class="bnav-label">Profil</div></a>
 </div>
 
-<!-- INTENTION MODAL -->
+<!-- MODAL MODIFICATION PROFIL -->
+<div class="edit-overlay" id="editOverlay">
+  <div class="edit-modal">
+    <div class="edit-modal-title">
+      ✏️ Modifier mon profil
+      <button class="edit-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="edit-group">
+      <label>Prénom</label>
+      <input type="text" id="editPrenom" placeholder="Ton prénom">
+    </div>
+    <div class="edit-row">
+      <div class="edit-group">
+        <label>Ville</label>
+        <select id="editVille">
+          <option value="kinshasa">Kinshasa</option>
+          <option value="brazzaville">Brazzaville</option>
+          <option value="lubumbashi">Lubumbashi</option>
+          <option value="goma">Goma</option>
+          <option value="bukavu">Bukavu</option>
+          <option value="mbuji-mayi">Mbuji-Mayi</option>
+          <option value="diaspora-france">France</option>
+          <option value="diaspora-belgique">Belgique</option>
+          <option value="diaspora-canada">Canada</option>
+          <option value="diaspora-usa">États-Unis</option>
+          <option value="diaspora-autre">Autre pays</option>
+        </select>
+      </div>
+      <div class="edit-group">
+        <label>Je cherche</label>
+        <select id="editRecherche">
+          <option value="femme">Une femme</option>
+          <option value="homme">Un homme</option>
+        </select>
+      </div>
+    </div>
+    <div class="edit-group">
+      <label>Ma bio</label>
+      <textarea id="editBio" placeholder="Parle-nous de toi..." maxlength="300"></textarea>
+      <div style="font-size:11px;color:var(--muted);text-align:right;margin-top:4px"><span id="editBioCount">0</span>/300</div>
+    </div>
+    <button class="btn-save-edit" id="btnSaveEdit" onclick="saveProfile()">Enregistrer les modifications</button>
+  </div>
+</div>
+
+<!-- MODAL INTENTION -->
 <div class="modal-overlay" id="intentionModal">
   <div class="modal">
     <div class="modal-title">Changer ton intention ❤️</div>
     <div class="modal-sub">Ton intention s'affiche sur ton profil.</div>
-    <div class="modal-intentions">
-      <div class="modal-intention" onclick="selectModalIntention(this,'❤️ Motema')"><div class="mf-emoji">❤️</div><div class="mf-name">Motema</div><div class="mf-desc">Motema — Relation sérieuse</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'😊 Lokumu')"><div class="mf-emoji">😊</div><div class="mf-name">Lokumu</div><div class="mf-desc">Lokumu — Faire connaissance</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'✨ Chance')"><div class="mf-emoji">✨</div><div class="mf-name">Chance</div><div class="mf-desc">Chance — On verra bien</div></div>
-      <div class="modal-intention" onclick="selectModalIntention(this,'🔥 Moto')"><div class="mf-emoji">🔥</div><div class="mf-name">Moto</div><div class="mf-desc">Moto — Relation légère</div></div>
+    <div class="modal-fruits">
+      <div class="modal-fruit" onclick="selectModalIntention(this,'❤️ Motema')"><div class="mf-emoji">❤️</div><div class="mf-name">Motema</div><div class="mf-desc">Relation sérieuse</div></div>
+      <div class="modal-fruit" onclick="selectModalIntention(this,'😊 Lokumu')"><div class="mf-emoji">😊</div><div class="mf-name">Lokumu</div><div class="mf-desc">Faire connaissance</div></div>
+      <div class="modal-fruit" onclick="selectModalIntention(this,'✨ Chance')"><div class="mf-emoji">✨</div><div class="mf-name">Chance</div><div class="mf-desc">On verra bien</div></div>
+      <div class="modal-fruit" onclick="selectModalIntention(this,'🔥 Moto')"><div class="mf-emoji">🔥</div><div class="mf-name">Moto</div><div class="mf-desc">Relation légère</div></div>
     </div>
     <div class="modal-btns">
       <button class="btn-modal-cancel" onclick="closeIntentionModal()">Annuler</button>
@@ -278,130 +343,193 @@
   </div>
 </div>
 
+<!-- MODAL AVATAR -->
+<div class="modal-overlay" id="avatarModal">
+  <div class="modal">
+    <div class="modal-title">Choisis ton avatar</div>
+    <div class="modal-sub">Clique sur un avatar pour le sélectionner.</div>
+    <div id="avatarModalGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px"></div>
+    <div class="modal-btns">
+      <button class="btn-modal-cancel" onclick="closeAvatarModal()">Annuler</button>
+      <button class="btn-modal-save" onclick="saveAvatar()">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script type="module">
-  import { auth, db, onAuthStateChanged, deconnecter, updateProfil } from "./firebase.js";
-  import { initNotifBadge } from "./notifications.js";
-  import { doc, getDoc, collection, getDocs, updateDoc, serverTimestamp }
+  import { auth, db, onAuthStateChanged, deconnecter } from "./firebase.js";
+  import { doc, getDoc, collection, getDocs, query, where, updateDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { signOut } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const ALL_INTERESTS = ['🎵 Musique congolaise','💃 Ndombolo','⚽ Football','🍳 Cuisine','✈️ Voyages','📚 Lectures','🎨 Art','🏋️ Fitness','🎮 Gaming','📷 Photographie','🎬 Films & séries','🙏 Foi & spiritualité','💼 Business','🌍 Culture africaine','🎤 Afrobeats','🐾 Animaux'];
+  const AVATARS_F = ['👩🏻','👩🏼','👩🏽','👩🏾','👩🏿','👱🏻‍♀️','👱🏼‍♀️','👱🏽‍♀️','👱🏾‍♀️','👱🏿‍♀️'];
+  const AVATARS_H = ['👨🏻','👨🏼','👨🏽','👨🏾','👨🏿','👱🏻‍♂️','👱🏼‍♂️','👱🏽‍♂️','👱🏾‍♂️','👱🏿‍♂️'];
 
-  let currentUser = null;
-  let myData      = {};
+  let currentUser  = null;
+  let myData       = {};
   let selectedIntention = null;
-  let bioEditing    = false;
-  let interestsEditing = false;
+  let selectedAvatarNew = null;
+  let interestsEditing  = false;
 
-  // Expose fonctions
-  window.toggleBio       = toggleBio;
-  window.toggleInterests = toggleInterests;
-  window.saveInterests   = saveInterests;
+  // Expose to HTML
+  window.openEditModal       = openEditModal;
+  window.closeEditModal      = closeEditModal;
+  window.saveProfile         = saveProfile;
   window.openIntentionModal  = openIntentionModal;
   window.closeIntentionModal = closeIntentionModal;
   window.selectModalIntention= selectModalIntention;
   window.saveIntention       = saveIntention;
-  window.confirmDelete   = confirmDelete;
-  window.showToast       = showToast;
+  window.openAvatarModal     = openAvatarModal;
+  window.closeAvatarModal    = closeAvatarModal;
+  window.saveAvatar          = saveAvatar;
+  window.toggleInterests     = toggleInterests;
+  window.saveInterests       = saveInterests;
+  window.confirmDelete       = confirmDelete;
+  window.savePref            = savePref;
+  window.showToast           = showToast;
 
   // ── AUTH ──────────────────────────────────────────────
   onAuthStateChanged(auth, async function(user) {
     if (!user) { window.location.href = "connexion.html"; return; }
     currentUser = user;
-    initNotifBadge();
     await loadProfil();
 
     document.getElementById('logoutBtn').addEventListener('click', async function() {
-      var btn = document.getElementById('logoutBtn');
-      btn.textContent = 'Déconnexion...';
-      btn.disabled = true;
+      this.textContent = 'Déconnexion...';
+      this.disabled = true;
       try {
-        await deconnecter();
-        // deconnecter() redirige vers index.html automatiquement
-      } catch(e) {
-        console.error(e);
-        // Forcer la déconnexion si erreur
-        await signOut(auth);
-        window.location.href = "index.html";
-      }
+        await updateDoc(doc(db, "users", currentUser.uid), { online: false });
+      } catch(e) {}
+      await signOut(auth);
+      window.location.href = "index.html";
     });
   });
 
   // ── CHARGER PROFIL ────────────────────────────────────
   async function loadProfil() {
     try {
-      var snap = await getDoc(doc(db, "users", currentUser.uid));
+      const snap = await getDoc(doc(db, "users", currentUser.uid));
       if (!snap.exists()) return;
       myData = snap.data();
 
-      // Nom
+      // Nom + meta
       document.getElementById('profileName').textContent = myData.prenom || 'Utilisateur';
+      const age = myData.dob ? new Date().getFullYear() - new Date(myData.dob).getFullYear() : '';
+      document.getElementById('profileMeta').textContent = (age ? age + ' ans' : '') + (myData.ville ? ' · ' + myData.ville : '');
 
-      // Âge + ville
-      var age = '';
-      if (myData.dob) {
-        age = new Date().getFullYear() - new Date(myData.dob).getFullYear();
-      }
-      document.getElementById('profileMeta').textContent =
-        (age ? age + ' ans' : '') + (myData.ville ? ' · ' + myData.ville : '');
+      // Avatar
+      const avEl = document.getElementById('profileAvatar');
+      if (myData.photoURL) avEl.innerHTML = `<img src="${myData.photoURL}">`;
+      else if (myData.avatar) avEl.textContent = myData.avatar;
+      else avEl.textContent = myData.genre === 'femme' ? '👩🏾' : '👨🏾';
 
-      // Photo
-      var avEl = document.getElementById('profileAvatar');
-      if (myData.photoURL) {
-        avEl.innerHTML = '<img src="' + myData.photoURL + '">';
-      } else {
-        avEl.textContent = myData.genre === 'femme' ? (currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾') : '👤';
-      }
-
-      // Intention
-      var intention = myData.intention || '❤️ Motema';
+      // Intention (compatibilité fruit/intention)
+      const intention = myData.fruit || myData.intention || '❤️ Motema';
       document.getElementById('profileIntention').textContent = intention + ' ▼';
       selectedIntention = intention;
 
       // Vérifié
-      if (myData.verified) {
-        document.getElementById('profileVerified').style.display = 'inline-flex';
-      }
+      if (myData.verified) document.getElementById('profileVerified').style.display = 'inline-flex';
 
-      // ── STATS RÉELLES ─────────────────────────────────
-      // Likes reçus — depuis Firestore
-      document.getElementById('statLikes').textContent  = myData.likes  || 0;
-      document.getElementById('statVues').textContent   = myData.vues   || 0;
-
-      // Matchs — compter les vrais matchs
-      var matchsSnap = await getDocs(collection(db, "matchs"));
-      var nbMatchs   = 0;
-      matchsSnap.forEach(function(d) {
-        var data = d.data();
-        if (data.users && data.users.indexOf(currentUser.uid) !== -1) nbMatchs++;
-      });
-      document.getElementById('statMatchs').textContent = nbMatchs;
-
-      // Retirer le style "loading"
+      // Stats
+      document.getElementById('statLikes').textContent = myData.likes || 0;
+      document.getElementById('statVues').textContent  = myData.vues  || 0;
       document.getElementById('statLikes').classList.remove('loading');
-      document.getElementById('statMatchs').classList.remove('loading');
       document.getElementById('statVues').classList.remove('loading');
 
+      try {
+        const mq   = query(collection(db, "matchs"), where("users", "array-contains", currentUser.uid));
+        const msnap = await getDocs(mq);
+        document.getElementById('statMatchs').textContent = msnap.size;
+      } catch(e) {
+        document.getElementById('statMatchs').textContent = myData.matchs || 0;
+      }
+      document.getElementById('statMatchs').classList.remove('loading');
+
       // Bio
-      document.getElementById('bioText').value = myData.bio || '';
+      const bioEl = document.getElementById('bioDisplay');
+      if (myData.bio && myData.bio.trim()) {
+        bioEl.className = 'bio-text';
+        bioEl.textContent = myData.bio;
+      }
 
       // Intérêts
       renderInterests(myData.interests || []);
 
+      // Préférences
+      if (myData.ville) {
+        const sel = document.getElementById('prefVille');
+        if (sel) sel.value = myData.ville;
+      }
+
+    } catch(e) { console.error("Erreur chargement profil:", e); }
+  }
+
+  // ── MODAL MODIFICATION PROFIL ─────────────────────────
+  function openEditModal() {
+    document.getElementById('editPrenom').value   = myData.prenom || '';
+    document.getElementById('editBio').value      = myData.bio    || '';
+    document.getElementById('editBioCount').textContent = (myData.bio || '').length;
+    if (myData.ville)     document.getElementById('editVille').value     = myData.ville;
+    if (myData.recherche) document.getElementById('editRecherche').value = myData.recherche;
+    document.getElementById('editOverlay').classList.add('show');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editOverlay').classList.remove('show');
+  }
+
+  document.getElementById('editBio').addEventListener('input', function() {
+    document.getElementById('editBioCount').textContent = this.value.length;
+  });
+
+  async function saveProfile() {
+    const btn = document.getElementById('btnSaveEdit');
+    btn.textContent = 'Enregistrement...';
+    btn.disabled = true;
+
+    const prenom    = document.getElementById('editPrenom').value.trim();
+    const bio       = document.getElementById('editBio').value.trim();
+    const ville     = document.getElementById('editVille').value;
+    const recherche = document.getElementById('editRecherche').value;
+
+    if (!prenom) { showToast('Entre ton prénom.'); btn.textContent = 'Enregistrer'; btn.disabled = false; return; }
+
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), {
+        prenom, bio, ville, recherche, updatedAt: serverTimestamp()
+      });
+      myData.prenom    = prenom;
+      myData.bio       = bio;
+      myData.ville     = ville;
+      myData.recherche = recherche;
+
+      // Mettre à jour l'affichage
+      document.getElementById('profileName').textContent = prenom;
+      const age = myData.dob ? new Date().getFullYear() - new Date(myData.dob).getFullYear() : '';
+      document.getElementById('profileMeta').textContent = (age ? age + ' ans' : '') + (ville ? ' · ' + ville : '');
+      const bioEl = document.getElementById('bioDisplay');
+      if (bio) { bioEl.className = 'bio-text'; bioEl.textContent = bio; }
+      else { bioEl.className = 'bio-empty'; bioEl.textContent = 'Ajoute une bio depuis "Modifier mon profil"'; }
+
+      closeEditModal();
+      showToast('✅ Profil mis à jour !');
     } catch(e) {
-      console.error("Erreur chargement profil:", e);
+      showToast('❌ Erreur : ' + e.message);
     }
+    btn.textContent = 'Enregistrer les modifications';
+    btn.disabled = false;
   }
 
   // ── INTÉRÊTS ──────────────────────────────────────────
   function renderInterests(selected) {
-    var wrap = document.getElementById('interestsDisplay');
+    const wrap = document.getElementById('interestsDisplay');
     if (!selected || selected.length === 0) {
-      wrap.innerHTML = '<span style="font-size:13px;color:var(--muted)">Aucun centre d\'intérêt ajouté.</span>';
+      wrap.innerHTML = '<span class="interests-empty">Aucun centre d\'intérêt ajouté.</span>';
       return;
     }
-    wrap.innerHTML = selected.map(function(i) {
-      return '<span class="interest-pill">' + i + '</span>';
-    }).join('');
+    wrap.innerHTML = selected.map(i => `<span class="interest-pill">${i}</span>`).join('');
   }
 
   function toggleInterests() {
@@ -411,17 +539,16 @@
     document.getElementById('interestsEditor').style.display  = interestsEditing ? 'block' : 'none';
 
     if (interestsEditing) {
-      var current = myData.interests || [];
-      document.getElementById('interestsAll').innerHTML = ALL_INTERESTS.map(function(i) {
-        var sel = current.indexOf(i) !== -1;
-        return '<span class="interest-pill editable ' + (sel ? 'selected' : '') + '" onclick="this.classList.toggle(\'selected\')">' + i + '</span>';
+      const current = myData.interests || [];
+      document.getElementById('interestsAll').innerHTML = ALL_INTERESTS.map(i => {
+        const sel = current.includes(i);
+        return `<span class="interest-pill editable ${sel ? 'selected' : ''}" onclick="this.classList.toggle('selected')">${i}</span>`;
       }).join('');
     }
   }
 
   async function saveInterests() {
-    var selected = Array.from(document.querySelectorAll('#interestsAll .interest-pill.selected'))
-      .map(function(el) { return el.textContent; });
+    const selected = Array.from(document.querySelectorAll('#interestsAll .interest-pill.selected')).map(el => el.textContent);
     try {
       await updateDoc(doc(db, "users", currentUser.uid), { interests: selected, updatedAt: serverTimestamp() });
       myData.interests = selected;
@@ -431,76 +558,96 @@
     } catch(e) { showToast('❌ Erreur : ' + e.message); }
   }
 
-  // ── BIO ───────────────────────────────────────────────
-  function toggleBio() {
-    bioEditing = !bioEditing;
-    var ta  = document.getElementById('bioText');
-    var btn = document.getElementById('bioEditBtn');
-    var cnt = document.getElementById('bioCount');
-    if (bioEditing) {
-      ta.removeAttribute('readonly'); ta.classList.add('editing');
-      btn.textContent = 'Enregistrer'; cnt.style.display = 'block';
-      document.getElementById('bioLen').textContent = ta.value.length;
-      ta.oninput = function() { document.getElementById('bioLen').textContent = ta.value.length; };
-      ta.focus();
-    } else {
-      ta.setAttribute('readonly', true); ta.classList.remove('editing');
-      btn.textContent = 'Modifier'; cnt.style.display = 'none';
-      updateDoc(doc(db, "users", currentUser.uid), { bio: ta.value, updatedAt: serverTimestamp() })
-        .then(function() { showToast('✅ Bio enregistrée !'); })
-        .catch(function(e) { showToast('❌ Erreur : ' + e.message); });
-    }
-  }
-
-  // ── FRUIT MODAL ───────────────────────────────────────
+  // ── INTENTION MODAL ───────────────────────────────────
   function openIntentionModal() { document.getElementById('intentionModal').classList.add('show'); }
   function closeIntentionModal() { document.getElementById('intentionModal').classList.remove('show'); }
-  function selectModalIntention(el, intention) {
-    document.querySelectorAll('.modal-intention').forEach(function(f) { f.classList.remove('selected'); });
+  function selectModalIntention(el, val) {
+    document.querySelectorAll('.modal-fruit').forEach(f => f.classList.remove('selected'));
     el.classList.add('selected');
-    selectedIntention = intention;
+    selectedIntention = val;
   }
   async function saveIntention() {
+    if (!selectedIntention) return;
     try {
-      await updateDoc(doc(db, "users", currentUser.uid), { intention: selectedIntention, updatedAt: serverTimestamp() });
-      myData.intention = selectedIntention;
+      await updateDoc(doc(db, "users", currentUser.uid), { fruit: selectedIntention, updatedAt: serverTimestamp() });
+      myData.fruit = selectedIntention;
       document.getElementById('profileIntention').textContent = selectedIntention + ' ▼';
       closeIntentionModal();
-      showToast('❤️ Intention mis à jour : ' + selectedIntention);
+      showToast('✅ Intention mise à jour !');
     } catch(e) { showToast('❌ Erreur : ' + e.message); }
   }
 
-  // ── DELETE ────────────────────────────────────────────
+  // ── AVATAR MODAL ──────────────────────────────────────
+  function openAvatarModal() {
+    const avatars = myData.genre === 'femme' ? AVATARS_F : AVATARS_H;
+    const grid    = document.getElementById('avatarModalGrid');
+    grid.innerHTML = '';
+    avatars.forEach(av => {
+      const div = document.createElement('div');
+      div.style.cssText = 'width:100%;aspect-ratio:1;border-radius:50%;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:3px solid transparent;background:#F7F0E8;transition:all .15s;';
+      div.textContent = av;
+      if (av === (myData.avatar || '')) { div.style.borderColor = '#E8394A'; div.style.background = '#FEECED'; }
+      div.addEventListener('click', function() {
+        grid.querySelectorAll('div').forEach(d => { d.style.borderColor = 'transparent'; d.style.background = '#F7F0E8'; });
+        div.style.borderColor = '#E8394A'; div.style.background = '#FEECED';
+        selectedAvatarNew = av;
+      });
+      grid.appendChild(div);
+    });
+    document.getElementById('avatarModal').classList.add('show');
+  }
+  function closeAvatarModal() { document.getElementById('avatarModal').classList.remove('show'); selectedAvatarNew = null; }
+  async function saveAvatar() {
+    if (!selectedAvatarNew) { showToast('Sélectionne un avatar !'); return; }
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), { avatar: selectedAvatarNew, updatedAt: serverTimestamp() });
+      myData.avatar = selectedAvatarNew;
+      document.getElementById('profileAvatar').textContent = selectedAvatarNew;
+      closeAvatarModal();
+      showToast('✅ Avatar mis à jour !');
+    } catch(e) { showToast('❌ Erreur : ' + e.message); }
+  }
+
+  // ── PRÉFÉRENCES ───────────────────────────────────────
+  async function savePref() {
+    const ville = document.getElementById('prefVille').value;
+    try {
+      await updateDoc(doc(db, "users", currentUser.uid), { ville, updatedAt: serverTimestamp() });
+      myData.ville = ville;
+      showToast('✅ Ville mise à jour !');
+    } catch(e) { showToast('❌ Erreur : ' + e.message); }
+  }
+
+  // ── SUPPRESSION ───────────────────────────────────────
   function confirmDelete() {
     if (confirm('Supprimer ton compte Mbote ? Cette action est irréversible.')) {
-      showToast('🗑️ Suppression — bientôt disponible');
+      showToast('🗑️ Suppression — contacte le support Mbote pour supprimer ton compte.');
     }
   }
 
   // ── TOAST ─────────────────────────────────────────────
   function showToast(msg) {
-    var existing = document.querySelector('.toast');
+    const existing = document.querySelector('.toast');
     if (existing) existing.remove();
-    var t = document.createElement('div');
-    t.className   = 'toast';
+    const t = document.createElement('div');
+    t.className = 'toast';
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(function() { t.remove(); }, 2800);
+    setTimeout(() => t.remove(), 2800);
   }
 
-  document.getElementById('intentionModal').addEventListener('click', function(e) {
-    if (e.target === this) closeIntentionModal();
-  });
+  // Fermer modals au clic extérieur
+  document.getElementById('intentionModal').addEventListener('click', function(e) { if (e.target === this) closeIntentionModal(); });
+  document.getElementById('avatarModal').addEventListener('click', function(e) { if (e.target === this) closeAvatarModal(); });
+  document.getElementById('editOverlay').addEventListener('click', function(e) { if (e.target === this) closeEditModal(); });
 </script>
-  <!-- Service Worker PWA -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js')
-          .then(function(reg) { console.log('[PWA] Service Worker enregistré'); })
-          .catch(function(e) { console.log('[PWA] Erreur:', e); });
-      });
-    }
-  </script>
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('./sw.js').catch(function(e) { console.log('SW error:', e); });
+    });
+  }
+</script>
 </body>
 </html>
