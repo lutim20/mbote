@@ -54,7 +54,7 @@ export async function inscrire(email, password, profileData) {
       genre:     profileData.genre,
       ville:     profileData.ville,
       recherche: profileData.recherche,
-      fruit:     profileData.fruit,
+      intention: profileData.fruit,  // champ Firestore renommé en 'intention'
       bio:       profileData.bio || "",
       interests: profileData.interests || [],
       photoURL:  "",

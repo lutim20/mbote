@@ -311,7 +311,7 @@
     list.innerHTML = matchsData.map(function(m) {
       var avatarHtml = m.profil.photoURL
         ? '<img src="' + m.profil.photoURL + '">'
-        : (m.profil.genre === 'femme' ? '👩🏾' : '👨🏾');
+        : (m.profil.genre === 'femme' ? (currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾') : '👤');
       var timeStr = m.lastTime ? formatTime(m.lastTime) : '';
       var preview = m.lastMsg || 'Nouveau match ! Lance la conversation ❤️';
       return '<div class="conv-item" id="conv_' + m.matchId + '" onclick="window._openChat(\'' + m.matchId + '\')">' +
@@ -339,11 +339,11 @@
     if (currentProfil.photoURL) {
       av.innerHTML = '<img src="' + currentProfil.photoURL + '">';
     } else {
-      av.textContent = currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾';
+      av.textContent = currentProfil.genre === 'femme' ? (currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾') : '👤';
     }
     document.getElementById('chatName').textContent = currentProfil.prenom || 'Utilisateur';
     document.getElementById('chatMeta').textContent = (currentProfil.intention || '') + ' · ' + (currentProfil.ville || 'Congo');
-    document.getElementById('typingAv').textContent = currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾';
+    document.getElementById('typingAv').textContent = currentProfil.genre === 'femme' ? (currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾') : '👤';
 
     // Afficher le brise-glace si pas encore de messages
     document.getElementById('icebreakerBanner').style.display = match.lastMsg ? 'none' : 'flex';
@@ -420,7 +420,7 @@
       var texte  = String(msg.texte || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       var avHtml = currentProfil && currentProfil.photoURL
         ? '<img src="' + currentProfil.photoURL + '" style="width:100%;height:100%;object-fit:cover;border-radius:50%">'
-        : (currentProfil && currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾');
+        : (currentProfil && currentProfil.genre === 'femme' ? (currentProfil.genre === 'femme' ? '👩🏾' : '👨🏾') : '👤');
 
       if (isMe) {
         // Message envoyé (droite)

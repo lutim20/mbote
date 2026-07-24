@@ -80,6 +80,9 @@
     .success-title { font-size: 28px; font-weight: 900; color: var(--dark); margin-bottom: 12px; }
     .success-sub { font-size: 15px; color: var(--muted); line-height: 1.7; margin-bottom: 32px; }
     .btn-go { display: inline-block; background: var(--cherry); color: #fff; border: none; padding: 15px 36px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; }
+    .avatar-option { width: 100%; aspect-ratio: 1; border-radius: 50%; font-size: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 3px solid transparent; transition: all .15s; background: #F7F0E8; -webkit-tap-highlight-color: transparent; }
+    .avatar-option:hover { transform: scale(1.05); }
+    .avatar-option.selected { border-color: #E8394A; background: #FEECED; transform: scale(1.05); box-shadow: 0 0 0 2px #E8394A; }
     @media (max-width: 900px) { .page-wrap { grid-template-columns: 1fr; } .left-panel { display: none; } .right-panel { padding: 90px 24px 48px; max-width: 100%; } }
     @media (max-width: 480px) { .intention-picker { grid-template-columns: 1fr; } .form-row { grid-template-columns: 1fr; } }
   </style>
@@ -205,6 +208,15 @@
           </select>
           <div class="error-msg" id="err-recherche">Indique ce que tu cherches.</div>
         </div>
+        <!-- SÉLECTION AVATAR -->
+        <div class="form-group">
+          <label>Choisis ton avatar *</label>
+          <div id="avatarGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:8px">
+          </div>
+          <div class="error-msg" id="err-avatar">Choisis un avatar.</div>
+          <p class="form-hint">Tu pourras le changer depuis ton profil.</p>
+        </div>
+
         <div class="form-group">
           <label>Parle-nous de toi</label>
           <textarea id="bio" placeholder="Passionné(e) de musique congolaise..." maxlength="300"></textarea>
@@ -358,17 +370,49 @@
     }
 
     function validateStep2() {
-      var valid = true;
+      var valid     = true;
       var ville     = document.getElementById('ville').value;
       var recherche = document.getElementById('recherche').value;
-      showErr('ville', !ville); if (!ville) valid = false;
+      showErr('ville',     !ville);     if (!ville)     valid = false;
       showErr('recherche', !recherche); if (!recherche) valid = false;
+      // Validation avatar
+      var errAv = document.getElementById('err-avatar');
+      if (!selectedAvatar) {
+        errAv.classList.add('show');
+        valid = false;
+      } else {
+        errAv.classList.remove('show');
+      }
       return valid;
+    }
+
+    // ── AVATARS ─────────────────────────────────────────
+    function generateAvatarGrid() {
+      var genre   = document.getElementById('genre').value;
+      var avatars = genre === 'femme' ? AVATARS_FEMME : AVATARS_HOMME;
+      var grid    = document.getElementById('avatarGrid');
+      grid.innerHTML = '';
+      avatars.forEach(function(av) {
+        var div = document.createElement('div');
+        div.className   = 'avatar-option';
+        div.textContent = av;
+        div.addEventListener('click', function() {
+          document.querySelectorAll('.avatar-option').forEach(function(a) { a.classList.remove('selected'); });
+          div.classList.add('selected');
+          selectedAvatar = av;
+          document.getElementById('err-avatar').classList.remove('show');
+        });
+        grid.appendChild(div);
+      });
     }
 
     // ── BOUTONS NAVIGATION ──────────────────────────────
     document.getElementById('btnStep1').addEventListener('click', function() {
-      if (validateStep1()) goStep(2);
+      if (validateStep1()) {
+        goStep(2);
+        // Générer la grille d'avatars selon le genre choisi
+        generateAvatarGrid();
+      }
     });
     document.getElementById('btnStep2').addEventListener('click', function() {
       if (validateStep2()) goStep(3);

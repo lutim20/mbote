@@ -322,7 +322,13 @@
       var em = document.createElement('div');
       em.className  = 'card-emoji';
       em.style.cssText = 'font-size:80px;position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);z-index:1';
-      em.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+      // Utiliser l'avatar choisi ou un emoji par défaut selon le genre
+      if (profile.avatar) {
+        em.textContent = profile.avatar;
+      } else {
+        var emojiList = profile.genre === 'femme' ? EMOJIS_F : EMOJIS_H;
+        em.textContent = emojiList[Math.floor(Math.random() * emojiList.length)];
+      }
       photoEl.appendChild(em);
     }
 
