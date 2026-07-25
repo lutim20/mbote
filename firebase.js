@@ -4,6 +4,7 @@
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -40,6 +41,52 @@ const firebaseConfig = {
 const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
+
+// ─── MESSAGING (FCM) ─────────────────────────────────────
+let messaging = null;
+try {
+  messaging = getMessaging(app);
+} catch(e) {
+  console.warn("FCM non disponible:", e);
+}
+
+const VAPID_KEY = "BGxZOm6nvG2UbWKhBmOV4zoi3_MlWL1_lUK5PAPLKk35LQfxC-SE826z5tmmo3YF7k_YFvrbkC9-OtrrTMZcodY";
+
+// ─── NOTIFICATIONS PUSH ──────────────────────────────────────
+export async function activerNotifications(uid) {
+  if (!messaging) return { success: false, error: "FCM non disponible" };
+  try {
+    // Demander permission
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') return { success: false, error: "Permission refusée" };
+
+    // Obtenir le token FCM
+    const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+    if (!token) return { success: false, error: "Token non obtenu" };
+
+    // Sauvegarder le token dans Firestore
+    await updateDoc(doc(db, "users", uid), {
+      fcmToken: token,
+      notificationsActives: true,
+      updatedAt: serverTimestamp()
+    });
+
+    console.log("✅ Token FCM enregistré:", token.substring(0, 20) + "...");
+    return { success: true, token };
+  } catch(e) {
+    console.error("Erreur FCM:", e);
+    return { success: false, error: e.message };
+  }
+}
+
+// Écouter les messages en premier plan
+export function ecouterMessages(callback) {
+  if (!messaging) return;
+  onMessage(messaging, function(payload) {
+    console.log("Message reçu en premier plan:", payload);
+    if (callback) callback(payload);
+  });
+}
 
 // ─── INSCRIPTION ─────────────────────────────────────────────
 export async function inscrire(email, password, profileData) {

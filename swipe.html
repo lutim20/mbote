@@ -163,7 +163,7 @@
 </div>
 
 <script type="module">
-  import { auth, db, onAuthStateChanged, enregistrerLike } from "./firebase.js";
+  import { auth, db, onAuthStateChanged, enregistrerLike, activerNotifications } from "./firebase.js";
   import {
     collection, query, where, getDocs, doc, getDoc
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
@@ -192,6 +192,12 @@
       return;
     }
     currentUser = user;
+
+    // Activer notifications push
+    if ('Notification' in window && Notification.permission !== 'denied') {
+      activerNotifications(user.uid);
+    }
+
     // Charger mon profil
     try {
       const snap = await getDoc(doc(db, "users", currentUser.uid));

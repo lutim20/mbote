@@ -1,10 +1,11 @@
 // ============================================================
-//  MBOTE — sw.js (Service Worker PWA)
-//  Cache les fichiers pour mode hors-ligne + installation
+//  MBOTE — sw.js (Service Worker PWA + FCM)
 // ============================================================
 
-const CACHE_NAME    = 'mbote-v2';
-const CACHE_TIMEOUT = 3600; // 1 heure
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js');
+importScripts('https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-compat.js');
+
+const CACHE_NAME = 'mbote-v3';
 
 const FILES_TO_CACHE = [
   '/',
@@ -15,22 +16,28 @@ const FILES_TO_CACHE = [
   '/messages_v2.html',
   '/profil.html',
   '/firebase.js',
-  '/notifications.js',
   '/manifest.json'
 ];
 
-// ─── INSTALLATION ─────────────────────────────────────────────
+// ─── FIREBASE CONFIG ──────────────────────────────────────
+firebase.initializeApp({
+  apiKey:            "AIzaSyBiNHcfaE2zI3qxXfKWoN8gnfGhGqRhi_g",
+  authDomain:        "mbote-app-2e4ed.firebaseapp.com",
+  projectId:         "mbote-app-2e4ed",
+  storageBucket:     "mbote-app-2e4ed.firebasestorage.app",
+  messagingSenderId: "483321291415",
+  appId:             "1:483321291415:web:228bab54e1f956c433ffd2"
+});
+
+const messaging = firebase.messaging();
+
+// ─── INSTALLATION ─────────────────────────────────────────
 self.addEventListener('install', function(event) {
-  console.log('[SW] Installation...');
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
-      console.log('[SW] Mise en cache des fichiers');
-      // On essaie de mettre en cache mais on ignore les erreurs
       return Promise.allSettled(
         FILES_TO_CACHE.map(function(url) {
-          return cache.add(url).catch(function(e) {
-            console.warn('[SW] Impossible de cacher:', url, e);
-          });
+          return cache.add(url).catch(function() {});
         })
       );
     })
@@ -38,17 +45,13 @@ self.addEventListener('install', function(event) {
   self.skipWaiting();
 });
 
-// ─── ACTIVATION ───────────────────────────────────────────────
+// ─── ACTIVATION ───────────────────────────────────────────
 self.addEventListener('activate', function(event) {
-  console.log('[SW] Activation...');
   event.waitUntil(
-    caches.keys().then(function(keyList) {
+    caches.keys().then(function(keys) {
       return Promise.all(
-        keyList.map(function(key) {
-          if (key !== CACHE_NAME) {
-            console.log('[SW] Suppression ancien cache:', key);
-            return caches.delete(key);
-          }
+        keys.map(function(key) {
+          if (key !== CACHE_NAME) return caches.delete(key);
         })
       );
     })
@@ -56,71 +59,53 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
-// ─── FETCH ────────────────────────────────────────────────────
+// ─── FETCH ────────────────────────────────────────────────
 self.addEventListener('fetch', function(event) {
-  // Ne pas intercepter Firebase, Google Fonts, extensions
   var url = event.request.url;
-  if (url.includes('firebase') ||
-      url.includes('googleapis') ||
-      url.includes('gstatic') ||
-      url.includes('chrome-extension') ||
-      event.request.method !== 'GET') {
-    return;
-  }
+  if (url.includes('firebase') || url.includes('googleapis') ||
+      url.includes('gstatic') || event.request.method !== 'GET') return;
 
   event.respondWith(
-    caches.match(event.request).then(function(cached) {
-      // Stratégie Network First : essayer le réseau d'abord
-      return fetch(event.request).then(function(response) {
-        // Mettre en cache la nouvelle version
-        if (response && response.status === 200) {
-          var responseClone = response.clone();
-          caches.open(CACHE_NAME).then(function(cache) {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return response;
-      }).catch(function() {
-        // Si pas de réseau → utiliser le cache
-        if (cached) {
-          console.log('[SW] Hors-ligne, utilisation du cache:', url);
-          return cached;
-        }
-        // Si pas de cache non plus → page offline
-        if (event.request.mode === 'navigate') {
-          return caches.match('/index.html');
-        }
+    fetch(event.request).then(function(response) {
+      if (response && response.status === 200) {
+        var clone = response.clone();
+        caches.open(CACHE_NAME).then(function(cache) { cache.put(event.request, clone); });
+      }
+      return response;
+    }).catch(function() {
+      return caches.match(event.request).then(function(cached) {
+        return cached || caches.match('/index.html');
       });
     })
   );
 });
 
-// ─── NOTIFICATIONS PUSH ───────────────────────────────────────
-self.addEventListener('push', function(event) {
-  var data = {};
-  try { data = event.data.json(); } catch(e) {}
+// ─── NOTIFICATIONS FCM EN ARRIÈRE-PLAN ───────────────────
+messaging.onBackgroundMessage(function(payload) {
+  console.log('[SW] Notification reçue en arrière-plan:', payload);
+
+  var data  = payload.notification || payload.data || {};
+  var title = data.title || '❤️ Mbote — Nouveau message !';
+  var body  = data.body  || 'Tu as reçu un nouveau message.';
+  var icon  = '/icon-192.png';
+  var url   = (payload.data && payload.data.url) || '/messages_v2.html';
 
   var options = {
-    body:    data.body    || 'Tu as un nouveau message sur Mbote !',
-    icon:    '/icon-192.png',
-    badge:   '/icon-192.png',
+    body:    body,
+    icon:    icon,
+    badge:   icon,
     vibrate: [200, 100, 200],
-    data:    { url: data.url || '/messages_v2.html' },
+    data:    { url: url },
     actions: [
       { action: 'open',   title: '💬 Voir le message' },
       { action: 'ignore', title: 'Ignorer' }
     ]
   };
 
-  event.waitUntil(
-    self.registration.showNotification(
-      data.title || '🍒 Mbote — Nouveau message !',
-      options
-    )
-  );
+  return self.registration.showNotification(title, options);
 });
 
-// ─── CLIC NOTIFICATION ────────────────────────────────────────
+// ─── CLIC SUR NOTIFICATION ────────────────────────────────
 self.addEventListener('notificationclick', function(event) {
   event.notification.close();
   if (event.action === 'ignore') return;
@@ -130,14 +115,9 @@ self.addEventListener('notificationclick', function(event) {
     : '/messages_v2.html';
 
   event.waitUntil(
-    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(clientList) {
-      for (var i = 0; i < clientList.length; i++) {
-        var client = clientList[i];
-        if ('focus' in client) {
-          client.focus();
-          client.navigate(url);
-          return;
-        }
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function(list) {
+      for (var i = 0; i < list.length; i++) {
+        if ('focus' in list[i]) { list[i].focus(); list[i].navigate(url); return; }
       }
       if (clients.openWindow) return clients.openWindow(url);
     })

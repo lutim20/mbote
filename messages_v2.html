@@ -225,7 +225,7 @@
 </div>
 
 <script type="module">
-  import { auth, db, onAuthStateChanged, envoyerMessage } from "./firebase.js";
+  import { auth, db, onAuthStateChanged, envoyerMessage, activerNotifications, ecouterMessages } from "./firebase.js";
   import {
     collection, query, where, getDocs, doc, getDoc,
     onSnapshot, orderBy, addDoc, serverTimestamp, updateDoc
@@ -255,10 +255,27 @@
     if (!user) { window.location.href = "connexion.html"; return; }
     currentUser = user;
 
-    // Demander permission notifications
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+    // Activer notifications push FCM
+    if ('Notification' in window) {
+      if (Notification.permission === 'default') {
+        activerNotifications(user.uid);
+      } else if (Notification.permission === 'granted') {
+        activerNotifications(user.uid);
+      }
     }
+
+    // Écouter messages en premier plan
+    ecouterMessages(function(payload) {
+      var data  = payload.notification || payload.data || {};
+      var title = data.title || '❤️ Nouveau message !';
+      var body  = data.body  || 'Tu as reçu un nouveau message.';
+      if (Notification.permission === 'granted') {
+        new Notification(title, { body: body, icon: './icon-192.png' });
+      }
+      if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+      // Recharger les matchs pour badge
+      loadMatchs();
+    });
 
     await loadMatchs();
     setupEvents();
