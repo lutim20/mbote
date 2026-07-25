@@ -210,7 +210,7 @@
         </div>
         <!-- SÉLECTION AVATAR -->
         <div class="form-group">
-          <label>Choisis ton avatar *</label>
+          <label>Choisis ton avatar <span style="font-size:11px;color:var(--muted);font-weight:600">(optionnel)</span></label>
           <div id="avatarGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:8px">
           </div>
           <div class="error-msg" id="err-avatar">Choisis un avatar.</div>
@@ -383,14 +383,7 @@
       var recherche = document.getElementById('recherche').value;
       showErr('ville',     !ville);     if (!ville)     valid = false;
       showErr('recherche', !recherche); if (!recherche) valid = false;
-      // Validation avatar
-      var errAv = document.getElementById('err-avatar');
-      if (!selectedAvatar) {
-        errAv.classList.add('show');
-        valid = false;
-      } else {
-        errAv.classList.remove('show');
-      }
+      // Avatar optionnel - pas de blocage
       return valid;
     }
 
@@ -418,8 +411,8 @@
     document.getElementById('btnStep1').addEventListener('click', function() {
       if (validateStep1()) {
         goStep(2);
-        // Générer la grille d'avatars selon le genre choisi
-        generateAvatarGrid();
+        // Générer la grille après un court délai pour s'assurer que l'étape est visible
+        setTimeout(function() { generateAvatarGrid(); }, 100);
       }
     });
     document.getElementById('btnStep2').addEventListener('click', function() {
