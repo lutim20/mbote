@@ -388,6 +388,9 @@
     }
 
     // ── AVATARS ─────────────────────────────────────────
+    var AVATARS_FEMME = ['👩🏻','👩🏼','👩🏽','👩🏾','👩🏿','👱🏻‍♀️','👱🏼‍♀️','👱🏽‍♀️','👱🏾‍♀️','👱🏿‍♀️'];
+    var AVATARS_HOMME = ['👨🏻','👨🏼','👨🏽','👨🏾','👨🏿','👱🏻‍♂️','👱🏼‍♂️','👱🏽‍♂️','👱🏾‍♂️','👱🏿‍♂️'];
+
     function generateAvatarGrid() {
       var genre   = document.getElementById('genre').value;
       var avatars = genre === 'femme' ? AVATARS_FEMME : AVATARS_HOMME;
