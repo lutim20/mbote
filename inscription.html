@@ -311,8 +311,11 @@
     </div>
   </div>
 
-  <!-- SCRIPT NORMAL (pas module) pour les fonctions du formulaire -->
-  <script>
+  <!-- SCRIPT UNIQUE -->
+  <script type="module">
+    import { inscrire, renvoyerVerification } from "./firebase.js";
+
+
     var currentStep  = 1;
     var selectedIntention = null;
 
@@ -512,12 +515,12 @@
       // Appeler Firebase via le module
       // Vérifier que Firebase est chargé
       if (typeof window._inscrire === 'function') {
-        window._inscrire(email, password, profileData);
+        doInscription(email, password, profileData);
       } else {
         // Réessayer après 500ms si le module n'est pas encore chargé
         setTimeout(function() {
           if (typeof window._inscrire === 'function') {
-            window._inscrire(email, password, profileData);
+            doInscription(email, password, profileData);
           } else {
             var btn = document.getElementById('btnSubmit');
             btn.textContent = 'Créer mon profil ❤️';
@@ -531,13 +534,35 @@
 
     // Date max = aujourd'hui
     document.getElementById('dob').max = new Date().toISOString().split('T')[0];
-  </script>
+  
 
-  <!-- SCRIPT MODULE pour Firebase uniquement -->
-  <script type="module">
-    import { inscrire, renvoyerVerification } from "./firebase.js";
+    // ── EXPOSER FONCTIONS AU HTML ──────────────────────────
+    window.goStep         = goStep;
+    window.selectFruit    = selectFruit;
+    window.toggleInterest = toggleInterest;
+    window.previewPhoto   = previewPhoto;
+    window.generateAvatarGrid = generateAvatarGrid;
 
-    // Exposer la fonction d'inscription au script normal
+    // ── FIREBASE INSCRIPTION ─────────────────────────────
+    async function doInscription(email, password, profileData) {
+      var btn = document.getElementById('btnSubmit');
+      var result = await inscrire(email, password, profileData);
+
+      if (result.success) {
+        document.getElementById('step4').classList.remove('active');
+        document.getElementById('stepsIndicator').style.display = 'none';
+        document.querySelector('.step-labels').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        var emailEl = document.getElementById('successEmail');
+        if (emailEl) emailEl.textContent = email;
+      } else {
+        document.getElementById('submitErrorText').textContent = result.error;
+        document.getElementById('submitError').classList.add('show');
+        btn.textContent = 'Créer mon profil ❤️';
+        btn.disabled = false;
+      }
+    }
+
     // Renvoyer email de vérification
     window.resendEmail = async function() {
       var btn = document.getElementById('btnResend');
@@ -547,27 +572,7 @@
       if (result.success) {
         btn.textContent = '✅ Email renvoyé !';
       } else {
-        btn.textContent = 'Renvoyer l'email de vérification';
-        btn.disabled = false;
-      }
-    };
-
-    window._inscrire = async function(email, password, profileData) {
-      var btn = document.getElementById('btnSubmit');
-      var result = await inscrire(email, password, profileData);
-
-      if (result.success) {
-        document.getElementById('step4').classList.remove('active');
-        document.getElementById('stepsIndicator').style.display = 'none';
-        document.querySelector('.step-labels').style.display = 'none';
-        document.getElementById('successScreen').style.display = 'block';
-        // Afficher l'email dans l'écran de succès
-        var emailEl = document.getElementById('successEmail');
-        if (emailEl) emailEl.textContent = email;
-      } else {
-        document.getElementById('submitErrorText').textContent = result.error;
-        document.getElementById('submitError').classList.add('show');
-        btn.textContent = 'Créer mon profil ❤️';
+        btn.textContent = 'Renvoyer l\'email de vérification';
         btn.disabled = false;
       }
     };
@@ -576,9 +581,7 @@
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').catch(function(e) {
-          console.log('SW error:', e);
-        });
+        navigator.serviceWorker.register('./sw.js').catch(function(e) { console.log('SW error:', e); });
       });
     }
   </script>
