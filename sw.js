@@ -62,14 +62,23 @@ self.addEventListener('activate', function(event) {
 // ─── FETCH ────────────────────────────────────────────────
 self.addEventListener('fetch', function(event) {
   var url = event.request.url;
+
+  // Ignorer tout ce qui n'est pas http/https
+  if (!url.startsWith('http')) return;
+
+  // Ignorer Firebase, Google, et autres APIs externes
   if (url.includes('firebase') || url.includes('googleapis') ||
-      url.includes('gstatic') || event.request.method !== 'GET') return;
+      url.includes('gstatic') || url.includes('firebaseapp') ||
+      event.request.method !== 'GET') return;
 
   event.respondWith(
     fetch(event.request).then(function(response) {
-      if (response && response.status === 200) {
+      // Ne mettre en cache que les réponses valides de notre domaine
+      if (response && response.status === 200 && response.type === 'basic') {
         var clone = response.clone();
-        caches.open(CACHE_NAME).then(function(cache) { cache.put(event.request, clone); });
+        caches.open(CACHE_NAME).then(function(cache) {
+          try { cache.put(event.request, clone); } catch(e) {}
+        });
       }
       return response;
     }).catch(function() {

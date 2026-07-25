@@ -510,7 +510,23 @@
       };
 
       // Appeler Firebase via le module
-      window._inscrire(email, password, profileData);
+      // Vérifier que Firebase est chargé
+      if (typeof window._inscrire === 'function') {
+        window._inscrire(email, password, profileData);
+      } else {
+        // Réessayer après 500ms si le module n'est pas encore chargé
+        setTimeout(function() {
+          if (typeof window._inscrire === 'function') {
+            window._inscrire(email, password, profileData);
+          } else {
+            var btn = document.getElementById('btnSubmit');
+            btn.textContent = 'Créer mon profil ❤️';
+            btn.disabled = false;
+            document.getElementById('submitErrorText').textContent = 'Erreur de chargement. Recharge la page et réessaie.';
+            document.getElementById('submitError').classList.add('show');
+          }
+        }, 1000);
+      }
     });
 
     // Date max = aujourd'hui
