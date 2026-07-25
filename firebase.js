@@ -4,7 +4,7 @@
 // ============================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js";
+// FCM importé séparément dans firebase-fcm.js
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -42,36 +42,27 @@ const app  = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db   = getFirestore(app);
 
-// ─── MESSAGING (FCM) ─────────────────────────────────────
-let messaging = null;
-try {
-  messaging = getMessaging(app);
-} catch(e) {
-  console.warn("FCM non disponible:", e);
-}
-
 const VAPID_KEY = "BGxZOm6nvG2UbWKhBmOV4zoi3_MlWL1_lUK5PAPLKk35LQfxC-SE826z5tmmo3YF7k_YFvrbkC9-OtrrTMZcodY";
+export { VAPID_KEY };
 
 // ─── NOTIFICATIONS PUSH ──────────────────────────────────────
+// Chargement dynamique de FCM pour ne pas bloquer les autres pages
 export async function activerNotifications(uid) {
-  if (!messaging) return { success: false, error: "FCM non disponible" };
   try {
-    // Demander permission
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') return { success: false, error: "Permission refusée" };
 
-    // Obtenir le token FCM
+    const { getMessaging, getToken } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js");
+    const messaging = getMessaging(app);
     const token = await getToken(messaging, { vapidKey: VAPID_KEY });
     if (!token) return { success: false, error: "Token non obtenu" };
 
-    // Sauvegarder le token dans Firestore
     await updateDoc(doc(db, "users", uid), {
       fcmToken: token,
       notificationsActives: true,
       updatedAt: serverTimestamp()
     });
-
-    console.log("✅ Token FCM enregistré:", token.substring(0, 20) + "...");
+    console.log("✅ Token FCM enregistré");
     return { success: true, token };
   } catch(e) {
     console.error("Erreur FCM:", e);
@@ -79,13 +70,16 @@ export async function activerNotifications(uid) {
   }
 }
 
-// Écouter les messages en premier plan
-export function ecouterMessages(callback) {
-  if (!messaging) return;
-  onMessage(messaging, function(payload) {
-    console.log("Message reçu en premier plan:", payload);
-    if (callback) callback(payload);
-  });
+export async function ecouterMessages(callback) {
+  try {
+    const { getMessaging, onMessage } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js");
+    const messaging = getMessaging(app);
+    onMessage(messaging, function(payload) {
+      if (callback) callback(payload);
+    });
+  } catch(e) {
+    console.error("Erreur FCM onMessage:", e);
+  }
 }
 
 // ─── INSCRIPTION ─────────────────────────────────────────────
