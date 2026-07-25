@@ -186,6 +186,11 @@
       window.location.href = "connexion.html";
       return;
     }
+    // Vérifier si l'email est confirmé
+    if (!user.emailVerified) {
+      window.location.href = "verif-email.html";
+      return;
+    }
     currentUser = user;
     // Charger mon profil
     try {

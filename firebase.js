@@ -11,7 +11,8 @@ import {
   signOut,
   onAuthStateChanged,
   updateProfile,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 import {
   getFirestore,
@@ -105,6 +106,22 @@ export async function deconnecter() {
     window.location.href = "index.html";
   } catch (error) {
     console.error("Erreur déconnexion:", error);
+  }
+}
+
+// ─── RENVOYER EMAIL VÉRIFICATION ────────────────────────────
+export async function renvoyerVerification() {
+  try {
+    const user = auth.currentUser;
+    if (!user) return { success: false, error: "Non connecté" };
+    if (user.emailVerified) return { success: false, error: "Email déjà vérifié" };
+    await sendEmailVerification(user, {
+      url: 'https://mbote-delta.vercel.app/connexion',
+      handleCodeInApp: false
+    });
+    return { success: true };
+  } catch(e) {
+    return { success: false, error: e.message };
   }
 }
 

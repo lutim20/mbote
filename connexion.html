@@ -120,6 +120,11 @@
       <a href="#" onclick="resetPassword(); return false;">Mot de passe oublié ?</a>
     </div>
 
+    <div id="resendSection" style="display:none;background:#FFF8E1;border:1px solid #FFE082;border-radius:12px;padding:12px 16px;margin-bottom:16px;font-size:13px;color:#555">
+      📧 Email non vérifié. <strong>Vérifie ta boîte mail</strong> ou
+      <a href="#" onclick="resendVerif();return false;" style="color:#E8394A;font-weight:700">renvoie l'email de vérification</a>.
+    </div>
+
     <button class="btn-submit" id="submitBtn" onclick="handleConnexion()">
       <span id="btnText">Se connecter</span>
       <div class="spinner" id="spinner"></div>
@@ -138,7 +143,7 @@
 </div>
 
 <script type="module">
-  import { connecter, resetPassword as firebaseReset, auth, onAuthStateChanged } from "./firebase.js";
+  import { connecter, resetPassword as firebaseReset, renvoyerVerification, auth, onAuthStateChanged } from "./firebase.js";
 
   // Si déjà connecté → rediriger vers swipe
   onAuthStateChanged(auth, (user) => {
@@ -149,6 +154,11 @@
   window.handleConnexion = handleConnexion;
   window.resetPassword   = resetPassword;
   window.togglePassword  = togglePassword;
+  window.resendVerif     = async function() {
+    const result = await renvoyerVerification();
+    if (result.success) showSuccess("📧 Email de vérification renvoyé ! Vérifie ta boîte mail.");
+    else showError(result.error || "Erreur lors de l'envoi.");
+  };
 
   // ── CONNEXION ──────────────────────────────────────────
   async function handleConnexion() {
@@ -173,8 +183,20 @@
     const result = await connecter(email, password);
 
     if (result.success) {
-      showSuccess("Connexion réussie ! Redirection...");
-      setTimeout(() => window.location.href = "swipe.html", 800);
+      // Vérifier si l'email est confirmé
+      const user = result.user;
+      if (!user.emailVerified) {
+        // Email non vérifié - afficher message et option de renvoi
+        showError("📧 Tu dois d'abord vérifier ton email. Vérifie ta boîte mail (et tes spams).");
+        // Afficher bouton renvoyer email
+        document.getElementById('resendSection').style.display = 'block';
+        btn.disabled = false;
+        btnText.style.display = 'block';
+        spinner.style.display = 'none';
+      } else {
+        showSuccess("Connexion réussie ! Redirection...");
+        setTimeout(() => window.location.href = "swipe.html", 800);
+      }
     } else {
       showError(result.error);
       btn.disabled          = false;

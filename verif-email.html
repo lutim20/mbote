@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vérifie ton email — Mbote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: #FDF9F5; color: #1A1A2E; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+    :root { --cherry: #E8394A; --cherry-dark: #C42E3C; --orange: #FF8C42; }
+    .logo { font-size: 28px; font-weight: 900; color: var(--cherry); margin-bottom: 40px; text-decoration: none; }
+    .card { background: #fff; border-radius: 24px; padding: 40px 32px; max-width: 420px; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,.08); }
+    .icon { font-size: 72px; margin-bottom: 20px; }
+    h1 { font-size: 26px; font-weight: 900; color: #1A1A2E; margin-bottom: 12px; }
+    .email-display { background: #FEECED; color: var(--cherry); font-weight: 800; padding: 8px 16px; border-radius: 50px; font-size: 14px; margin: 12px auto; display: inline-block; }
+    p { font-size: 14px; color: #888; line-height: 1.7; margin-bottom: 24px; }
+    .btn { display: block; width: 100%; background: var(--cherry); color: #fff; border: none; padding: 14px; border-radius: 50px; font-size: 15px; font-weight: 800; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; margin-bottom: 10px; transition: background .2s; }
+    .btn:hover { background: var(--cherry-dark); }
+    .btn-outline { display: block; width: 100%; background: transparent; color: #888; border: 2px solid #E8E0D8; padding: 12px; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; font-family: 'Nunito', sans-serif; text-decoration: none; transition: border-color .2s; }
+    .btn-outline:hover { border-color: #1A1A2E; color: #1A1A2E; }
+    .success-msg { background: #E8F8EF; color: #1A6E42; border-radius: 12px; padding: 12px 16px; font-size: 13px; font-weight: 700; margin-bottom: 16px; display: none; }
+    .success-msg.show { display: block; }
+    .hint { font-size: 11px; color: #aaa; margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <a href="index.html" class="logo">❤️ Mbote</a>
+
+  <div class="card">
+    <div class="icon">📧</div>
+    <h1>Vérifie ton email</h1>
+    <div class="email-display" id="emailDisplay">ton@email.com</div>
+    <p>Nous t'avons envoyé un lien de confirmation. Clique dessus pour activer ton compte Mbote.</p>
+
+    <div class="success-msg" id="successMsg">✅ Email renvoyé ! Vérifie ta boîte mail et tes spams.</div>
+
+    <button class="btn" onclick="checkVerified()">✅ J'ai vérifié mon email</button>
+    <button class="btn-outline" id="resendBtn" onclick="resend()">📧 Renvoyer l'email</button>
+    <a href="connexion.html" class="btn-outline" style="margin-top:8px">← Retour à la connexion</a>
+
+    <p class="hint">Si tu ne trouves pas l'email, vérifie tes spams ou dossier promotions.</p>
+  </div>
+
+  <script type="module">
+    import { auth, onAuthStateChanged, renvoyerVerification } from "./firebase.js";
+
+    // Afficher l'email
+    onAuthStateChanged(auth, function(user) {
+      if (user) {
+        document.getElementById('emailDisplay').textContent = user.email;
+        if (user.emailVerified) {
+          window.location.href = "swipe.html";
+        }
+      } else {
+        window.location.href = "connexion.html";
+      }
+    });
+
+    // Vérifier si l'email a été confirmé
+    window.checkVerified = async function() {
+      const user = auth.currentUser;
+      if (!user) { window.location.href = "connexion.html"; return; }
+      await user.reload(); // Recharger l'état depuis Firebase
+      if (user.emailVerified) {
+        window.location.href = "swipe.html";
+      } else {
+        alert("Email pas encore vérifié. Clique sur le lien dans l'email d'abord.");
+      }
+    };
+
+    // Renvoyer l'email
+    window.resend = async function() {
+      const btn = document.getElementById('resendBtn');
+      btn.textContent = 'Envoi en cours...';
+      btn.disabled = true;
+      const result = await renvoyerVerification();
+      if (result.success) {
+        document.getElementById('successMsg').classList.add('show');
+      }
+      setTimeout(function() {
+        btn.textContent = '📧 Renvoyer l\'email';
+        btn.disabled = false;
+      }, 5000);
+    };
+  </script>
+</body>
+</html>

@@ -293,12 +293,20 @@
         <button class="btn-prev" id="btnPrev4">← Retour</button>
       </div>
 
-      <!-- SUCCÈS -->
+      <!-- SUCCÈS / VÉRIFICATION EMAIL -->
       <div class="success-screen" id="successScreen">
-        <div class="success-icon">🎉</div>
-        <h2 class="success-title">Bienvenue sur Mbote !</h2>
-        <p class="success-sub">Ton profil a été créé avec succès.<br>Ton premier match est peut-être à un swipe !</p>
-        <a href="swipe.html" class="btn-go">Commencer à swiper 🔥</a>
+        <div class="success-icon">📧</div>
+        <h2 class="success-title">Vérifie ton email !</h2>
+        <p class="success-sub">
+          Nous avons envoyé un lien de confirmation à<br>
+          <strong id="successEmail" style="color:#E8394A"></strong><br><br>
+          Clique sur le lien dans l'email pour activer ton compte, puis connecte-toi.
+        </p>
+        <a href="connexion.html" class="btn-go" style="margin-bottom:12px;display:block">Se connecter ❤️</a>
+        <button id="btnResend" onclick="resendEmail()" style="background:transparent;color:#888;border:2px solid #E8E0D8;padding:10px 24px;border-radius:50px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;width:100%">
+          Renvoyer l'email de vérification
+        </button>
+        <p style="font-size:11px;color:#aaa;margin-top:12px">Vérifie aussi tes spams si tu ne vois pas l'email.</p>
       </div>
     </div>
   </div>
@@ -515,9 +523,23 @@
 
   <!-- SCRIPT MODULE pour Firebase uniquement -->
   <script type="module">
-    import { inscrire } from "./firebase.js";
+    import { inscrire, renvoyerVerification } from "./firebase.js";
 
     // Exposer la fonction d'inscription au script normal
+    // Renvoyer email de vérification
+    window.resendEmail = async function() {
+      var btn = document.getElementById('btnResend');
+      btn.textContent = 'Envoi en cours...';
+      btn.disabled = true;
+      var result = await renvoyerVerification();
+      if (result.success) {
+        btn.textContent = '✅ Email renvoyé !';
+      } else {
+        btn.textContent = 'Renvoyer l'email de vérification';
+        btn.disabled = false;
+      }
+    };
+
     window._inscrire = async function(email, password, profileData) {
       var btn = document.getElementById('btnSubmit');
       var result = await inscrire(email, password, profileData);
@@ -527,6 +549,9 @@
         document.getElementById('stepsIndicator').style.display = 'none';
         document.querySelector('.step-labels').style.display = 'none';
         document.getElementById('successScreen').style.display = 'block';
+        // Afficher l'email dans l'écran de succès
+        var emailEl = document.getElementById('successEmail');
+        if (emailEl) emailEl.textContent = email;
       } else {
         document.getElementById('submitErrorText').textContent = result.error;
         document.getElementById('submitError').classList.add('show');
